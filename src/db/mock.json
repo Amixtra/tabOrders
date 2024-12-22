@@ -1,0 +1,100 @@
+{
+  "categories": [
+    {
+      "categoryId": 1,
+      "categoryName": "Korean Favorites",
+      "categoryItems": [
+        {
+          "itemId": 1,
+          "itemName": "Busan's Popular Tteokbokki",
+          "itemPrice": 300,
+          "itemSoldOutFlag": true,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR008/M00427/1620354409item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 2,
+          "itemName": "Ramyeon (Original)",
+          "itemPrice": 100,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00179/1596180154item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 3,
+          "itemName": "Ramyeon (Sea Food)",
+          "itemPrice": 150,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00179/1596180154item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 4,
+          "itemName": "Rice Ball",
+          "itemPrice": 100,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00180/1596180192item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 5,
+          "itemName": "Rice",
+          "itemPrice": 50,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/C00089/1600410691item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 6,
+          "itemName": "Cheese Rice Cracker",
+          "itemPrice": "70",
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR005/C00148/1604145260item_700X700_toJPEGBot.jpg"
+        }
+      ]
+    },
+    {
+      "categoryId": 2,
+      "categoryName": "Fried Foods",
+      "categoryItems": [
+        {
+          "itemId": 7,
+          "itemName": "Cheese Garlic Fries",
+          "itemPrice": 250,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00184/1596181048item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 8,
+          "itemName": "Fried Fish Cracker",
+          "itemPrice": 45,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00186/1596181076item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 9,
+          "itemName": "Cheese Balls",
+          "itemPrice": 250,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR005/C00094/1605329843item_700X700.png"
+        },
+        {
+          "itemId": 10,
+          "itemName": "Cream Cheese Balls",
+          "itemPrice": 250,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00185/1596181071item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 11,
+          "itemName": "Fried Mini Crabs",
+          "itemPrice": 200,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00188/1596181089item_700X700_toJPEGBot.jpg"
+        },
+        {
+          "itemId": 12,
+          "itemName": "Onion Rings",
+          "itemPrice": 150,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00187/1596181082item_700X700_toJPEGBot.jpg"
+        }
+      ]
+    }
+  ]
+}
