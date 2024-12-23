@@ -1,25 +1,14 @@
-import Header from "components/@share/Layout/header/Header";
-import GridContainer from "components/@share/Layout/gridContainer/GridContainer";
-import Footer from "components/@share/Layout/footer/Footer";
-import ProductListPage from "components/Product/ProductList/ProductListPage";
-import Cart from "components/Cart/Cart";
-import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
-import Nav from "components/Nav/Nav";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import TablePage from "./TablePage"; // Adjust the path if necessary
 
 const App = () => {
   return (
-    <>
-      <Header>
-        <Nav />
-        <TableIndicator />
-      </Header>
-
-      <GridContainer>
-        <ProductListPage />
-        <Cart />
-      </GridContainer>
-      <Footer />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/table/:id" element={<TablePage />} />
+      </Routes>
+    </Router>
   );
 };
 

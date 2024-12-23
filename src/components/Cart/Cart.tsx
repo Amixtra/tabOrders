@@ -10,21 +10,34 @@ import Toast from "components/@share/Toast/Toast";
 const Cart = () => {
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(getTotal());
   }, [cart, dispatch]);
 
   const [isActive, setIsActive] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
   const handleClearCart = () => {
     dispatch(clearCart());
   };
+
   const handleCartOpen = () => {
     dispatch(toggleCartOpen());
   };
+
+  const handleFreeServiceToast = () => {
+    setToastMessage("Free service can only be ordered 1 at a time.");
+    setIsActive(true);
+    setTimeout(() => {
+      setIsActive(false);
+    }, 1500);
+  };
+
   return (
     <>
       <Toast
-        message="Order Complete. Please Wait for a while.."
+        message={toastMessage || "Order Complete. Please Wait for a while.."}
         isActive={isActive}
         setIsActive={setIsActive}
       />
@@ -37,7 +50,11 @@ const Cart = () => {
             <p className="empty-sign">Cart is Empty.</p>
           ) : (
             cart.cartItems.map((cartItem) => (
-              <CartListItem key={cartItem.itemId} cartItem={cartItem} />
+              <CartListItem
+                key={cartItem.itemId}
+                cartItem={cartItem}
+                handleFreeServiceToast={handleFreeServiceToast}
+              />
             ))
           )}
         </div>
@@ -64,6 +81,7 @@ const Cart = () => {
               onClick={() => {
                 handleClearCart();
                 handleCartOpen();
+                setToastMessage("Order Complete. Please Wait for a while..");
                 setIsActive(true);
               }}
             >

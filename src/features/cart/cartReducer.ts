@@ -14,7 +14,6 @@ const cartSlice = createSlice({
   reducers: {
     addToCart(state, action: PayloadAction<CategoryItemProps>) {
       const itemIdx = state.cartItems.findIndex(
-        // 동일 상품 추가 시, 개별 추가가 아닌 수량 증가
         (item) => item.itemId === action.payload.itemId
       );
       const itemSoldOut = action.payload.itemSoldOutFlag;
@@ -22,7 +21,6 @@ const cartSlice = createSlice({
         if (itemIdx >= 0) {
           state.cartItems[itemIdx].cartItemQuantity! += 1;
         } else {
-          // 다른 상품 추가 시, 기존 상품에 새로운 상품 추가 (첫 추가 시 상품 수량 : 1)
           const currentProduct = { ...action.payload, cartItemQuantity: 1 };
           state.cartItems.push(currentProduct);
         }
