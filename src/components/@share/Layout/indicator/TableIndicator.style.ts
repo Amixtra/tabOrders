@@ -10,16 +10,16 @@ const StyledTableIndicator = styled.div`
   height: 80px;
   background-color: ${PALETTE.MAIN};
   padding: 0px 12px 12px;
-  text-align: center;
   border-radius: 0 0 10px 10px;
 
   & .table-description {
     font-size: 14px;
-    margin-top: 5px;
+    margin-top: 10px;
     color: ${PALETTE.WHITE};
   }
 `;
 const StyledTableNumber = styled.p`
+  text-align: center;
   font-size: 52px;
   font-weight: 900;
   color: ${PALETTE.WHITE};

@@ -10,7 +10,7 @@ const TableIndicator = () => {
 
   return (
     <StyledTableIndicator>
-      <p className="table-description">Table No.</p>
+      <p className="table-description">Table</p>
       <StyledTableNumber>{id || "Unknown"}</StyledTableNumber>
     </StyledTableIndicator>
   );

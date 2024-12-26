@@ -30,7 +30,7 @@ const StyledProductListItem = styled.li`
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6) url("/assets/icon/icon_soldout.png") no-repeat
-      center 30%/90%;
+      center 0%/100%;
     position: absolute;
     top: 0;
     left: 0;

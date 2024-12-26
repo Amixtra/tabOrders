@@ -7,7 +7,9 @@ const StyledGridContainer = styled.div`
   overflow: hidden;
 
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr;
+  row-gap: 20px;
 `;
 
 export default StyledGridContainer;

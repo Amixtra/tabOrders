@@ -1,3 +1,4 @@
+// Cart.tsx
 import React, { useEffect, useState } from "react";
 
 import StyledCart from "./Cart.styles";
@@ -6,6 +7,7 @@ import Button from "components/@share/Button/Button";
 import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
 import { clearCart, getTotal, toggleCartOpen } from "features/cart/cartReducer";
 import Toast from "components/@share/Toast/Toast";
+import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 
 const Cart = () => {
   const cart = useAppSelector((state) => state.cart);
@@ -41,10 +43,13 @@ const Cart = () => {
         isActive={isActive}
         setIsActive={setIsActive}
       />
+
       <StyledCart className={cart.isCartOpen ? "" : "hide"}>
         <div className="cart-header">
+          <TableIndicator />
           <h3 className="cart-title">Cart</h3>
         </div>
+
         <div className="cart-body">
           {cart.cartItems.length === 0 ? (
             <p className="empty-sign">Cart is Empty.</p>
@@ -58,6 +63,7 @@ const Cart = () => {
             ))
           )}
         </div>
+
         <div className="cart-footer">
           <div className="cart-item-info">
             <span>Total {cart.cartItems.length} orders</span>
@@ -70,7 +76,7 @@ const Cart = () => {
               color="WHITE"
               bgColor="GREY600"
               fontWeight="bold"
-              onClick={() => handleCartOpen()}
+              onClick={handleCartOpen}
             >
               Cancel
             </Button>

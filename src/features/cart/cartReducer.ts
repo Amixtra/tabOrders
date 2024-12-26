@@ -6,6 +6,7 @@ const initialState: CartListProps = {
   cartItems: [],
   cartTotalAmount: 0,
   isCartOpen: false,
+  orderHistory: [],
 };
 
 const cartSlice = createSlice({

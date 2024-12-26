@@ -6,7 +6,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/table/:id" element={<TablePage />} />
+        <Route path=":company/table/:id" element={<TablePage />} />
       </Routes>
     </Router>
   );

@@ -13,10 +13,6 @@ const Footer = () => {
     dispatch(toggleCartOpen());
   };
 
-  const handleOrderHistoryOpen = () => {
-    dispatch(toggleCartOpen());
-  };
-
   return (
     <StyledFooter>
       <Button
@@ -31,7 +27,7 @@ const Footer = () => {
         color="WHITE"
         withIcon
         iconUrl={icon_order_history}
-        onClick={handleOrderHistoryOpen}
+        // onClick= //needs to be add
       >
         Order History
       </Button>

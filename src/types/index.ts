@@ -17,4 +17,21 @@ export interface CartListProps {
   cartItems: CategoryItemProps[];
   cartTotalAmount?: number;
   isCartOpen?: boolean;
+  isHistoryOpen?: boolean;
+  orderHistory: OrderProps[];
+}
+
+export interface OrderItemProps {
+  itemId: string;
+  itemName: string;
+  cartItemQuantity: number;
+  itemPrice: number;
+}
+
+export interface OrderProps {
+  orderId: number;
+  items: OrderItemProps[];
+  totalAmount: number;
+  isHistoryOpen?: boolean;
+  date: string;
 }

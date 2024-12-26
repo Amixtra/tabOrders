@@ -1,4 +1,4 @@
-import StyledNav from "./Nav.style";
+import StyledNav, { StyledNavLogo, StyledNavSectionButton, StyledNavWaiterButton } from "./Nav.styles";
 import { CategoryProps } from "types";
 import useFetch from "hooks/useFeth";
 
@@ -7,11 +7,14 @@ const Nav = () => {
 
   return (
     <StyledNav>
-      <ul>
-        {data!.map((item: CategoryProps) => {
-          return <li key={item.categoryId}>{item.categoryName}</li>;
-        })}
-      </ul>
+      <StyledNavLogo>TEST</StyledNavLogo>
+      {data &&
+        data.map((item: CategoryProps) => (
+          <StyledNavSectionButton key={item.categoryId}>
+            {item.categoryName}
+          </StyledNavSectionButton>
+        ))}
+      <StyledNavWaiterButton>Call Waiter</StyledNavWaiterButton>
     </StyledNav>
   );
 };
