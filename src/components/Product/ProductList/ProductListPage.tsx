@@ -46,10 +46,8 @@ const ProductListPage = () => {
 
     return (
       <section 
-        id={categoryTitle}
         key={item.categoryId} 
         className="product-list-container"
-        style={{ scrollMarginTop: "80px" }}
       >
         <StyledProductCategoryTitle>{categoryTitle}</StyledProductCategoryTitle>
         <ul className="product-list">{productList}</ul>
