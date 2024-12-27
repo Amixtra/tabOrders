@@ -10,6 +10,10 @@ const StyledNav = styled.aside`
   z-index: 1;
   transition: width 0.2s;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
 `;
 
 export const StyledNavLogo = styled.button`
@@ -19,7 +23,7 @@ export const StyledNavLogo = styled.button`
   border-radius: 10px;
   font-size: 18px;
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 25px;
   font-weight: 900;
   color: ${PALETTE.WHITE};
   text-transform: uppercase;
@@ -50,6 +54,11 @@ export const StyledNavWaiterButton = styled.button`
   font-weight: 900;
   color: ${PALETTE.WHITE};
   text-transform: uppercase;
+`;
+
+export const StyledNavContent = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export default StyledNav;

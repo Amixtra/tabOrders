@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledProductListWrapper = styled.main`
   margin-top: 80px;
-  padding: 0px 0px 140px;
+  padding: 0px 20px 140px;
   height: 100vh;
   overflow-y: auto;
 

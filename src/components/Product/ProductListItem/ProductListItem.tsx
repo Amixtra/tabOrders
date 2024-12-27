@@ -15,18 +15,8 @@ const ProductListItem = ({
   itemImg,
   itemPrice,
   isItemSoldOut,
-  categoryId,
   onClick,
 }: Props) => {
-  if (categoryId === 1) {
-    return (
-      <video autoPlay muted loop>
-        <source src="/" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-    );
-  }
-
   return (
     <StyledProductListItem onClick={onClick}>
       {isItemSoldOut ? <div className="soldout-cover"></div> : null}

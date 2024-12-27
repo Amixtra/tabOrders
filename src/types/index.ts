@@ -1,6 +1,6 @@
 export interface CategoryProps {
   categoryId?: number;
-  categoryName?: string;
+  categoryName: string;
   categoryItems?: CategoryItemProps[];
 }
 
