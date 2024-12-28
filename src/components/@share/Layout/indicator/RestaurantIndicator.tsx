@@ -1,8 +1,8 @@
 import React from "react";
 import { useParams } from "react-router";
-import {
-  StyledRestaurantIndicator,
-  StyledRestaurantName
+import { 
+    StyledRestaurantIndicator,
+    StyledRestaurantName
 } from "./RestaurantIndicator.style";
 
 const RestaurantIndicator = () => {

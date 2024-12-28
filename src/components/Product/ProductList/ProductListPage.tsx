@@ -1,3 +1,4 @@
+import React from "react";
 import { CategoryProps, CategoryItemProps } from "types";
 import {
   StyledProductListWrapper,
@@ -8,45 +9,46 @@ import { addToCart, toggleCartOpen } from "features/cart/cartReducer";
 import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
 import useFetch from "hooks/useFeth";
 
-const ProductListPage = () => {
+interface ProductListPageProps {
+  selectedCategory: number | null; // Add this prop
+}
+
+const ProductListPage: React.FC<ProductListPageProps> = ({ selectedCategory }) => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state) => state.cart);
 
   const [data] = useFetch("http://localhost:3001/categories");
 
-  const productData = data!.map((item: CategoryProps) => {
+  const filteredCategories = data?.filter((category: CategoryProps) =>
+    selectedCategory === null ? true : category.categoryId === selectedCategory
+  );
+
+  const productData = filteredCategories?.map((item: CategoryProps) => {
     const categoryTitle = item.categoryName;
     const productList = item.categoryItems!.map((item) => {
       const handleAddToCart = (item: CategoryItemProps) => {
         dispatch(addToCart(item));
         if (!cart.isCartOpen && !item.itemSoldOutFlag) {
           dispatch(toggleCartOpen());
-        } else {
-          return null;
         }
       };
-      const itemName = item.itemName;
-      const itemImg = item.itemImageUrl;
-      const itemPrice = item.itemPrice;
-      const isItemSoldOut = item.itemSoldOutFlag;
 
       return (
         <ProductListItem
           key={item.itemId}
-          itemName={itemName}
-          itemImg={itemImg}
-          itemPrice={itemPrice}
-          isItemSoldOut={isItemSoldOut}
-          onClick={() => {
-            handleAddToCart(item);
-          }}
-        ></ProductListItem>
+          itemName={item.itemName}
+          itemImg={item.itemImageUrl}
+          itemPrice={item.itemPrice}
+          isItemSoldOut={item.itemSoldOutFlag}
+          onClick={() => handleAddToCart(item)}
+        />
       );
     });
 
     return (
-      <section 
-        key={item.categoryId} 
+      <section
+        id={`category-${item.categoryId}`}
+        key={item.categoryId}
         className="product-list-container"
       >
         <StyledProductCategoryTitle>{categoryTitle}</StyledProductCategoryTitle>

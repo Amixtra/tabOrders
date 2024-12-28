@@ -17,13 +17,10 @@ const StyledNav = styled.aside`
 `;
 
 export const StyledNavLogo = styled.button`
-  padding: 12px 36px;
   text-align: center;
   background-color: ${PALETTE.MAIN};
   border-radius: 10px;
   font-size: 18px;
-  margin-top: 5px;
-  margin-bottom: 25px;
   font-weight: 900;
   color: ${PALETTE.WHITE};
   text-transform: uppercase;

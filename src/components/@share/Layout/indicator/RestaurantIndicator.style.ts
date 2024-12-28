@@ -5,6 +5,7 @@ export const StyledRestaurantIndicator = styled.div`
   position: fixed;
   top: 0;
   left: 14vw;
+  margin-left: 20px;
 
   padding: 0px 12px 12px;
   text-align: center;
