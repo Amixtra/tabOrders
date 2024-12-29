@@ -18,7 +18,7 @@ const TablePage = () => {
         <TableIndicator />
         <RestaurantIndicator />
       </Header>
-      <AdPage />
+      {/* <AdPage /> */}
       <GridContainer>
         <Nav onCategorySelect={setSelectedCategory} selectedCategory={selectedCategory} />
         <ProductListPage selectedCategory={selectedCategory} />
