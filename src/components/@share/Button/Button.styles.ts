@@ -40,7 +40,6 @@ const buttonTypes = css<ButtonProps>`
     css`
       display: flex;
       align-items: center;
-      height: 100%;
 
       &:before {
         content: "";

@@ -12,6 +12,13 @@
           "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR008/M00427/1620354409item_700X700_toJPEGBot.jpg"
         },
         {
+          "itemId": 2,
+          "itemName": "Ramyeon (Spicy)",
+          "itemPrice": 150.00,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://s3.ap-northeast-2.amazonaws.com/images.orderhae.com/TPAY_GDR003/M00179/1596180154item_700X700_toJPEGBot.jpg"
+        },
+        {
           "itemId": 3,
           "itemName": "Ramyeon (Sea Food)",
           "itemPrice": 150.00,

@@ -1,12 +1,9 @@
-import React from "react";
-import { useParams } from "react-router";
-import {
-  StyledTableIndicator,
-  StyledTableNumber,
-} from "./TableIndicator.style";
+import { useSearchParams } from "react-router-dom";
+import { StyledTableIndicator, StyledTableNumber } from "./TableIndicator.style";
 
 const TableIndicator = () => {
-  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("tableId");
 
   return (
     <StyledTableIndicator>

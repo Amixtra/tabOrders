@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import TablePage from "./TablePage"; // Adjust the path if necessary
+import TablePage from "./TablePage";
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path=":company/table/:id" element={<TablePage />} />
+        <Route path="/table" element={<TablePage />} />
       </Routes>
     </Router>
   );

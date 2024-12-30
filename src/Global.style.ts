@@ -12,6 +12,11 @@ const GlobalStyle = createGlobalStyle`
   }
   body{
     font-family: "Noto Sans KR", sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
   button{
     border:none;

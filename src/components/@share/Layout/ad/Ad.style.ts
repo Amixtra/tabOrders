@@ -26,14 +26,52 @@ export const AdVideo = styled.video`
 `;
 
 export const AdCloseButton = styled.button`
-  padding: 12px 36px;
-  text-align: center;
-  background-color: ${PALETTE.MAIN};
-  border-radius: 10px;
-  font-size: 18px;
-  margin-top: 5px;
-  margin-bottom: 25px;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: ${PALETTE.WHITE};
+  padding: 20px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+export const AdCloseWord = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 32px;
   font-weight: 900;
-  color: ${PALETTE.WHITE};
-  text-transform: uppercase;
+  color: #000;
+`;
+
+export const Logo = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 45%;
+  background-color: ${PALETTE.WHITE};
+  padding: 20px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+export const Logo2 = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 32px;
+  font-weight: 900;
+  color: #000;
+`;
+
+export const IconWrapper = styled.div`
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

@@ -1,12 +1,9 @@
-import React from "react";
-import { useParams } from "react-router";
-import { 
-    StyledRestaurantIndicator,
-    StyledRestaurantName
-} from "./RestaurantIndicator.style";
+import { useSearchParams } from "react-router-dom";
+import { StyledRestaurantIndicator, StyledRestaurantName } from "./RestaurantIndicator.style";
 
 const RestaurantIndicator = () => {
-  const { company } = useParams<{ company: string }>();
+  const [searchParams] = useSearchParams();
+  const company = searchParams.get("company");
 
   return (
     <StyledRestaurantIndicator>
