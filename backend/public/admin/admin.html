@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+  <h1>실시간 업데이트</h1>
+
+  <main>
+
+  </main>
+
+  <div id="order">
+  </div>
+
+  <script>
+
+    const socket = io();
+    socket.on('update', (data) => {
+      const company = new URLSearchParams(window.location.search).get('company');
+      if(data.type=="order" && data.company==company){
+        document.getElementById('order').innerHTML+=`
+          <div>
+            <span>${data.company}-${data.tableId}</span>
+            <span>${data.menu}</span>
+          </div>
+        `;
+      }
+    });
+
+
+    (async () => {
+      const response = await (await fetch('/data.json')).json();
+      createMenu(response.categories)
+    })();
+
+    async function createMenu(categories){
+      document.querySelector("main").innerHTML="";
+
+      for (const {categoryName, categoryItems} of categories) {
+        
+        const categoryContainer = document.createElement("div");
+        categoryContainer.classList.add('categoryContainer');
+        categoryContainer.innerHTML += `<h2>${categoryName}</h2>`;
+
+        for (const item of categoryItems) {
+          categoryContainer.innerHTML += `
+              <div class="itemContainer" itemId="${item.itemId}" categoryName="${categoryName}">
+                <span>${item.itemName} - $${item.itemPrice}</span>
+                ${item.itemImageUrl ? `<img src="${item.itemImageUrl}" alt="${item.itemName}" style="width: 50px; height: 50px;" />` : ''}
+                <button onclick="deleteItem(this)">삭제</button>
+              </div>
+          `;
+        }
+
+        categoryContainer.innerHTML += `
+          <div class="insertArea" categoryName="${categoryName}">
+
+            <div class="nameArea">
+              <span>이름 :</span>
+              <input type="text">
+            </div>
+
+            <div class="priceArea">
+              <span>가격 :</span>
+              <input type="text">
+            </div>
+
+            <div class="imageArea">
+              <span>이미지 :</span>
+              <input type="text">
+            </div>
+
+            <button onclick="insertItem(this)">추가</button>
+          </div>
+        `;
+        
+        document.querySelector("main").appendChild(categoryContainer);
+      }
+    }
+
+    async function deleteItem(element){
+      const itemId = element.closest(".itemContainer").getAttribute("itemId");
+      const categoryName = element.closest(".itemContainer").getAttribute("categoryName");
+      console.log(itemId, categoryName);
+    }
+
+    async function insertItem(element){
+      const categoryName = element.closest(".insertArea").getAttribute("categoryName");
+      const itemName = element.closest(".insertArea").querySelector(".nameArea input").value;
+      const itemPrice = element.closest(".insertArea").querySelector(".priceArea input").value;
+      const itemImage = element.closest(".insertArea").querySelector(".imageArea input").value;
+
+      if(categoryName && itemName && itemPrice && itemImage){ 
+        console.log(categoryName, itemName, itemPrice, itemImage)
+      }
+      else{
+        alert("값을 모두 입력해주세요")
+      }
+    }
+
+    async function updateItem(){
+
+    }
+
+  </script>
+</body>
+</html>

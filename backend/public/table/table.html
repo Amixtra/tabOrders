@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+    <h2>table</h2>
+
+    <main>
+    </main>
+
+    <button id="test">test</button>
+
+    <script>
+
+        (async () => {
+            const response = await (await fetch('/data.json')).json();
+            createMenu(response.categories)
+        })();
+
+        async function createMenu(categories){
+            document.querySelector("main").innerHTML="";
+
+            const itemContainer = document.createElement("div");
+            itemContainer.classList.add('itemContainer');
+
+            for (const {categoryName, categoryItems} of categories) {
+                itemContainer.innerHTML += `<h2>${categoryName}</h2>`;
+                for (const item of categoryItems) {
+                    itemContainer.innerHTML += `
+                        <div>
+                            <input type="checkbox" id="item-${item.itemId}" name="${item.itemName.toLowerCase().replace(/ /g, '-')}" />
+                            <span>${item.itemName} - $${item.itemPrice}</span>
+                            ${item.itemImageUrl ? `<img src="${item.itemImageUrl}" alt="${item.itemName}" style="width: 50px; height: 50px;" />` : ''}
+                        </div>
+                    `;
+                }
+            }
+
+            document.querySelector("main").appendChild(itemContainer);
+        }
+
+        const socket = io();
+        document.querySelector("#test").addEventListener("click", function () {
+            const company = new URLSearchParams(window.location.search).get('company');
+            const tableId = new URLSearchParams(window.location.search).get('tableId');
+            const menu = Array.from(document.querySelectorAll("input[type=checkbox]")).filter(e=>e.checked==true).map(e=>e.name)
+            
+            if(company && tableId && menu.length>0){ socket.emit('data', {type: "order", company, tableId, menu}) }
+            else{ alert("테이블 ID가 없습니다.") }
+        })
+    </script>
+</body>
+</html>
