@@ -35,7 +35,6 @@ const ProductListPage: React.FC<ProductListPageProps> = ({ selectedCategory }) =
 
       return (
         <ProductListItem
-          key={item.itemId}
           itemName={item.itemName}
           itemImg={item.itemImageUrl}
           itemPrice={item.itemPrice}

@@ -56,7 +56,6 @@ const Cart = () => {
           ) : (
             cart.cartItems.map((cartItem) => (
               <CartListItem
-                key={cartItem.itemId}
                 cartItem={cartItem}
                 handleFreeServiceToast={handleFreeServiceToast}
               />

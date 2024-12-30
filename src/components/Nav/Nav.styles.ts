@@ -16,14 +16,18 @@ const StyledNav = styled.aside`
   height: 100vh;
 `;
 
-export const StyledNavLogo = styled.button`
-  text-align: center;
-  background-color: ${PALETTE.MAIN};
+export const StyledNavLogo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 10px;
-  font-size: 18px;
-  font-weight: 900;
-  color: ${PALETTE.WHITE};
-  text-transform: uppercase;
+  padding: 10px;
+  width: 100%;
+  height: auto;
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 `;
 
 export const StyledNavSectionButton = styled.button`

@@ -1,14 +1,36 @@
 import React from "react";
 import videoSources from "db/ad";
 import TableIndicator from "../indicator/TableIndicator";
-import { AdCloseButton, AdOverlay, AdVideo, AdWrapper } from "./Ad.style";
+import { FaCircleXmark } from "react-icons/fa6";
+import {
+  AdCloseButton,
+  AdCloseWord,
+  AdOverlay,
+  AdVideo,
+  AdWrapper,
+  IconWrapper,
+  Logo,
+  Logo2,
+} from "./Ad.style";
 
-const AdPage: React.FC = () => {
+interface AdPageProps {
+  onClose: () => void;
+}
+
+const AdPage: React.FC<AdPageProps> = ({ onClose }) => {
   return (
     <AdOverlay>
       <AdWrapper>
-        <AdCloseButton>
+        <Logo>
+          <Logo2>Logo</Logo2>
+        </Logo>
+        <AdCloseButton onClick={onClose}>
+          <AdCloseWord>
+            <IconWrapper>
+              <FaCircleXmark />
+            </IconWrapper>
             Close
+          </AdCloseWord>
         </AdCloseButton>
         <TableIndicator />
         <AdVideo src={videoSources[1]} autoPlay muted loop playsInline />
