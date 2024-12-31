@@ -4,6 +4,8 @@ import {
   CalculationOverlay,
   CalculationWrapper,
   CalculationBG,
+  LeftBlock,
+  RightBlock,
 } from "./Calculation.style";
 import CalculationClose from "./CalculationClose/CalculationClose";
 import CalculationCounter from "./CalculationCounter/CalculationCounter";
@@ -42,7 +44,10 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation }) => {
         <CalculationTitle />
         <CalculationCounter onExpire={handleClose} resetTimer={resetTimer} /> 
         <CalculationClose onClose={handleClose} />
-        <CalculationBG />
+        <CalculationBG>
+          <LeftBlock />
+          <RightBlock />
+        </CalculationBG>
       </CalculationWrapper>
     </CalculationOverlay>
   );

@@ -15,7 +15,7 @@ const StartPage = () => {
     <StartOverlay>
       <StartWrapper>
         <Logo>
-          <StartLogo src={logoSources['default']}/>
+          <StartLogo src={logoSources['defaultLight']}/>
         </Logo>
         <StartDescription>
           Tap anywhere on the screen to continue.

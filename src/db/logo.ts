@@ -3,7 +3,8 @@ interface LogoSource {
   }
   
   const logoSources: LogoSource = {
-    default: "/assets/img/logo/tabOrder-logo.png",
+    defaultLight: "/assets/img/logo/tabOrder-logo-light.png",
+    defaultDark: "/assets/img/logo/tabOrder-logo-dark.png",
   };
   
-  export default logoSources;
+export default logoSources;

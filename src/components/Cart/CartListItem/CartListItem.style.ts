@@ -27,6 +27,7 @@ const StyledCartListItem = styled.li`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 20px;
 
     & .cart-item-counter {
       display: flex;
@@ -34,12 +35,15 @@ const StyledCartListItem = styled.li`
       align-items: center;
       gap: 8px;
     }
-
-    & .cart-item-price-total {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: ${PALETTE.MAIN};
-    }
+  }
+  .cart-order-number {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .cart-item-price-total {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: ${PALETTE.MAIN};
   }
 `;
 

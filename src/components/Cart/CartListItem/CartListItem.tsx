@@ -50,22 +50,24 @@ const CartListItem = ({ cartItem, handleFreeServiceToast }: Props) => {
           Remove
         </Button>
       </div>
+      <div className="cart-item-price-total">
+        ₱ {totalPrice.toLocaleString()}
+      </div>
       <div className="cart-item-body">
         <div className="cart-item-counter">
           <Button
-            iconBtn
-            iconUrl={icon_increase}
-            onClick={() => handleIncreaseCartItemQuantity(cartItem)}
-          />
-          <span>{cartItem.cartItemQuantity} Order</span>
-          <Button
-            iconBtn
+            iconBtnCart
             iconUrl={icon_decrease}
             onClick={() => handleDecreaseCartItemQuantity(cartItem)}
           />
-        </div>
-        <div className="cart-item-price-total">
-          ₱ {totalPrice.toLocaleString()}
+          <span className="cart-order-number">
+            {cartItem.cartItemQuantity} Order
+          </span>
+          <Button
+            iconBtnCart
+            iconUrl={icon_increase}
+            onClick={() => handleIncreaseCartItemQuantity(cartItem)}
+          />
         </div>
       </div>
     </StyledCartListItem>

@@ -4,6 +4,7 @@ import {
   OrderHistoryOverlay,
   OrderHistoryWrapper,
   OrderHistoryBG,
+  MiddleBlock,
 } from "./OrderHistory.style";
 import OrderHistoryClose from "./OrderHistoryClose/OrderHistoryClose";
 import OrderHistoryCounter from "./OrderHistoryCounter/OrderHistoryCounter";
@@ -38,11 +39,13 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setShowOrderHistory }) => {
   return (
     <OrderHistoryOverlay>
       <OrderHistoryWrapper>
-        <TableIndicator />
         <OrderHistoryTitle />
+        <TableIndicator />
         <OrderHistoryCounter onExpire={handleClose} resetTimer={resetTimer} />
         <OrderHistoryClose onClose={handleClose} />
-        <OrderHistoryBG />
+        <OrderHistoryBG>
+          <MiddleBlock />
+        </OrderHistoryBG>
       </OrderHistoryWrapper>
     </OrderHistoryOverlay>
   );

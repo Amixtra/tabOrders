@@ -12,6 +12,7 @@ const Button = ({
   withIcon,
   iconUrl,
   iconBtn,
+  iconBtnCart,
   textBtn,
 }: ButtonProps) => {
   return (
@@ -26,6 +27,7 @@ const Button = ({
       withIcon={withIcon}
       iconUrl={iconUrl}
       iconBtn={iconBtn}
+      iconBtnCart={iconBtnCart}
       textBtn={textBtn}
     >
       {children}

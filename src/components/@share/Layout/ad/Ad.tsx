@@ -5,13 +5,14 @@ import { FaCircleXmark } from "react-icons/fa6";
 import {
   AdCloseButton,
   AdCloseWord,
+  AdLogo,
   AdOverlay,
   AdVideo,
   AdWrapper,
   IconWrapper,
   Logo,
-  Logo2,
 } from "./Ad.style";
+import logoSources from "db/logo";
 
 interface AdPageProps {
   onClose: () => void;
@@ -22,7 +23,7 @@ const AdPage: React.FC<AdPageProps> = ({ onClose }) => {
     <AdOverlay>
       <AdWrapper>
         <Logo>
-          <Logo2>Logo</Logo2>
+          <AdLogo src={logoSources['defaultDark']} />
         </Logo>
         <AdCloseButton onClick={onClose}>
           <AdCloseWord>

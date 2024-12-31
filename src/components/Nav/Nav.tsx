@@ -34,7 +34,7 @@ const Nav: React.FC<NavProps> = ({ onCategorySelect, selectedCategory, setIsOver
     <StyledNav>
       <StyledNavContent>
         <StyledNavLogo>
-          <img src={logoSources.default} alt="TabOrder Logo" style={{ width: "100%", borderRadius: "10px" }} />
+          <img src={logoSources.defaultLight} alt="TabOrder Logo" style={{ width: "100%", borderRadius: "10px" }} />
         </StyledNavLogo>
         <StyledNavSectionButton
           onClick={() => onCategorySelect(null)}

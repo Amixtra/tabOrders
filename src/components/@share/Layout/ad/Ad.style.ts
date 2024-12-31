@@ -49,24 +49,20 @@ export const AdCloseWord = styled.div`
 
 export const Logo = styled.div`
   position: absolute;
-  top: 20px;
-  left: 45%;
-  background-color: ${PALETTE.WHITE};
+  left: 50%;
+  transform: translateX(-50%);
   padding: 20px;
   border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 `;
 
-export const Logo2 = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 32px;
-  font-weight: 900;
-  color: #000;
+export const AdLogo = styled.img`
+  width: 30%;
+  height: 30%;
+  object-fit: cover;
+  display: block;
 `;
 
 export const IconWrapper = styled.div`

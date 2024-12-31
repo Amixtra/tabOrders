@@ -45,15 +45,6 @@ export const Logo = styled.div`
   justify-content: center;
 `;
 
-export const Logo2 = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 32px;
-  font-weight: 900;
-  color: #000;
-`;
-
 export const StartDescription = styled.div`
   position: absolute;
   bottom: 20px;

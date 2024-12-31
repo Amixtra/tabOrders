@@ -6,4 +6,4 @@ interface StartSource {
     default: "/assets/img/start/default.jpg",
   };
   
-  export default startSources;
+export default startSources;

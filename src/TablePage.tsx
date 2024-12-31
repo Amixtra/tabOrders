@@ -71,7 +71,7 @@ const TablePage = () => {
             <TableIndicator />
             <RestaurantIndicator />
           </Header>
-          {showAd && <AdPage onClose={handleCloseAd} />}
+          {/* {showAd && <AdPage onClose={handleCloseAd} />} */}
           <GridContainer>
             <Nav
               onCategorySelect={setSelectedCategory}
