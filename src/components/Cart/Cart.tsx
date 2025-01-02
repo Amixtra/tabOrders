@@ -8,8 +8,12 @@ import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
 import { clearCart, getTotal, toggleCartOpen } from "features/cart/cartReducer";
 import Toast from "components/@share/Toast/Toast";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
+import { useSearchParams } from "react-router-dom";
 
 const Cart = () => {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("tableId");
+
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
 
@@ -75,7 +79,10 @@ const Cart = () => {
               color="WHITE"
               bgColor="GREY600"
               fontWeight="bold"
-              onClick={handleCartOpen}
+              onClick={() => {
+                handleCartOpen();
+                handleClearCart();
+              }}
             >
               Cancel
             </Button>
@@ -84,6 +91,24 @@ const Cart = () => {
               bgColor="MAIN"
               fontWeight="bold"
               onClick={() => {
+                const ordersString = cart.cartItems
+                .map((item) => `${item.itemName} (Quantity: ${item.cartItemQuantity})`)
+                .join(", ");
+                
+                const totalQuantity = cart.cartItems.reduce(
+                  (sum, item) => sum + (item.cartItemQuantity ?? 0),
+                  0
+                );
+
+                const totalPriceString = cart.cartTotalAmount?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                });
+
+                console.log(
+                  `Order Details:\n"Time Ordered": ${new Date().toLocaleString()},\n"Table": ${id},\n"Orders": [${ordersString}],\n"Total Quantity": ${totalQuantity},\n"Total Price": ₱${totalPriceString}`
+                );
+
                 handleClearCart();
                 handleCartOpen();
                 setToastMessage("Order Complete. Please Wait for a while..");

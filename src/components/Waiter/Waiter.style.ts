@@ -31,42 +31,110 @@ export const WaiterHeader = styled.div`
 export const WaiterBG = styled.div`
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  background: url("/assets/img/amixtra-background.jpg") no-repeat center center/cover;
   display: flex;
   padding: 20px;
   box-sizing: border-box;
 `;
 
 export const WaiterItemsContainer = styled.div`
-  margin-top: 80px;
+  margin-top: 60px;
   width: 70%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 16px;
+  padding: 0 20px;
 `;
 
 export const WaiterItem = styled.button`
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: #ffffff;
+  border: 1px solid ${PALETTE.GREY300};
   border-radius: 8px;
-  padding: 12px;
-  font-size: 24px;
+  padding: 16px;
+  font-size: 20px;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: ${PALETTE.GREY200};
+    transform: scale(1.05);
+  }
 `;
 
-export const RightBlock = styled.div`
-  margin-top: 80px;
+
+export const RightBlock = styled.aside`
   width: 30%;
-  background-color: #f5f5f5;
+  padding: 20px;
+  background-color: ${PALETTE.GREY100};
+  box-shadow: -5px 0 6px rgba(0, 0, 0, 0.55);
+  margin-top: 70px;
   border-radius: 16px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  margin-left: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow-y: auto;
   font-size: 18px;
-  color: #333;
-  text-align: center;
+  max-height: 75vh;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+  
+  & .cart-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    & .product-name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    & .remove-btn {
+      margin-right: 8px;
+    }
+  }
+
+  & .cart-item-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & .cart-item-counter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  & .cart-body {
+    overflow-y: auto;
+    height: 100%;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: ${PALETTE.GREY400};
+      border-radius: 8px;
+    }
+
+    & .empty-sign {
+      color: ${PALETTE.GREY400};
+    }
+  }
+
+  .cart-order-number {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+`;
+
+export const WaiterListItem = styled.li`
+  padding-bottom: 1.875vw;
+  margin-bottom: 1.875vw;
+  border-bottom: 1px solid ${PALETTE.GREY300};
 `;
 
 export const WaiterBottomButton = styled.button`

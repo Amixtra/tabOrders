@@ -6,7 +6,6 @@ const initialState: CartListProps = {
   cartItems: [],
   cartTotalAmount: 0,
   isCartOpen: false,
-  orderHistory: [],
 };
 
 const cartSlice = createSlice({
@@ -23,7 +22,7 @@ const cartSlice = createSlice({
           state.cartItems[itemIdx].cartItemQuantity! += 1;
         } else {
           const currentProduct = { ...action.payload, cartItemQuantity: 1 };
-          state.cartItems.push(currentProduct);
+          state.cartItems = [currentProduct, ...state.cartItems]
         }
         // 상품이 품절 되었습니다 표시
       }

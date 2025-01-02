@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 import {
   CalculationOverlay,
@@ -6,47 +6,103 @@ import {
   CalculationBG,
   LeftBlock,
   RightBlock,
+  RightBlockLine,
 } from "./Calculation.style";
 import CalculationClose from "./CalculationClose/CalculationClose";
-import CalculationCounter from "./CalculationCounter/CalculationCounter";
 import CalculationTitle from "./CalculationTitle/CalculationTitle";
+import Button from "components/@share/Button/Button";
+
+const icon_increase = "/assets/icon/icon_increase.png";
+const icon_decrease = "/assets/icon/icon_decrease.png";
+const icon_decrease_light = "/assets/icon/icon_decrease_light.png";
 
 interface CalculationProps {
   setShowCalculation: (value: boolean) => void;
 }
 
 const Calculation: React.FC<CalculationProps> = ({ setShowCalculation }) => {
-  const [resetTimer, setResetTimer] = useState(false);
+  const [splitCount, setSplitCount] = useState(1);
+
+  const totalBill = 90;
 
   const handleClose = () => {
     setShowCalculation(false);
   };
 
-  const handleUserActivity = () => {
-    setResetTimer(false);
-    setTimeout(() => setResetTimer(false), 0);
+  const handleIncrease = () => {
+    setSplitCount((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    window.addEventListener("mousemove", handleUserActivity);
-    window.addEventListener("keypress", handleUserActivity);
+  const handleDecrease = () => {
+    if (splitCount > 1) setSplitCount((prev) => prev - 1);
+  };
 
-    return () => {
-      window.addEventListener("mousemove", handleUserActivity);
-      window.addEventListener("keypress", handleUserActivity);
-    };
-  }, []);
+  const amountPerPerson = Math.floor(totalBill / splitCount);
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'PHP',
+    minimumFractionDigits: 2,
+  }).format(amountPerPerson);
 
   return (
     <CalculationOverlay>
       <CalculationWrapper>
         <TableIndicator />
         <CalculationTitle />
-        <CalculationCounter onExpire={handleClose} resetTimer={resetTimer} /> 
         <CalculationClose onClose={handleClose} />
         <CalculationBG>
           <LeftBlock />
-          <RightBlock />
+          <RightBlock>
+            <h3
+              style={{
+                textAlign: "center",
+                marginBottom: "40px",
+                fontSize: "40px",
+                fontWeight: "bold",
+              }}
+            >
+              Split Paying
+            </h3>
+            <RightBlockLine>
+              <div className="split-pay-body">
+                <div className="split-pay-counter">
+                  <Button
+                    iconBtnCalculation
+                    iconUrl={splitCount === 1 ? icon_decrease_light : icon_decrease}
+                    onClick={handleDecrease}
+                  />
+                  <span className="split-pay-number">{splitCount}</span>
+                  <Button
+                    iconBtnCalculation
+                    iconUrl={icon_increase}
+                    onClick={handleIncrease}
+                  />
+                </div>
+              </div>
+            </RightBlockLine>
+            <p
+              style={{
+                textAlign: "center",
+                marginTop: "10px",
+                fontSize: "20px",
+                fontWeight: "bold",
+                color: "gray",
+              }}
+            >
+              {splitCount === 1 ? "Pay Alone" : "Per Person"}
+            </p>
+            <p
+              style={{
+                textAlign: "center",
+                marginTop: "30px",
+                fontSize: "50px",
+                fontWeight: "bold",
+                color: "red",
+              }}
+            >
+              {formattedAmount}
+            </p>
+          </RightBlock>
         </CalculationBG>
       </CalculationWrapper>
     </CalculationOverlay>

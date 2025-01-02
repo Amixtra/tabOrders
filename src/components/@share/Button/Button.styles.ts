@@ -13,6 +13,7 @@ export interface ButtonProps {
   iconUrl?: string;
   iconBtn?: boolean;
   iconBtnCart?: boolean;
+  iconBtnCalculation?: boolean;
   textBtn?: boolean;
 }
 
@@ -65,6 +66,16 @@ const buttonTypes = css<ButtonProps>`
   /* iconBtnCart */
   ${(props) => 
     props.iconBtnCart &&
+    css`
+      display: block;
+      width: 6.125vw;
+      height: 4.2vw;
+      background: url("${props.iconUrl}") no-repeat 0 center/cover; ;
+    `}
+
+  /* iconBtnCalculation */
+  ${(props) => 
+    props.iconBtnCalculation &&
     css`
       display: block;
       width: 6.125vw;

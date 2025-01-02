@@ -32,6 +32,6 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {}); // 클라이언트 종료
 });
 
-server.listen(3000, () => {
+server.listen(4000, () => {
   console.log('서버가 http://localhost:3000 에서 실행 중입니다.');
 });

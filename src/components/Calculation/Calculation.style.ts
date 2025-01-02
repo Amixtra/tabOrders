@@ -1,3 +1,4 @@
+import PALETTE from "constants/palette";
 import styled from "styled-components";
 
 export const CalculationOverlay = styled.div`
@@ -41,7 +42,7 @@ export const LeftBlock = styled.div`
   align-items: center;
 `;
 
-export const RightBlock = styled.div`
+export const RightBlock = styled.aside`
   width: calc(30% - 40px);
   height: calc(100% - 120px);
   margin-top: 80px;
@@ -49,6 +50,36 @@ export const RightBlock = styled.div`
   border-radius: 16px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+export const RightBlockLine = styled.div`
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.875vw 0;
+  margin: 1.875vw 0;
+  border-bottom: 1px solid ${PALETTE.GREY300};
+  border-top: 1px solid ${PALETTE.GREY300};
+
+  .split-pay-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    .split-pay-counter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .split-pay-number {
+        font-size: 64px;
+        padding: 0 32px;
+      }
+    }
+  }
 `;

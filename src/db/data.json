@@ -118,14 +118,14 @@
           "itemId": 15,
           "itemName": "Makgeolli (Korean Rice Wine)",
           "itemPrice": 300.00,
-          "itemSoldOutFlag": false,
+          "itemSoldOutFlag": true,
           "itemImageUrl": "https://t-order-ph-official-bucket.s3.ap-northeast-2.amazonaws.com/amixtra/liquor/makgeolli.jpeg"
         },
         {
           "itemId": 16,
           "itemName": "Jinro Soju",
           "itemPrice": 250.00,
-          "itemSoldOutFlag": false,
+          "itemSoldOutFlag": true,
           "itemImageUrl": "https://t-order-ph-official-bucket.s3.ap-northeast-2.amazonaws.com/amixtra/liquor/jinro.jpeg"
         },
         {
@@ -134,6 +134,13 @@
           "itemPrice": 250.00,
           "itemSoldOutFlag": false,
           "itemImageUrl": "https://t-order-ph-official-bucket.s3.ap-northeast-2.amazonaws.com/amixtra/liquor/cham-yi-seul.webp"
+        },
+        {
+          "itemId": 18,
+          "itemName": "Sae-ro Soju",
+          "itemPrice": 250.00,
+          "itemSoldOutFlag": false,
+          "itemImageUrl": "https://t-order-ph-official-bucket.s3.ap-northeast-2.amazonaws.com/amixtra/liquor/seoro.webp"
         }
       ]
     }

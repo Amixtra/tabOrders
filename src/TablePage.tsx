@@ -61,11 +61,11 @@ const TablePage = () => {
 
   return (
     <>
-      {showStartPage ? (
+      {/* {showStartPage ? (
         <div onClick={handleCloseStartPage}>
           <StartPage />
         </div>
-      ) : (
+      ) : ( */}
         <>
           <Header>
             <TableIndicator />
@@ -83,7 +83,7 @@ const TablePage = () => {
           </GridContainer>
           <Footer setIsOverlayActive={setIsOverlayActive} />
         </>
-      )}
+      {/* )} */}
     </>
   );
 };
