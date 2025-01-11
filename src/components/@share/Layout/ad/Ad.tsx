@@ -13,17 +13,19 @@ import {
   Logo,
 } from "./Ad.style";
 import logoSources from "db/logo";
+import { LanguageCode } from "db/constants";
 
 interface AdPageProps {
   onClose: () => void;
+  selectedLanguage: LanguageCode;
 }
 
-const AdPage: React.FC<AdPageProps> = ({ onClose }) => {
+const AdPage: React.FC<AdPageProps> = ({ onClose, selectedLanguage }) => {
   return (
     <AdOverlay>
       <AdWrapper>
         <Logo>
-          <AdLogo src={logoSources['defaultDark']} />
+          <AdLogo src={logoSources["defaultDark"]} />
         </Logo>
         <AdCloseButton onClick={onClose}>
           <AdCloseWord>
@@ -33,7 +35,7 @@ const AdPage: React.FC<AdPageProps> = ({ onClose }) => {
             Close
           </AdCloseWord>
         </AdCloseButton>
-        <TableIndicator />
+        <TableIndicator selectedLanguage={selectedLanguage} />
         <AdVideo src={videoSources[1]} autoPlay muted loop playsInline />
       </AdWrapper>
     </AdOverlay>

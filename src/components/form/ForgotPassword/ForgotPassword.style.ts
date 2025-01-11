@@ -6,8 +6,8 @@ export const BackgroundVideo = styled.video`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: black;
   object-fit: cover;
+  background-color: black;
   z-index: -1;
 `;
 
@@ -20,7 +20,7 @@ export const FixedLogo = styled.img`
   z-index: 2;
 `;
 
-export const LoginLogo = styled.img`
+export const CompanyLogo = styled.img`
   display: block;
   margin: 0 auto;
   width: 200px;
@@ -28,7 +28,7 @@ export const LoginLogo = styled.img`
   margin-bottom: 20px;
 `;
 
-export const LoginContainer = styled.div`
+export const CompanyContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -43,7 +43,7 @@ export const LoginContainer = styled.div`
 `;
 
 
-export const LoginHeader = styled.div`
+export const CompanyHeader = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,20 +52,20 @@ export const LoginHeader = styled.div`
     margin-top: 30px;
 `;
 
-export const LoginTitle = styled.div`
+export const CompanyTitle = styled.div`
     color: white;
     font-size: 48px;
     font-weight: 700;
 `;
 
-export const LoginInputs = styled.div`
+export const CompanyInputs = styled.div`
     margin-top: 55px;
     display: flex;
     flex-direction: column;
     gap: 25px;
 `;
 
-export const LoginInput = styled.div`
+export const CompanyInput = styled.div`
     display: flex;
     align-items: center;
     margin: auto;
@@ -75,20 +75,20 @@ export const LoginInput = styled.div`
     border-radius: 6px;
 `;
 
-export const LoginInputImg = styled.img`
+export const CompanyInputImg = styled.img`
     margin: 0px 30px;
 `;
 
-export const LoginInputInputs = styled.input`
+export const CompanyInputInputs = styled.input`
     height: 50px;
     width: 400px;
     background: transparent;
     border: none;
     color: black;
-    font-size: 19px;
+    font-size: 16px;
 `;
 
-export const LoginForgotPassword = styled.div`
+export const CompanyForgotPassword = styled.div`
     padding-left: 62px;
     margin-top: 27px;
     color: white;
@@ -104,20 +104,13 @@ export const LoginForgotPassword = styled.div`
     }
 `;
 
-export const LoginSubmitContainer = styled.div`
+export const CompanySubmitContainer = styled.div`
     display: flex;
     gap: 30px;
-    margin: 60px auto;
-    margin-top: 30px;
+    margin: 20px auto;
 `;
 
-export const CustomerContainer = styled.div`
-    display: flex;
-    margin: auto;
-    margin-top: -30px;
-`;
-
-export const LoginSubmit = styled.button`
+export const CompanySubmit = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -142,26 +135,6 @@ export const LoginSubmit = styled.button`
     }
 `;
 
-export const CustomerQRButton = styled.button`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 470px;
-    height: 59px;
-    color: black;
-    background: white;
-    border-radius: 50px;
-    font-size: 19px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease;
-
-    &:hover {
-        background: black;
-        color: white;
-    }
-`;
-
 export const PasswordToggleIcon = styled.img`
   margin-right: 20px;
   cursor: pointer;
@@ -181,4 +154,26 @@ export const PasswordHint = styled.div`
   font-size: 14px;
   margin-left: 62px;
   margin-top: -10px;
+`;
+
+export const GoBackButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 59px;
+    color: white;
+    background: black;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700;
+    margin: auto;
+    margin-bottom: 30px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+
+    &:hover {
+        background: white;
+        color: black;
+    }
 `;

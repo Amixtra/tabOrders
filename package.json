@@ -1,5 +1,5 @@
 {
-  "name": "taborder",
+  "name": "taborders",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,24 +11,38 @@
     "@types/node": "^12.20.23",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "html5-qrcode": "^2.3.8",
     "json-server": "^1.0.0-beta.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.3",
+    "nodemailer": "^6.9.16",
     "polished": "^4.1.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icon": "^1.0.0",
     "react-icons": "^5.4.0",
+    "react-is": "^19.0.0",
+    "react-qr-reader": "^3.0.0-beta-1",
+    "react-qr-scanner": "^1.0.0-alpha.11",
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.3.0",
     "react-scripts": "4.0.3",
     "styled-components": "^5.3.1",
     "styled-reset": "^4.3.4",
-    "typescript": "^4.4.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "db": "node ./src/db/server.js",
     "eject": "react-scripts eject",
     "serve": "json-server --watch ./src/db/data.json --port 3001"
   },
@@ -51,6 +65,14 @@
     ]
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.14"
+    "@types/bcrypt": "^5.0.2",
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/express-rate-limit": "^5.1.3",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/styled-components": "^5.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

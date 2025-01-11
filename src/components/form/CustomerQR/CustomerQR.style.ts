@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 export const BackgroundVideo = styled.video`
   position: fixed;
+  background-color: black;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: black;
   object-fit: cover;
   z-index: -1;
 `;
@@ -20,7 +20,7 @@ export const FixedLogo = styled.img`
   z-index: 2;
 `;
 
-export const LoginLogo = styled.img`
+export const CustomerLogo = styled.img`
   display: block;
   margin: 0 auto;
   width: 200px;
@@ -28,7 +28,7 @@ export const LoginLogo = styled.img`
   margin-bottom: 20px;
 `;
 
-export const LoginContainer = styled.div`
+export const CustomerContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -43,7 +43,7 @@ export const LoginContainer = styled.div`
 `;
 
 
-export const LoginHeader = styled.div`
+export const CustomerHeader = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,20 +52,20 @@ export const LoginHeader = styled.div`
     margin-top: 30px;
 `;
 
-export const LoginTitle = styled.div`
+export const CustomerTitle = styled.div`
     color: white;
     font-size: 48px;
     font-weight: 700;
 `;
 
-export const LoginInputs = styled.div`
+export const CustomerInputs = styled.div`
     margin-top: 55px;
     display: flex;
     flex-direction: column;
     gap: 25px;
 `;
 
-export const LoginInput = styled.div`
+export const CustomerInput = styled.div`
     display: flex;
     align-items: center;
     margin: auto;
@@ -75,20 +75,20 @@ export const LoginInput = styled.div`
     border-radius: 6px;
 `;
 
-export const LoginInputImg = styled.img`
+export const CustomerInputImg = styled.img`
     margin: 0px 30px;
 `;
 
-export const LoginInputInputs = styled.input`
+export const CustomerInputInputs = styled.input`
     height: 50px;
     width: 400px;
     background: transparent;
     border: none;
     color: black;
-    font-size: 19px;
+    font-size: 16px;
 `;
 
-export const LoginForgotPassword = styled.div`
+export const CustomerForgotPassword = styled.div`
     padding-left: 62px;
     margin-top: 27px;
     color: white;
@@ -104,20 +104,13 @@ export const LoginForgotPassword = styled.div`
     }
 `;
 
-export const LoginSubmitContainer = styled.div`
+export const CustomerSubmitContainer = styled.div`
     display: flex;
     gap: 30px;
     margin: 60px auto;
-    margin-top: 30px;
 `;
 
-export const CustomerContainer = styled.div`
-    display: flex;
-    margin: auto;
-    margin-top: -30px;
-`;
-
-export const LoginSubmit = styled.button`
+export const CustomerSubmit = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -142,7 +135,7 @@ export const LoginSubmit = styled.button`
     }
 `;
 
-export const CustomerQRButton = styled.button`
+export const CustomerPinButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -153,12 +146,36 @@ export const CustomerQRButton = styled.button`
     border-radius: 50px;
     font-size: 19px;
     font-weight: 700;
+    margin: auto;
+    margin-bottom: 10px;
     cursor: pointer;
     transition: background 0.3s ease, color 0.3s ease;
 
     &:hover {
         background: black;
         color: white;
+    }
+`;
+
+export const GoBackButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 470px;
+    height: 59px;
+    color: white;
+    background: black;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700;
+    margin: auto;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+
+    &:hover {
+        background: white;
+        color: black;
     }
 `;
 

@@ -11,6 +11,7 @@ import {
 import CalculationClose from "./CalculationClose/CalculationClose";
 import CalculationTitle from "./CalculationTitle/CalculationTitle";
 import Button from "components/@share/Button/Button";
+import { LanguageCode } from "db/constants";
 
 const icon_increase = "/assets/icon/icon_increase.png";
 const icon_decrease = "/assets/icon/icon_decrease.png";
@@ -18,9 +19,10 @@ const icon_decrease_light = "/assets/icon/icon_decrease_light.png";
 
 interface CalculationProps {
   setShowCalculation: (value: boolean) => void;
+  selectedLanguage: LanguageCode;
 }
 
-const Calculation: React.FC<CalculationProps> = ({ setShowCalculation }) => {
+const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedLanguage }) => {
   const [splitCount, setSplitCount] = useState(1);
 
   const totalBill = 90;
@@ -47,7 +49,7 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation }) => {
   return (
     <CalculationOverlay>
       <CalculationWrapper>
-        <TableIndicator />
+        <TableIndicator selectedLanguage={selectedLanguage} />
         <CalculationTitle />
         <CalculationClose onClose={handleClose} />
         <CalculationBG>

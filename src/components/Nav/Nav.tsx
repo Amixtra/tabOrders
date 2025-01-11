@@ -9,16 +9,31 @@ import StyledNav, {
 import logoSources from "db/logo";
 import { CategoryProps } from "types";
 import Waiter from "components/Waiter/Waiter";
+import { LanguageCode, NavLocales } from "db/constants";
+import { useLocation } from "react-router-dom";
 
 interface NavProps {
   onCategorySelect: (categoryId: number | null) => void;
   selectedCategory: number | null;
   setIsOverlayActive: (value: boolean) => void;
+  selectedLanguage: LanguageCode;
 }
 
-const Nav: React.FC<NavProps> = ({ onCategorySelect, selectedCategory, setIsOverlayActive }) => {
-  const [data] = useFetch("http://localhost:3001/categories");
+const Nav: React.FC<NavProps> = ({
+  onCategorySelect,
+  selectedCategory,
+  setIsOverlayActive,
+  selectedLanguage,
+}) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const company = queryParams.get("company");
+  const [data] = useFetch(
+    `http://localhost:8080/api/categories?company=${company}&language=${selectedLanguage}`
+  );
   const [showWaiter, setShowWaiter] = useState(false);
+
+  const navLocale = NavLocales[selectedLanguage];
 
   const handleWaiterOpen = () => {
     setShowWaiter(true);
@@ -34,7 +49,11 @@ const Nav: React.FC<NavProps> = ({ onCategorySelect, selectedCategory, setIsOver
     <StyledNav>
       <StyledNavContent>
         <StyledNavLogo>
-          <img src={logoSources.defaultLight} alt="TabOrder Logo" style={{ width: "100%", borderRadius: "10px" }} />
+          <img
+            src={logoSources.defaultLight}
+            alt="TabOrders Logo"
+            style={{ width: "100%", borderRadius: "10px" }}
+          />
         </StyledNavLogo>
         <StyledNavSectionButton
           onClick={() => onCategorySelect(null)}
@@ -43,7 +62,7 @@ const Nav: React.FC<NavProps> = ({ onCategorySelect, selectedCategory, setIsOver
             color: selectedCategory === null ? "#ffffff" : "#000",
           }}
         >
-          All Menu
+          {navLocale.allMenu}
         </StyledNavSectionButton>
         {data &&
           data.map((item: CategoryProps) => (
@@ -59,7 +78,9 @@ const Nav: React.FC<NavProps> = ({ onCategorySelect, selectedCategory, setIsOver
             </StyledNavSectionButton>
           ))}
       </StyledNavContent>
-      <StyledNavWaiterButton onClick={handleWaiterOpen}>Call Waiter</StyledNavWaiterButton>
+      <StyledNavWaiterButton onClick={handleWaiterOpen}>
+        {navLocale.callWaiter}
+      </StyledNavWaiterButton>
       {showWaiter && <Waiter setShowWaiter={handleWaiterClose} />}
     </StyledNav>
   );

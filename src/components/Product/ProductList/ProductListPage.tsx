@@ -8,16 +8,23 @@ import ProductListItem from "../ProductListItem/ProductListItem";
 import { addToCart, toggleCartOpen } from "features/cart/cartReducer";
 import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
 import useFetch from "hooks/useFeth";
+import { useLocation } from "react-router-dom";
+import { LanguageCode } from "db/constants";
 
 interface ProductListPageProps {
-  selectedCategory: number | null; // Add this prop
+  selectedCategory: number | null;
+  selectedLanguage: LanguageCode,
 }
 
-const ProductListPage: React.FC<ProductListPageProps> = ({ selectedCategory }) => {
+const ProductListPage: React.FC<ProductListPageProps> = ({ selectedCategory, selectedLanguage }) => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state) => state.cart);
-
-  const [data] = useFetch("http://localhost:3001/categories");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const company = queryParams.get("company");
+  const [data] = useFetch(
+    `http://localhost:8080/api/categories?company=${company}&language=${selectedLanguage}`
+  );
 
   const filteredCategories = data?.filter((category: CategoryProps) =>
     selectedCategory === null ? true : category.categoryId === selectedCategory

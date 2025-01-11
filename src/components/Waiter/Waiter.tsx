@@ -143,7 +143,6 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
       setShowWaiter(false);
     }, 3000);
   };
-      
 
   const buttonText = selectedItems.length > 0 ? "Order" : "Just Call Waiter";
 

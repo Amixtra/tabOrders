@@ -9,6 +9,9 @@ import RestaurantIndicator from "components/@share/Layout/indicator/RestaurantIn
 import Nav from "components/Nav/Nav";
 import AdPage from "components/@share/Layout/ad/Ad";
 import StartPage from "components/@share/Layout/start/Start";
+import { useLocation } from "react-router";
+import ErrorPage from "components/Error/ErrorPage";
+import { LanguageCode } from "db/constants";
 
 const INACTIVITY_TIMEOUT = 90000;
 
@@ -17,6 +20,12 @@ const TablePage = () => {
   const [showAd, setShowAd] = useState(false);
   const [showStartPage, setShowStartPage] = useState(true);
   const [isOverlayActive, setIsOverlayActive] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>("en");
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const companyID = queryParams.get("company");
+
   let inactivityTimer: ReturnType<typeof setTimeout>;
 
   const resetInactivityTimer = useCallback(() => {
@@ -48,6 +57,10 @@ const TablePage = () => {
     };
   }, [resetInactivityTimer]);
 
+  if (!companyID) {
+    return <ErrorPage />;
+  }
+
   const handleCloseAd = () => {
     console.log("Ad closed.");
     setShowAd(false);
@@ -61,29 +74,43 @@ const TablePage = () => {
 
   return (
     <>
-      {/* {showStartPage ? (
+      {showStartPage ? (
         <div onClick={handleCloseStartPage}>
           <StartPage />
         </div>
-      ) : ( */}
+      ) : (
         <>
           <Header>
-            <TableIndicator />
+            <TableIndicator 
+              selectedLanguage={selectedLanguage}
+            />
             <RestaurantIndicator />
           </Header>
-          {/* {showAd && <AdPage onClose={handleCloseAd} />} */}
+          {showAd && 
+            <AdPage 
+              onClose={handleCloseAd} 
+              selectedLanguage={selectedLanguage}
+            />
+          }
           <GridContainer>
             <Nav
               onCategorySelect={setSelectedCategory}
               selectedCategory={selectedCategory}
               setIsOverlayActive={setIsOverlayActive}
+              selectedLanguage={selectedLanguage}
             />
-            <ProductListPage selectedCategory={selectedCategory} />
-            <Cart />
+            <ProductListPage selectedCategory={selectedCategory} selectedLanguage={selectedLanguage} />
+            <Cart 
+              selectedLanguage={selectedLanguage}
+            />
           </GridContainer>
-          <Footer setIsOverlayActive={setIsOverlayActive} />
+          <Footer
+            setIsOverlayActive={setIsOverlayActive}
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
+          />
         </>
-      {/* )} */}
+      )}
     </>
   );
 };

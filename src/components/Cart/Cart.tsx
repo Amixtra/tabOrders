@@ -1,4 +1,3 @@
-// Cart.tsx
 import React, { useEffect, useState } from "react";
 
 import StyledCart from "./Cart.styles";
@@ -9,10 +8,16 @@ import { clearCart, getTotal, toggleCartOpen } from "features/cart/cartReducer";
 import Toast from "components/@share/Toast/Toast";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 import { useSearchParams } from "react-router-dom";
+import { CartOrderLocales, LanguageCode } from "db/constants";
 
-const Cart = () => {
+interface CartProps {
+  selectedLanguage: LanguageCode;
+}
+
+const Cart: React.FC<CartProps> = ({selectedLanguage}) => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("tableId");
+  const cartOrderLocale = CartOrderLocales[selectedLanguage]
 
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
@@ -33,7 +38,7 @@ const Cart = () => {
   };
 
   const handleFreeServiceToast = () => {
-    setToastMessage("Free service can only be ordered 1 at a time.");
+    setToastMessage(`${cartOrderLocale.freeService}`);
     setIsActive(true);
     setTimeout(() => {
       setIsActive(false);
@@ -50,13 +55,13 @@ const Cart = () => {
 
       <StyledCart className={cart.isCartOpen ? "" : "hide"}>
         <div className="cart-header">
-          <TableIndicator />
-          <h3 className="cart-title">Cart</h3>
+          <TableIndicator selectedLanguage={selectedLanguage} />
+          <h3 className="cart-title">{cartOrderLocale.title}</h3>
         </div>
 
         <div className="cart-body">
           {cart.cartItems.length === 0 ? (
-            <p className="empty-sign">Cart is Empty.</p>
+            <p className="empty-sign">{cartOrderLocale.empty}</p>
           ) : (
             cart.cartItems.map((cartItem) => (
               <CartListItem
@@ -69,9 +74,9 @@ const Cart = () => {
 
         <div className="cart-footer">
           <div className="cart-item-info">
-            <span>Total {cart.cartItems.length} orders</span>
+            <span>{cartOrderLocale.totalOrders} {cart.cartItems.length}</span>
             <span className="cart-item-total-price">
-              Total Price ₱ <span>{cart.cartTotalAmount?.toLocaleString()}</span>
+              {cartOrderLocale.totalPrice} <span>{cart.cartTotalAmount?.toLocaleString()}</span>
             </span>
           </div>
           <div className="cart-controller">
@@ -84,7 +89,7 @@ const Cart = () => {
                 handleClearCart();
               }}
             >
-              Cancel
+              {cartOrderLocale.cancel}
             </Button>
             <Button
               color="WHITE"
@@ -111,11 +116,11 @@ const Cart = () => {
 
                 handleClearCart();
                 handleCartOpen();
-                setToastMessage("Order Complete. Please Wait for a while..");
+                setToastMessage(`${cartOrderLocale.toastOrderComplete}`);
                 setIsActive(true);
               }}
             >
-              Order
+              {cartOrderLocale.order}
             </Button>
           </div>
         </div>
