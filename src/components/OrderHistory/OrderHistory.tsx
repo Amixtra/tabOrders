@@ -9,7 +9,7 @@ import {
 import OrderHistoryClose from "./OrderHistoryClose/OrderHistoryClose";
 import OrderHistoryCounter from "./OrderHistoryCounter/OrderHistoryCounter";
 import OrderHistoryTitle from "./OrderHistoryTitle/OrderHistoryTitle";
-import { LanguageCode } from "db/constants";
+import { LanguageCode, OrderHistoryLocales } from "db/constants";
 
 interface OrderHistoryProps {
   setShowOrderHistory: (value: boolean) => void;
@@ -41,10 +41,10 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setShowOrderHistory, select
   return (
     <OrderHistoryOverlay>
       <OrderHistoryWrapper>
-        <OrderHistoryTitle />
+        <OrderHistoryTitle selectedLanguage={selectedLanguage} />
         <TableIndicator selectedLanguage={selectedLanguage} />
-        <OrderHistoryCounter onExpire={handleClose} resetTimer={resetTimer} />
-        <OrderHistoryClose onClose={handleClose} />
+        <OrderHistoryCounter onExpire={handleClose} resetTimer={resetTimer} selectedLanguage={selectedLanguage} />
+        <OrderHistoryClose onClose={handleClose} selectedLanguage={selectedLanguage} />
         <OrderHistoryBG>
           <MiddleBlock />
         </OrderHistoryBG>

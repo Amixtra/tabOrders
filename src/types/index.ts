@@ -6,11 +6,11 @@ export interface CategoryProps {
 
 export interface CategoryItemProps {
   itemId?: number;
-  itemName?: string;
+  itemName: string;
   itemPrice?: number;
   itemSoldOutFlag?: boolean;
   itemImageUrl?: string;
-  cartItemQuantity?: number;
+  cartItemQuantity: number;
 }
 
 export interface CartListProps {

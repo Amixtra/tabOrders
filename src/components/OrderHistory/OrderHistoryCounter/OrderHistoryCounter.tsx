@@ -3,14 +3,17 @@ import {
   OrderHistoryCounterOverlay,
   OrderHistoryCounterWord,
 } from "./OrderHistoryCounter.style";
+import { LanguageCode, OrderHistoryLocales } from "db/constants";
 
 interface OrderHistoryCounterProps {
   onExpire: () => void;
   resetTimer: boolean;
+  selectedLanguage: LanguageCode;
 }
 
-const OrderHistoryCounter: React.FC<OrderHistoryCounterProps> = ({ onExpire, resetTimer }) => {
+const OrderHistoryCounter: React.FC<OrderHistoryCounterProps> = ({ onExpire, resetTimer, selectedLanguage }) => {
   const [count, setCount] = useState(10);
+  const orderHistoryLocale = OrderHistoryLocales[selectedLanguage];
 
   useEffect(() => {
     if (resetTimer) {
@@ -35,7 +38,7 @@ const OrderHistoryCounter: React.FC<OrderHistoryCounterProps> = ({ onExpire, res
 
   return (
     <OrderHistoryCounterOverlay>
-      <OrderHistoryCounterWord>Auto closing in {count}...</OrderHistoryCounterWord>
+      <OrderHistoryCounterWord>{orderHistoryLocale.countDown} {count}...</OrderHistoryCounterWord>
     </OrderHistoryCounterOverlay>
   );
 };

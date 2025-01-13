@@ -11,7 +11,7 @@ import {
 import CalculationClose from "./CalculationClose/CalculationClose";
 import CalculationTitle from "./CalculationTitle/CalculationTitle";
 import Button from "components/@share/Button/Button";
-import { LanguageCode } from "db/constants";
+import { CalculationLocales, LanguageCode } from "db/constants";
 
 const icon_increase = "/assets/icon/icon_increase.png";
 const icon_decrease = "/assets/icon/icon_decrease.png";
@@ -24,6 +24,7 @@ interface CalculationProps {
 
 const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedLanguage }) => {
   const [splitCount, setSplitCount] = useState(1);
+  const calculationLocale = CalculationLocales[selectedLanguage];
 
   const totalBill = 90;
 
@@ -50,8 +51,8 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
     <CalculationOverlay>
       <CalculationWrapper>
         <TableIndicator selectedLanguage={selectedLanguage} />
-        <CalculationTitle />
-        <CalculationClose onClose={handleClose} />
+        <CalculationTitle selectedLanguage={selectedLanguage} />
+        <CalculationClose onClose={handleClose} selectedLanguage={selectedLanguage} />
         <CalculationBG>
           <LeftBlock />
           <RightBlock>
@@ -63,7 +64,7 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
                 fontWeight: "bold",
               }}
             >
-              Split Paying
+              {calculationLocale.splitPay}
             </h3>
             <RightBlockLine>
               <div className="split-pay-body">
@@ -91,7 +92,7 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
                 color: "gray",
               }}
             >
-              {splitCount === 1 ? "Pay Alone" : "Per Person"}
+              {splitCount === 1 ? `${calculationLocale.payAlone}` : `${calculationLocale.perPerson}`}
             </p>
             <p
               style={{

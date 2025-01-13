@@ -37,7 +37,7 @@ const StyledCartListItem = styled.li`
     }
   }
   .cart-order-number {
-    padding-left: 30px;
+    padding-left: 20px;
     padding-right: 30px;
   }
   .cart-item-price-total {

@@ -29,6 +29,29 @@ export interface CartOrderStrings {
     freeService: string;
 };
 
+export interface CalculationStrings {
+    title: string;
+    payAlone: string;
+    splitPay: string;
+    close: string;
+    perPerson: string;
+};
+
+export interface OrderHistoryStrings {
+    title: string;
+    close: string;
+    countDown: string;
+}
+
+export interface CartOrderPopupStrings {
+    title: string;
+    total: string;
+    order: string;
+    orders: string;
+    cancel: string;
+    confirm: string;
+}
+
 export const languages: { code: LanguageCode; label: string }[] = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -141,5 +164,95 @@ export const CartOrderLocales: Record<LanguageCode, CartOrderStrings> = {
     order: "下单",
     toastOrderComplete: "订单已完成。请稍候...",
     freeService: "免费服务每次只能订购一个。",
+  },
+};
+
+export const CalculationLocales: Record<LanguageCode, CalculationStrings> = {
+  en: {
+    title: "Calculate",
+    splitPay: "Split Paying",
+    payAlone: "Pay Alone",
+    perPerson: "Per Person",
+    close: "Close",
+  },
+  ko: {
+    title: "계산",
+    splitPay: "더치페이",
+    payAlone: "혼자 결제하기",
+    perPerson: "1인당",
+    close: "닫기",
+  },
+  ja: {
+    title: "計算",
+    splitPay: "割り勘",
+    payAlone: "一人で支払う",
+    perPerson: "一人当たり",
+    close: "閉じる",
+  },
+  zh: {
+    title: "计算",
+    splitPay: "AA付款",
+    payAlone: "单独支付",
+    perPerson: "人均",
+    close: "关闭",
+  },
+};
+
+export const OrderHistoryLocales: Record<LanguageCode, OrderHistoryStrings> = {
+  en: {
+    title: "Order History",
+    countDown: "Auto closing in",
+    close: "Close",
+  },
+  ko: {
+    title: "주문 내역",
+    countDown: "자동 종료까지 남은 시간",
+    close: "닫기",
+  },
+  ja: {
+    title: "注文履歴",
+    countDown: "自動終了まで",
+    close: "閉じる",
+  },
+  zh: {
+    title: "订单历史",
+    countDown: "自动关闭倒计时",
+    close: "关闭",
+  },
+};
+
+
+export const CartOrderPopupLocales: Record<LanguageCode, CartOrderPopupStrings> = {
+  en: {
+    title: "Have you checked the <strong>Items and Quantities</strong> in your cart?",
+    total: "Total Price",
+    order: "Order",
+    orders: "Orders",
+    cancel: "Cancel",
+    confirm: "Confirm Order",
+  },
+  ko: {
+    title: "장바구니의 <strong>상품과 수량</strong>을 확인하셨습니까?",
+    total: "합계",
+    order: "개",
+    orders: "개",
+    cancel: "취소",
+    confirm: "주문하기",
+  },
+  ja: {
+    title: "カートの <strong>商品と数量</strong> はご確認いただけましたか？",
+    total: "合計金額",
+    order: "個",
+    orders: "個",
+    cancel: "キャンセル",
+    confirm: "注文を確定",
+  },
+  zh: {
+    title: "是否已检查购物车中的 <strong>商品和数量</strong>？",
+    total: "总价",
+    order: "个",
+    orders: "个",
+    cancel: "取消",
+    confirm: "确认订单",
   },
 };

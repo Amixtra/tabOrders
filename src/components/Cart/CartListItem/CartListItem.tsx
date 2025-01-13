@@ -8,6 +8,7 @@ import {
   decreaseCartItemQuantity,
   removeFromCart,
 } from "features/cart/cartReducer";
+import { CartOrderPopupLocales, LanguageCode } from "db/constants";
 
 const icon_increase = "/assets/icon/icon_increase.png";
 const icon_decrease = "/assets/icon/icon_decrease.png";
@@ -15,11 +16,13 @@ const icon_decrease = "/assets/icon/icon_decrease.png";
 interface Props {
   cartItem: CategoryItemProps;
   handleFreeServiceToast: () => void;
+  selectedLanguage: LanguageCode;
 }
 
-const CartListItem = ({ cartItem, handleFreeServiceToast }: Props) => {
+const CartListItem = ({ cartItem, handleFreeServiceToast, selectedLanguage }: Props) => {
   const dispatch = useAppDispatch();
   const totalPrice = cartItem.itemPrice! * cartItem.cartItemQuantity!;
+  const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
 
   const handleRemoveFromCart = (cartItem: CategoryItemProps) => {
     dispatch(removeFromCart(cartItem));
@@ -61,7 +64,7 @@ const CartListItem = ({ cartItem, handleFreeServiceToast }: Props) => {
             onClick={() => handleDecreaseCartItemQuantity(cartItem)}
           />
           <span className="cart-order-number">
-            {cartItem.cartItemQuantity} Order
+            {cartItem.cartItemQuantity} {cartItem.cartItemQuantity === 1 ? cartOrderPopupLocale.order : cartOrderPopupLocale.orders}
           </span>
           <Button
             iconBtnCart

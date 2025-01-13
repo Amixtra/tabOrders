@@ -4,16 +4,19 @@ import {
   CalculationCloseOverlay,
   CalculationCloseWord,
 } from "./CalculationClose.style";
+import { CartOrderLocales, LanguageCode } from "db/constants";
 
 interface CalculationCloseProps {
   onClose: () => void;
+  selectedLanguage: LanguageCode;
 }
 
-const CalculationClose: React.FC<CalculationCloseProps> = ({ onClose }) => {
+const CalculationClose: React.FC<CalculationCloseProps> = ({ onClose, selectedLanguage }) => {
+  const cartOrderLocale = CartOrderLocales[selectedLanguage];
   return (
     <CalculationCloseOverlay onClick={onClose}>
       <StyledCloseIcon />
-      <CalculationCloseWord>Close</CalculationCloseWord>
+      <CalculationCloseWord>{cartOrderLocale.cancel}</CalculationCloseWord>
     </CalculationCloseOverlay>
   );
 };

@@ -74,11 +74,11 @@ const TablePage = () => {
 
   return (
     <>
-      {showStartPage ? (
+      {/* {showStartPage ? (
         <div onClick={handleCloseStartPage}>
           <StartPage />
         </div>
-      ) : (
+      ) : ( */}
         <>
           <Header>
             <TableIndicator 
@@ -86,12 +86,12 @@ const TablePage = () => {
             />
             <RestaurantIndicator />
           </Header>
-          {showAd && 
+          {/* {showAd && 
             <AdPage 
               onClose={handleCloseAd} 
               selectedLanguage={selectedLanguage}
             />
-          }
+          } */}
           <GridContainer>
             <Nav
               onCategorySelect={setSelectedCategory}
@@ -110,7 +110,7 @@ const TablePage = () => {
             setSelectedLanguage={setSelectedLanguage}
           />
         </>
-      )}
+      {/* )} */}
     </>
   );
 };

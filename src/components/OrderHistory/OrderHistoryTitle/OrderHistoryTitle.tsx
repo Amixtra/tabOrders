@@ -1,12 +1,18 @@
+import { LanguageCode, OrderHistoryLocales } from "db/constants";
 import {
   OrderHistoryTitleOverlay,
   OrderHistoryTitleWord,
 } from "./OrderHistoryTitle.style";
 
-const OrderHistoryTitle = () => {
+interface OrderHistoryTitleProps {
+  selectedLanguage: LanguageCode;
+}
+
+const OrderHistoryTitle: React.FC<OrderHistoryTitleProps> = ({ selectedLanguage }) => {
+  const orderHistoryLocale = OrderHistoryLocales[selectedLanguage];
   return (
     <OrderHistoryTitleOverlay>
-      <OrderHistoryTitleWord>Order History</OrderHistoryTitleWord>
+      <OrderHistoryTitleWord>{orderHistoryLocale.title}</OrderHistoryTitleWord>
     </OrderHistoryTitleOverlay>
   );
 };
