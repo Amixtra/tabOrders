@@ -256,3 +256,36 @@ export const CartOrderPopupLocales: Record<LanguageCode, CartOrderPopupStrings> 
     confirm: "确认订单",
   },
 };
+
+interface LogoSource {
+  [key: string | number]: string;
+}
+
+export const logoSources: LogoSource = {
+defaultLight: "/assets/img/logo/tabOrder-logo-light.png",
+defaultDark: "/assets/img/logo/tabOrder-logo-dark.png",
+};
+
+interface VideoSource {
+[key: number]: string;
+}
+
+export const videoSources: VideoSource = {
+1: "/ads/terra/terra-ad.mp4",
+}
+
+interface AdSource {
+  [key: number]: string;
+}
+
+export const adSources: AdSource = {
+  1: "/ads/terra/terra-ad.mp4",
+};
+
+interface StartSource {
+  [key: string | number]: string;
+}
+
+export const startSources: StartSource = {
+  default: "/assets/img/start/default.jpg",
+};

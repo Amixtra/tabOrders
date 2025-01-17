@@ -34,7 +34,7 @@ const OrderHistoryCounter: React.FC<OrderHistoryCounterProps> = ({ onExpire, res
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [onExpire]);
 
   return (
     <OrderHistoryCounterOverlay>

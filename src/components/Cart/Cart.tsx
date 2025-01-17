@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
 import { clearCart, getTotal, toggleCartOpen } from "features/cart/cartReducer";
 import Toast from "components/@share/Toast/Toast";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
-import { useSearchParams } from "react-router-dom";
 import { 
   CartOrderLocales, 
   CartOrderPopupLocales, 

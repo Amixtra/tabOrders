@@ -14,7 +14,6 @@ import WaiterTitle from "./WaiterTitle/WaiterTitle";
 import PALETTE from "constants/palette";
 import { DEFAULT_ITEMS } from "db/waiter";
 import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
-import Toast from "components/@share/Toast/Toast";
 import { toggleCartOpen } from "features/cart/cartReducer";
 import Button from "components/@share/Button/Button";
 import WaiterToast from "./WaiterToast/WaiterToast";
@@ -39,7 +38,6 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
   const cart = useAppSelector((state) => state.cart);
   const [searchParams] = useSearchParams();
   const id = searchParams.get("tableId");
-  const [resetTimer, setResetTimer] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [items] = useState<string[]>(DEFAULT_ITEMS);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -54,20 +52,6 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
   const handleClose = () => {
     setShowWaiter(false);
   };
-
-  const handleUserActivity = () => {
-    setResetTimer(true);
-    setTimeout(() => setResetTimer(false), 0);
-  };
-
-  useEffect(() => {
-    window.addEventListener("mousemove", handleUserActivity);
-    window.addEventListener("keypress", handleUserActivity);
-    return () => {
-      window.removeEventListener("mousemove", handleUserActivity);
-      window.removeEventListener("keypress", handleUserActivity);
-    };
-  }, []);
 
   const handleItemClick = (item: string) => {
     const existingItem = selectedItems.find((i) => i.name === item);

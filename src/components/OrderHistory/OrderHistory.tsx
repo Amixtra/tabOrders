@@ -9,7 +9,7 @@ import {
 import OrderHistoryClose from "./OrderHistoryClose/OrderHistoryClose";
 import OrderHistoryCounter from "./OrderHistoryCounter/OrderHistoryCounter";
 import OrderHistoryTitle from "./OrderHistoryTitle/OrderHistoryTitle";
-import { LanguageCode, OrderHistoryLocales } from "db/constants";
+import { LanguageCode } from "db/constants";
 
 interface OrderHistoryProps {
   setShowOrderHistory: (value: boolean) => void;

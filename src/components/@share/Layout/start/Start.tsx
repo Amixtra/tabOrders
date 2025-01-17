@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import startSources from "db/start";
+import { startSources } from "db/constants";
 import {
   StartOverlay,
   StartWrapper,
@@ -8,7 +8,7 @@ import {
   StartDescription,
   StartLogo,
 } from "./Start.style";
-import logoSources from "db/logo";
+import { logoSources } from "db/constants";
 
 const StartPage = () => {
   const messages = [

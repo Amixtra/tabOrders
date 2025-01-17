@@ -206,7 +206,6 @@ const Login = () => {
       const response = await axios.post("http://localhost:8080/api/login", { username, password });
       const { token } = response.data;
       localStorage.setItem("token", token);
-      console.log("This is the Token:", token);
       navigate("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import crypto from "crypto";
 import nodemailer from "nodemailer"
+import toggleRoutes from './toggles/toggles.routes.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ const loginLimiter = rateLimit({
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/api/toggles", toggleRoutes)
 
 // MongoDB Connection
 if (!process.env.MONGO_URI) {
@@ -105,7 +107,7 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ userId: user.userID, username: user.username }, process.env.JWT_SECRET, { expiresIn: "30d" });
     
     const { password: _, ...safeUser } = user.toObject();
     res.status(200).json({ message: "Login successful", token, user: safeUser });
@@ -347,6 +349,7 @@ app.get("/api/categories", async (req, res) => {
         itemName: item.itemName[language] || item.itemName.en,
         itemPrice: item.itemPrice,
         itemSoldOutFlag: item.itemSoldOutFlag,
+        itemNewFlag: item.itemNewFlag,
         itemImageUrl: item.itemImageUrl
       }))
     }));

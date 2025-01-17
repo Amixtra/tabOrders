@@ -9,6 +9,7 @@ export interface CategoryItemProps {
   itemName: string;
   itemPrice?: number;
   itemSoldOutFlag?: boolean;
+  itemNewFlag?: boolean;
   itemImageUrl?: string;
   cartItemQuantity: number;
 }

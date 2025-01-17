@@ -1,5 +1,5 @@
 import React from "react";
-import videoSources from "db/ad";
+import { videoSources } from "db/constants";
 import TableIndicator from "../indicator/TableIndicator";
 import { FaCircleXmark } from "react-icons/fa6";
 import {
@@ -12,7 +12,7 @@ import {
   IconWrapper,
   Logo,
 } from "./Ad.style";
-import logoSources from "db/logo";
+import { logoSources } from "db/constants";
 import { LanguageCode } from "db/constants";
 
 interface AdPageProps {

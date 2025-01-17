@@ -3,7 +3,6 @@ import {
   TableSettingHeader,
   TableSettingTitle,
   BackgroundVideo,
-  TableSettingLogo,
   FixedLogo,
   GoBackButton,
 } from "./ErrorPage.style";

@@ -6,5 +6,5 @@ export const DEFAULT_ITEMS = [
     "Tissue",
     "Water Glass",
     "Beer Glass"
-  ];
+];
   

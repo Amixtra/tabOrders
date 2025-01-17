@@ -1,32 +1,44 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+// import Header from "components/@share/Layout/header/Header";
+import AdminGridContainer from "./gridContainer/AdminGridContainer";
+import Nav from "./navigator/AdminNav";
+import { useEffect, useState } from "react";
 
 const AdminPage = () => {
-  const navigate = useNavigate();
+  const [userName, setUserName] = useState<string | null>(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const getTokenData = () => {
+    const token = localStorage.getItem("token");
+  
+    if (token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (error) {
+        console.error("Invalid token:", error);
+        return null;
+      }
+    } else {
+      console.warn("No token found in localStorage.");
+      return null;
+    }
   };
 
+  useEffect(() => {
+    const decoded = getTokenData();
+    if (decoded && decoded.username) {
+      setUserName(decoded.username);
+    }
+  }, []);
+
+  if (userName) {
+    console.log(`Welcome to the console ${userName}!`)
+  }
+
   return (
-    <div>
-      <h1>This is the Admin Page</h1>
-      <button onClick={handleLogout} style={buttonStyle}>
-        Logout
-      </button>
-    </div>
+    <>
+      <AdminGridContainer>
+        <Nav />
+      </AdminGridContainer>
+    </>
   );
 };
-
-const buttonStyle = {
-  padding: "10px 20px",
-  fontSize: "16px",
-  color: "white",
-  backgroundColor: "red",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-};
-
 export default AdminPage;

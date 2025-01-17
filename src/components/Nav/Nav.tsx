@@ -6,7 +6,7 @@ import StyledNav, {
   StyledNavSectionButton,
   StyledNavWaiterButton,
 } from "./Nav.styles";
-import logoSources from "db/logo";
+import { logoSources } from "db/constants";
 import { CategoryProps } from "types";
 import Waiter from "components/Waiter/Waiter";
 import { LanguageCode, NavLocales } from "db/constants";
