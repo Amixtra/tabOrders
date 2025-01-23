@@ -41,6 +41,7 @@ export const StyledNavSectionButton = styled.button`
   color: ${PALETTE.WHITE};
   text-transform: uppercase;
   width: 100%;
+  cursor: pointer;
 `;
 
 export const StyledNavWaiterButton = styled.button`

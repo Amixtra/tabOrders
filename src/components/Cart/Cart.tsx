@@ -19,8 +19,11 @@ import {
   PopupContent, 
   TotalPrice 
 } from "./CartPop.styles";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { customAlphabet } from 'nanoid';
 
-const OrderPopup: React.FC<{
+export const OrderPopup: React.FC<{
   cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number; }[];
   totalPrice: string;
   onConfirm: () => void;
@@ -70,6 +73,57 @@ const OrderPopup: React.FC<{
   );
 };
 
+export const AdminOrderPopup: React.FC<{
+  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number; }[];
+  totalPrice: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  selectedLanguage: LanguageCode;
+  orderNumber: string;
+}> = ({ cartItems, totalPrice, onConfirm, onCancel, selectedLanguage, orderNumber }) => {
+  const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
+
+  return (
+    <OrderPopupDiv>
+      <PopupContent>
+        <h3
+          dangerouslySetInnerHTML={{ __html: `${cartOrderPopupLocale.admin} ${orderNumber}` }}
+        />
+        
+        {cartItems.map((item, idx) => (
+          <p key={idx}>
+            <span>{item.itemName ?? "No name"}</span>
+            <span>
+              {item.cartItemQuantity ?? 0} {item.cartItemQuantity === 1 ? cartOrderPopupLocale.order : cartOrderPopupLocale.orders }
+            </span>
+            <span>₱{item.itemPrice ?? 1}.00</span>
+            <span>
+              ₱{
+                (
+                  (item.itemPrice ?? 0) *
+                  (item.cartItemQuantity ?? 1)
+                ).toFixed(2)
+              }
+            </span>
+          </p>
+        ))}
+      </PopupContent>
+      <TotalPrice>
+        <p>{cartOrderPopupLocale.total}:</p>
+        <p>₱{totalPrice}</p>
+      </TotalPrice>
+      <PopupButtons>
+        <Button color="WHITE" bgColor="GREY600" onClick={onCancel}>
+          {cartOrderPopupLocale.cancel}
+        </Button>
+        <Button color="WHITE" bgColor="MAIN" onClick={onConfirm}>
+          {cartOrderPopupLocale.confirm}
+        </Button>
+      </PopupButtons>
+    </OrderPopupDiv>
+  );
+};
+
 interface CartProps {
   selectedLanguage: LanguageCode;
 }
@@ -78,6 +132,12 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const cartOrderLocale = CartOrderLocales[selectedLanguage];
   const cart = useAppSelector((state) => state.cart);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const company = queryParams.get("company")
+  const table = queryParams.get("tableId")
+  const order = "Order"
+  const unconfirmed = "Unconfirmed"
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -91,12 +151,45 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
     setIsPopupOpen(true);
   };
 
-  const handleConfirmOrder = () => {
-    handleClearCart();
-    setToastMessage(`${cartOrderLocale.toastOrderComplete}`);
-    setIsActive(true);
-    setIsPopupOpen(false);
-    handleCartOpen();
+  const numericNanoid = customAlphabet('0123456789', 16);
+  function generateNumericID() {
+    return numericNanoid();
+  }
+
+  const handleConfirmOrder = async () => {
+    try {
+      const userIdResponse = await axios.post("http://localhost:8080/api/get-userID", {
+        companyID: company,
+      });
+
+      const userID = userIdResponse.data.userID;
+      const items = cart.cartItems.map((item) => ({
+        itemName: item.itemName,
+        itemPrice: item.itemPrice,
+        cartItemQuantity: item.cartItemQuantity,
+      }));
+
+      await axios.post("http://localhost:8080/api/orders", {
+        userID,
+        items,
+        totalPrice: cart.cartTotalAmount,
+        tableNumber: table,
+        orderNumber: generateNumericID(),
+        orderType: order,
+        confirmStatus: unconfirmed
+      });
+
+      handleClearCart();
+      setToastMessage(`${cartOrderLocale.toastOrderComplete}`);
+      setIsActive(true);
+      setIsPopupOpen(false);
+      handleCartOpen();
+    } catch (error) {
+      console.error("Error saving order:", error);
+      setToastMessage("Failed to save order!");
+      setIsActive(true);
+      setIsPopupOpen(false);
+    }
   };
 
   const handleCancelPopup = () => {

@@ -10,7 +10,10 @@ export interface CategoryItemProps {
   itemPrice?: number;
   itemSoldOutFlag?: boolean;
   itemNewFlag?: boolean;
+  itemHotFlag?: boolean;
+  itemPauseFlag?: boolean;
   itemImageUrl?: string;
+  allergies?: string;
   cartItemQuantity: number;
 }
 

@@ -45,11 +45,16 @@ export interface OrderHistoryStrings {
 
 export interface CartOrderPopupStrings {
     title: string;
+    admin: string;
     total: string;
     order: string;
     orders: string;
     cancel: string;
     confirm: string;
+};
+
+export interface PopularStrings {
+    popular: string;
 }
 
 export const languages: { code: LanguageCode; label: string }[] = [
@@ -221,10 +226,26 @@ export const OrderHistoryLocales: Record<LanguageCode, OrderHistoryStrings> = {
   },
 };
 
+export const PopularStringsLocales: Record<LanguageCode, PopularStrings> = {
+  en: {
+    popular: "POPULAR DISH"
+  },
+  ko: {
+    popular: "인기 메뉴"
+  },
+  ja: {
+    popular: "人気のメニュー"
+  },
+  zh: {
+    popular: "热门菜单"
+  },
+};
+
 
 export const CartOrderPopupLocales: Record<LanguageCode, CartOrderPopupStrings> = {
   en: {
     title: "Have you checked the <strong>Items and Quantities</strong> in your cart?",
+    admin: "Order Number:",
     total: "Total Price",
     order: "Order",
     orders: "Orders",
@@ -233,6 +254,7 @@ export const CartOrderPopupLocales: Record<LanguageCode, CartOrderPopupStrings> 
   },
   ko: {
     title: "장바구니의 <strong>상품과 수량</strong>을 확인하셨습니까?",
+    admin: "",
     total: "합계",
     order: "개",
     orders: "개",
@@ -241,6 +263,7 @@ export const CartOrderPopupLocales: Record<LanguageCode, CartOrderPopupStrings> 
   },
   ja: {
     title: "カートの <strong>商品と数量</strong> はご確認いただけましたか？",
+    admin: "",
     total: "合計金額",
     order: "個",
     orders: "個",
@@ -249,6 +272,7 @@ export const CartOrderPopupLocales: Record<LanguageCode, CartOrderPopupStrings> 
   },
   zh: {
     title: "是否已检查购物车中的 <strong>商品和数量</strong>？",
+    admin: "",
     total: "总价",
     order: "个",
     orders: "个",

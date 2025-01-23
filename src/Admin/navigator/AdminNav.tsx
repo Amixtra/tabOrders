@@ -21,7 +21,12 @@ interface ToggleUpdateFields {
   isToggleMuteOn?: boolean;
 }
 
-const Nav = () => {
+interface NavProps {
+  setSelectedSection: (section: string) => void;
+  selectedSection: string;
+}
+
+const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
   const [isToggleOrderOn, setIsToggleOrderOn] = useState(true);
   const [isToggleLockOn, setIsToggleLockOn] = useState(true);
   const [isToggleMuteOn, setIsToggleMuteOn] = useState(true);
@@ -149,10 +154,30 @@ const Nav = () => {
           />
         </StyledNavLogo>
         <StyledNavSectionContainer>
-          <StyledNavSectionButton>Announcements</StyledNavSectionButton>
-          <StyledNavSectionButton>Orders</StyledNavSectionButton>
-          <StyledNavSectionButton>Menu Options</StyledNavSectionButton>
-          <StyledNavSectionButton>Payment Details</StyledNavSectionButton>
+          <StyledNavSectionButton 
+            onClick={() => setSelectedSection("qr-pin")}
+            style={{ backgroundColor: selectedSection === "qr-pin" ? "red": "#111"}}
+          >
+            QR & PIN Code
+          </StyledNavSectionButton>
+          <StyledNavSectionButton 
+            onClick={() => setSelectedSection("order")}
+            style={{ backgroundColor: selectedSection === "order" ? "red": "#111"}}  
+            >
+            Orders
+          </StyledNavSectionButton>
+          <StyledNavSectionButton
+            onClick={() => setSelectedSection("menu-options")}
+            style={{ backgroundColor: selectedSection === "menu-options" ? "red": "#111"}}  
+          >
+            Menu Options
+          </StyledNavSectionButton>
+          <StyledNavSectionButton
+            onClick={() => setSelectedSection("waiter-options")}
+            style={{ backgroundColor: selectedSection === "waiter-options" ? "red": "#111"}}  
+          >
+            Waiter Options
+          </StyledNavSectionButton>
         </StyledNavSectionContainer>
 
         <StyledToggleSection>
@@ -210,8 +235,8 @@ const Nav = () => {
         </StyledToggleSection>
       </StyledNavContent>
       <StyledNavWaiterButton onClick={handleRefresh}>
-        Refresh
-        <FaSyncAlt style={{ marginLeft: "10px", fontSize: "16px" }} />
+      Refresh
+      <FaSyncAlt style={{ marginLeft: "5px", fontSize: "16px" }} />
       </StyledNavWaiterButton>
       <AdminLogoutButton
         onClick={handleLogoutClick}

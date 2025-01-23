@@ -79,6 +79,10 @@ const ProductListPage: React.FC<ProductListPageProps> = ({ selectedCategory, sel
           itemPrice={item.itemPrice}
           isItemSoldOut={item.itemSoldOutFlag}
           isItemNew={item.itemNewFlag}
+          isItemHot={item.itemHotFlag}
+          isItemPause={item.itemPauseFlag}
+          allergies={item.allergies}
+          selectedLanguage={selectedLanguage}
           onClick={() => handleAddToCart(item)}
         />
       );

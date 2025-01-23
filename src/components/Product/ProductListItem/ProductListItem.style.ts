@@ -12,6 +12,10 @@ const StyledProductListItem = styled.li`
   position: relative;
   color: ${PALETTE.WHITE};
 
+  box-shadow: 0 0 20px rgba(0, 174, 255, 0.7), 
+              0 0 20px rgba(0, 174, 255, 0.5), 
+              0 0 20px rgba(0, 174, 255, 0.3);
+
   & .product-img {
     width: 100%;
     height: 12.5vw;
@@ -24,6 +28,20 @@ const StyledProductListItem = styled.li`
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  & .bottom-box {
+    width: 100%;
+    height: 30px;
+    background-color: rgba(255, 223, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    position: relative;
+    top: 0;
   }
 
   & .soldout-cover {
@@ -52,6 +70,8 @@ const StyledProductListItem = styled.li`
     justify-content: center;
     align-items: center;
     gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 
     & .product-name {
       font-size: 1.25vw;
