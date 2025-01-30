@@ -25,10 +25,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use("/api/toggles", toggleRoutes);
 app.use("/api/orders", ordersRoutes);
-app.use("/api/upload", uploadRoutes)
+app.use("/api/upload", uploadRoutes);
 
 
 if (!process.env.MONGO_URI) {
+  console.log("NO ENV!!")
   process.exit(1);
 }
 
@@ -329,6 +330,7 @@ app.get("/api/categories", async (req, res) => {
           itemHotFlag: item.itemHotFlag,
           itemPauseFlag: item.itemPauseFlag,
           itemImageUrl: item.itemImageUrl,
+          itemDescription: item.itemDescription,
           allergies: item.allergies,
         }))
       }));
@@ -478,7 +480,7 @@ app.post("/api/items", async (req, res) => {
     );
     return res.status(201).json({
       message: "Item added successfully",
-      itemId: newItemId,
+      itemId: itemId,
       itemName: itemNameEN,
       itemPrice: itemPrice,
       itemDescription: itemDescription,

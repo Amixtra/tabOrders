@@ -42,6 +42,11 @@ export const StyledNavSectionButton = styled.button`
   color: ${PALETTE.WHITE};
   text-transform: uppercase;
   width: 100%;
+
+  @media (max-width: 1080px) {
+    padding: 12px 28px;
+    font-size: 16px;
+  }
 `;
 
 export const StyledNavWaiterButton = styled.button`
@@ -55,6 +60,11 @@ export const StyledNavWaiterButton = styled.button`
   font-weight: 900;
   color: ${PALETTE.WHITE};
   text-transform: uppercase;
+
+  @media (max-width: 1080px) {
+    padding: 12px 28px;
+    font-size: 16px;
+  }
 `;
 
 export const StyledNavContent = styled.div`

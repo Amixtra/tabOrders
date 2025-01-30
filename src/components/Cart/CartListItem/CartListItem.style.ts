@@ -37,13 +37,23 @@ const StyledCartListItem = styled.li`
     }
   }
   .cart-order-number {
-    padding-left: 20px;
-    padding-right: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .cart-item-price-total {
     font-size: 1.5rem;
     font-weight: bold;
     color: ${PALETTE.MAIN};
+  }
+
+  @media (max-width: 1080px) {
+    .cart-item-header {
+      margin-top: 10px;
+    }
+    .cart-order-number {
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 `;
 

@@ -38,6 +38,12 @@ const StyledCart = styled.aside`
     & .empty-sign {
       color: ${PALETTE.GREY400};
     }
+
+    @media (max-width: 1080px) {
+      & .empty-sign {
+        margin-top: 15px;
+      }
+    }
   }
 
   & .cart-footer {
@@ -75,6 +81,11 @@ const StyledCart = styled.aside`
       font-weight: bold;
     }
   }
+
+  @media (max-width: 1080px) {
+    width: 26vw;
+  }
+}
 `;
 
 export default StyledCart;

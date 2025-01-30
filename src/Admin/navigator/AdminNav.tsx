@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import StyledNav, {
   StyledNavContent,
   StyledNavLogo,
@@ -7,6 +7,7 @@ import StyledNav, {
   StyledNavSectionContainer,
   StyledToggleSection,
   StyledToggleButton,
+  BottomButtonsContainer,
 } from "./AdminNav.styles";
 import { logoSources } from "db/constants";
 import { FaSyncAlt } from "react-icons/fa";
@@ -234,15 +235,14 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
           </div>
         </StyledToggleSection>
       </StyledNavContent>
-      <StyledNavWaiterButton onClick={handleRefresh}>
-      Refresh
-      <FaSyncAlt style={{ marginLeft: "5px", fontSize: "16px" }} />
-      </StyledNavWaiterButton>
-      <AdminLogoutButton
-        onClick={handleLogoutClick}
-        >
-        Logout
-      </AdminLogoutButton>
+      <BottomButtonsContainer>
+        <StyledNavWaiterButton onClick={handleRefresh}>
+          Refresh <FaSyncAlt style={{ marginLeft: "5px", fontSize: "16px" }} />
+        </StyledNavWaiterButton>
+        <AdminLogoutButton onClick={handleLogoutClick}>
+          Logout
+        </AdminLogoutButton>
+      </BottomButtonsContainer>
       {showLogoutModal && (
         <div 
         style={{

@@ -73,7 +73,6 @@ export const TotalPrice = styled.div`
     font-weight: bold;
     font-size: 50px;
   }
-
 `;
 
 export const PopupButtons = styled.div`

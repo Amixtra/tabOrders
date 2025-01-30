@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import StyledFooter, { Language, StyledModal } from "./Footer.style";
 import Button from "components/@share/Button/Button";
 import { useAppDispatch } from "features/store/rootReducer";
@@ -6,6 +6,8 @@ import { toggleCartOpen } from "features/cart/cartReducer";
 import OrderHistory from "components/OrderHistory/OrderHistory";
 import Calculation from "components/Calculation/Calculation";
 import { languages, FooterLocales, LanguageCode } from "db/constants";
+import Toast from "components/@share/Toast/Toast";
+import { useAppSelector } from "features/store/rootReducer";
 
 const icon_cart = "/assets/icon/icon_cart.png";
 const icon_order_history = "/assets/icon/icon_receipt.png";
@@ -24,9 +26,12 @@ const Footer: React.FC<FooterProps> = ({
   setSelectedLanguage,
 }) => {
   const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cart);
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   const [showCalculation, setShowCalculation] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isToastActive, setIsToastActive] = useState(false);
 
   const currentLocale = FooterLocales[selectedLanguage];
 
@@ -34,17 +39,11 @@ const Footer: React.FC<FooterProps> = ({
     languages.find((lang) => lang.code === selectedLanguage)?.label || "English";
 
   const handleCartOpen = () => {
+    if (cart.cartItems.length === 0) {
+      showToast("Please Order First");
+      return;
+    }
     dispatch(toggleCartOpen());
-  };
-
-  const handleOrderHistoryOpen = () => {
-    setShowOrderHistory(true);
-    setIsOverlayActive(true);
-  };
-
-  const handleCalculationOpen = () => {
-    setShowCalculation(true);
-    setIsOverlayActive(true);
   };
 
   const handleOverlayClose = () => {
@@ -58,13 +57,37 @@ const Footer: React.FC<FooterProps> = ({
   };
 
   const handleLanguageSelect = (code: LanguageCode) => {
-    setSelectedLanguage(code); // Update language state in parent
+    setSelectedLanguage(code);
     setIsOverlayActive(false);
     setShowLanguageModal(false);
   };
 
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setIsToastActive(true);
+
+    setTimeout(() => {
+      setIsToastActive(false);
+    }, 1500);
+  };
+
+  const handleOrderHistoryOpen = () => {
+    setShowOrderHistory(true);
+    setIsOverlayActive(true);
+  };
+
+  const handleCalculationOpen = () => {
+    setShowCalculation(true);
+    setIsOverlayActive(true);
+  };
+
   return (
     <>
+      <Toast 
+        message={toastMessage} 
+        isActive={isToastActive} 
+        setIsActive={setIsToastActive} 
+      />
       <StyledFooter>
         <div className="language-group">
           <Language onClick={handleLanguageModalOpen}>

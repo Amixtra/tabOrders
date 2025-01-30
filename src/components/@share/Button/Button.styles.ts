@@ -70,7 +70,12 @@ const buttonTypes = css<ButtonProps>`
       display: block;
       width: 6.125vw;
       height: 4.2vw;
-      background: url("${props.iconUrl}") no-repeat 0 center/cover; ;
+      background: url("${props.iconUrl}") no-repeat 0 center/cover; 
+      
+      @media (max-width: 1080px) {
+        width: 5.2vw;
+        height: 3.5vw;
+      };
     `}
 
   /* iconBtnCalculation */

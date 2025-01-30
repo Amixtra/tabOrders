@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import StyledCart from "./Cart.styles";
 import CartListItem from "./CartListItem/CartListItem";
@@ -263,9 +263,6 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
 
         <div className="cart-footer">
           <div className="cart-item-info">
-            <span>
-              {cartOrderLocale.totalOrders} {cart.cartItems.length}
-            </span>
             <span className="cart-item-total-price">
               {cartOrderLocale.totalPrice}{" "}
               <span>{cart.cartTotalAmount?.toLocaleString()}</span>

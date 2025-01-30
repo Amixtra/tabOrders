@@ -10,8 +10,18 @@ const OrderHistoryCounterOverlay = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 16px; /* Optional: Add padding for better spacing */
-  border-radius: 8px; /* Optional: Add rounded corners */
+  padding: 16px;
+  border-radius: 8px;
+
+  @media (max-width: 1080px) {
+    top: auto;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: auto;
+    padding: 12px;
+  }
 `;
 
 const OrderHistoryCounterWord = styled.p`
@@ -20,6 +30,10 @@ const OrderHistoryCounterWord = styled.p`
   color: red;
   font-weight: 900;
   margin: 0;
+
+  @media (max-width: 1080px) {
+    font-size: 20px;
+  }
 `;
 
 export { OrderHistoryCounterOverlay, OrderHistoryCounterWord };

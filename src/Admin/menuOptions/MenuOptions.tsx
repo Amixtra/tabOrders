@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as S from './MenuOptions.style';
 import { NumericFormat } from 'react-number-format';
 
@@ -275,20 +275,20 @@ const MenuOptions: React.FC = () => {
       return;
     }
     if (!currentCategory) return;
-
+  
     try {
       const allItemIds = categories.flatMap(cat => cat.categoryItems.map(item => item.itemId));
       const newItemId = allItemIds.length > 0 ? Math.max(...allItemIds) + 1 : 1;
-
+  
       let finalImageUrl = '';
-      const categoryName = currentCategory?.categoryName || 'defaultCategory';
+      const categoryName = currentCategory.categoryName || 'defaultCategory';
       if (selectedImageFile) {
         const uploadedUrl = await uploadImageToS3(selectedImageFile, categoryName);
         if (uploadedUrl) {
           finalImageUrl = uploadedUrl;
         }
       }
-
+  
       const response = await fetch('http://localhost:8080/api/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -304,12 +304,19 @@ const MenuOptions: React.FC = () => {
           itemDescription: newItemDescription,
           itemImageUrl: finalImageUrl,
           allergies: selectedAllergies,
-        })
+        }),
       });
+
+      console.log(response)
+  
       if (!response.ok) {
+        // Handle error if needed
         return;
       }
+  
       const data = await response.json();
+  
+      // Update local state
       const updatedCategories = [...categories];
       const idx = updatedCategories.findIndex(
         (cat) => cat.categoryId === currentCategory.categoryId
@@ -321,13 +328,25 @@ const MenuOptions: React.FC = () => {
           itemPrice: data.itemPrice || 0,
           itemImageUrl: data.itemImageUrl,
           itemDescription: data.itemDescription,
-          allergies: data.allergies
+          allergies: data.allergies,
         });
       }
+  
       setCategories(updatedCategories);
+  
+      // Debug: see if the new item is actually there
+      console.log("Updated categories with new item:", updatedCategories);
+  
+      // DO NOT change the category tab index to categories.length (that’s for adding categories!)
+      // setActiveTab(categories.length);  // <--- Remove this.
+  
+      // If you’d like to remain on "Menu Options" in your parent router:
+      localStorage.setItem("selectedSection", "menu-options");
+  
     } catch (err) {
       console.error(err);
     } finally {
+      // Reset form fields and close the modal
       setNewItemName('');
       setNewItemNameKR('');
       setNewItemNameJP('');
@@ -339,7 +358,7 @@ const MenuOptions: React.FC = () => {
       setPreviewUrl('');
       setShowAddMenuModal(false);
     }
-  };
+  };  
 
   const handleCancelAddMenu = () => {
     setNewItemName('');

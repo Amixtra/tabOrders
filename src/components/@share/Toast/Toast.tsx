@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import StyledToast from "./Toast.style";
 
 interface ToastProps {

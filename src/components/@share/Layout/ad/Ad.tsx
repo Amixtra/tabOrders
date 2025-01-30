@@ -1,4 +1,3 @@
-import React from "react";
 import { videoSources } from "db/constants";
 import TableIndicator from "../indicator/TableIndicator";
 import { FaCircleXmark } from "react-icons/fa6";

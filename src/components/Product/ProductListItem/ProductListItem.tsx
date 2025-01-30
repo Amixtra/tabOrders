@@ -12,7 +12,7 @@ interface Props {
   isItemNew?: boolean;
   isItemHot?: boolean;
   isItemPause?: boolean;
-  allergies?: string;
+  allergies?: string[];
   categoryId?: number;
   onClick?: () => void;
   selectedLanguage: LanguageCode;

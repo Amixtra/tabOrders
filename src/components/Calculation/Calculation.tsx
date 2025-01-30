@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 import {
   CalculationOverlay,

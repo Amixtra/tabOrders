@@ -1,4 +1,3 @@
-import React from "react";
 import StyledCartListItem from "./CartListItem.style";
 import Button from "components/@share/Button/Button";
 import { CategoryItemProps } from "types";

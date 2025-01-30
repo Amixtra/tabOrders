@@ -13,8 +13,9 @@ export interface CategoryItemProps {
   itemHotFlag?: boolean;
   itemPauseFlag?: boolean;
   itemImageUrl?: string;
-  allergies?: string;
-  cartItemQuantity: number;
+  allergies?: string[];
+  itemDescription: string;
+  cartItemQuantity?: number;
 }
 
 export interface CartListProps {

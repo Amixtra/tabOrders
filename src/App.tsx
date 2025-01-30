@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TablePage from "./TablePage";
-import Login from "components/Form/Login";
+import Login from "components/form/Login";
 import TableSetting from "components/TableSetting/TableSetting";
 import ErrorPage from "components/Error/ErrorPage";
 import AdminPage from "Admin/Admin";

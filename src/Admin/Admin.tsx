@@ -8,7 +8,14 @@ import MenuOptions from "./menuOptions/MenuOptions";
 
 const AdminPage = () => {
   const [userName, setUserName] = useState<string | null>(null);
-  const [selectedSection, setSelectedSection] = useState<string>("order");
+  const [selectedSection, setSelectedSection] = useState<string>(
+    localStorage.getItem("selectedSection") || "order"
+  );
+
+  const handleSectionChange = (section: string) => {
+    setSelectedSection(section);
+    localStorage.setItem("selectedSection", section);
+  };
 
   const getTokenData = () => {
     const token = localStorage.getItem("token");
@@ -43,7 +50,7 @@ const AdminPage = () => {
   return (
     <>
       <AdminGridContainer>
-        <Nav setSelectedSection={setSelectedSection} selectedSection={selectedSection} />
+        <Nav setSelectedSection={handleSectionChange} selectedSection={selectedSection} />
         {selectedSection === "order" && <Order />}
         {selectedSection === "qr-pin" && <QRPin />}
         {selectedSection === "waiter-options" && <WaiterOptions />}

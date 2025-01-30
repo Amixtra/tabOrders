@@ -2,7 +2,7 @@ import styled from "styled-components"
 import PALETTE from "constants/palette";
 
 export const AdminLogoutButton = styled.button`
-    padding: 24px 36px;
+    padding: 24px 60px;
     text-align: center;
     background-color: ${PALETTE.MAIN};
     border-radius: 10px;
