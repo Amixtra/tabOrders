@@ -1,16 +1,31 @@
-// OrderHistory.tsx
 import { useEffect, useState } from "react";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 import {
   OrderHistoryOverlay,
   OrderHistoryWrapper,
-  OrderHistoryBG,
-  MiddleBlock,
+  OrderHistoryContainer,
+  OrderList,
+  OrderItem,
+  OrderTitleBar,
+  OrderSummary,
+  OrderSummaryRow,
 } from "./OrderHistory.style";
 import OrderHistoryClose from "./OrderHistoryClose/OrderHistoryClose";
 import OrderHistoryCounter from "./OrderHistoryCounter/OrderHistoryCounter";
-import OrderHistoryTitle from "./OrderHistoryTitle/OrderHistoryTitle";
 import { LanguageCode } from "db/constants";
+import axios from "axios";
+
+interface HistoryItem {
+  _id: string;
+  userID: string;
+  lastOrderedAt: string;
+  totalPrice: number;
+  items: {
+    itemName: string;
+    itemPrice: number;
+    cartItemQuantity: number;
+  }[];
+}
 
 interface OrderHistoryProps {
   setShowOrderHistory: (value: boolean) => void;
@@ -22,23 +37,22 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   selectedLanguage,
 }) => {
   const [resetTimer, setResetTimer] = useState(false);
-  const orders = [
-    {
-      itemName: "Carbonara Pasta",
-      itemPrice: 300,
-      cartItemQuantity: 1,
-    },
-    {
-      itemName: "Tomato Pasta",
-      itemPrice: 300,
-      cartItemQuantity: 1,
-    },
-  ];
-  
-  const totalPrice = orders.reduce(
-    (sum, item) => sum + item.itemPrice * (item.cartItemQuantity || 1),
-    0
-  );
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+
+  const fetchHistory = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/order-history", {
+        params: { userID: "6a7d23fb7bca2806" },
+      });
+      setHistory(response.data);
+    } catch (error) {
+      console.error("Error fetching order history:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   const handleClose = () => {
     setShowOrderHistory(false);
@@ -61,66 +75,47 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
 
   return (
     <OrderHistoryOverlay>
-      <OrderHistoryWrapper>
-        <OrderHistoryTitle selectedLanguage={selectedLanguage} />
-        <TableIndicator selectedLanguage={selectedLanguage} />
-        <OrderHistoryCounter
-          onExpire={handleClose}
-          resetTimer={resetTimer}
-          selectedLanguage={selectedLanguage}
-        />
-        <OrderHistoryClose onClose={handleClose} selectedLanguage={selectedLanguage} />
-
-        <OrderHistoryBG>
-          <MiddleBlock>
-            <div style={{ padding: "1rem" }}>
-              {orders.map((item, idx) => {
-                const qty = item.cartItemQuantity || 1;
-                const lineTotal = item.itemPrice * qty;
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      borderBottom: "1px solid #ccc",
-                      padding: "0.5rem 0",
-                    }}
-                  >
-                    <span>{item.itemName}</span>
-                    <span>{qty} Order</span>
-                    <span>₱{item.itemPrice.toFixed(2)}</span>
-                    <span>₱{lineTotal.toFixed(2)}</span>
-                  </div>
-                );
-              })}
-
-              {/* 4) Show total price at bottom */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginTop: "1rem",
-                  alignItems: "center",
-                }}
-              >
-                <span style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                  Total Price:
-                </span>
-                <span
-                  style={{
-                    color: "red",
-                    fontWeight: "bold",
-                    fontSize: "1.5rem",
-                  }}
-                >
-                  ₱{totalPrice.toFixed(2)}
-                </span>
-              </div>
+      {history.map((doc) => (
+        <OrderHistoryWrapper key={doc._id}>
+          <OrderTitleBar>
+            <div className="title-left">
+              <span className="order-label">Last Ordered</span>
+              <span className="order-time">
+                {new Date(doc.lastOrderedAt).toLocaleString("en-PH", { timeZone: "Asia/Manila" })}
+              </span>
             </div>
-          </MiddleBlock>
-        </OrderHistoryBG>
-      </OrderHistoryWrapper>
+
+            <div className="title-right">
+              <TableIndicator selectedLanguage={selectedLanguage} />
+              <OrderHistoryClose onClose={handleClose} selectedLanguage={selectedLanguage} />
+            </div>
+          </OrderTitleBar>
+
+          <OrderHistoryCounter
+            onExpire={handleClose}
+            resetTimer={resetTimer}
+            selectedLanguage={selectedLanguage}
+          />
+
+          <OrderHistoryContainer>
+            <OrderList>
+              {doc.items.map((item, idx) => (
+                <OrderItem key={idx}>
+                  <span className="item-name">{item.itemName}</span>
+                  <span className="item-qty">x {item.cartItemQuantity}</span>
+                </OrderItem>
+              ))}
+            </OrderList>
+
+            <OrderSummary>
+              <OrderSummaryRow>
+                <span className="label">Total Amount</span>
+                <span className="value">₱ {doc.totalPrice}</span>
+              </OrderSummaryRow>
+            </OrderSummary>
+          </OrderHistoryContainer>
+        </OrderHistoryWrapper>
+      ))}
     </OrderHistoryOverlay>
   );
 };

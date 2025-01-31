@@ -10,7 +10,8 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import toggleRoutes from "./toggles/toggles.routes.js";
 import ordersRoutes from "./orders/orders.routes.js";
-import uploadRoutes from "./upload/upload.routes.js"
+import uploadRoutes from "./upload/upload.routes.js";
+import orderHistoryRoutes from "./orderHistory/orderHistory.routes.js"
 
 dotenv.config();
 const app = express();
@@ -26,7 +27,7 @@ app.use(bodyParser.json());
 app.use("/api/toggles", toggleRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/upload", uploadRoutes);
-
+app.use("/api/order-history", orderHistoryRoutes);
 
 if (!process.env.MONGO_URI) {
   console.log("NO ENV!!")
