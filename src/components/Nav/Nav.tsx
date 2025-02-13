@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useFetch from "hooks/useFeth";
 import StyledNav, {
+  StyledNavBillOutButton,
   StyledNavContent,
   StyledNavLogo,
   StyledNavSectionButton,
@@ -9,6 +10,7 @@ import StyledNav, {
 import { logoSources } from "db/constants";
 import { CategoryProps } from "types";
 import Waiter from "components/Waiter/Waiter";
+import BillOut from "components/BillOut/BillOut";
 import { LanguageCode, NavLocales } from "db/constants";
 import { useLocation } from "react-router-dom";
 
@@ -32,6 +34,7 @@ const Nav: React.FC<NavProps> = ({
     `http://localhost:8080/api/categories?company=${company}&language=${selectedLanguage}`
   );
   const [showWaiter, setShowWaiter] = useState(false);
+  const [showBill, setShowBill] = useState(false);
 
   const navLocale = NavLocales[selectedLanguage];
 
@@ -78,10 +81,14 @@ const Nav: React.FC<NavProps> = ({
             </StyledNavSectionButton>
           ))}
       </StyledNavContent>
+      <StyledNavBillOutButton onClick={() => setShowBill(true)}>
+        Bill Out
+      </StyledNavBillOutButton>
       <StyledNavWaiterButton onClick={handleWaiterOpen}>
         {navLocale.callWaiter}
       </StyledNavWaiterButton>
       {showWaiter && <Waiter setShowWaiter={handleWaiterClose} />}
+      {showBill && <BillOut />}
     </StyledNav>
   );
 };

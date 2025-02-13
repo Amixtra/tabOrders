@@ -67,6 +67,24 @@ export const StyledNavWaiterButton = styled.button`
   }
 `;
 
+export const StyledNavBillOutButton = styled.button`
+  padding: 24px 36px;
+  text-align: center;
+  background-color: ${PALETTE.MAIN};
+  border-radius: 10px;
+  font-size: 18px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: 900;
+  color: ${PALETTE.WHITE};
+  text-transform: uppercase;
+
+  @media (max-width: 1080px) {
+    padding: 12px 28px;
+    font-size: 16px;
+  }
+`;
+
 export const StyledNavContent = styled.div`
   display: flex;
   flex-direction: column;

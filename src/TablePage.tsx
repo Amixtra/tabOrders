@@ -82,10 +82,10 @@ const TablePage = () => {
     return <ErrorPage />;
   }
 
-  const handleCloseAd = () => {
-    setShowAd(false);
-    resetInactivityTimer();
-  };
+  // const handleCloseAd = () => {
+  //   setShowAd(false);
+  //   resetInactivityTimer();
+  // };
 
   const handleCloseStartPage = () => {
     setShowStartPage(false);
@@ -126,12 +126,12 @@ const TablePage = () => {
             />
             <RestaurantIndicator />
           </Header>
-          {showAd && 
+          {/* {showAd && 
             <AdPage 
               onClose={handleCloseAd} 
               selectedLanguage={selectedLanguage}
             />
-          }
+          } */}
           <GridContainer>
             <Nav
               onCategorySelect={setSelectedCategory}
