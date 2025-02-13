@@ -78,7 +78,7 @@ export const RightBlockLine = styled.div`
 
       .split-pay-number {
         font-size: 64px;
-        padding: 0 32px;
+        padding: 0 20px;
       }
     }
   }

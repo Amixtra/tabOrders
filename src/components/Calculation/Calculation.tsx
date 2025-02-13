@@ -26,6 +26,7 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
   const [splitCount, setSplitCount] = useState(1);
   const calculationLocale = CalculationLocales[selectedLanguage];
 
+  // Example total bill in PHP
   const totalBill = 90;
 
   const handleClose = () => {
@@ -41,9 +42,9 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
   };
 
   const amountPerPerson = Math.floor(totalBill / splitCount);
-  const formattedAmount = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'PHP',
+  const formattedAmount = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "PHP",
     minimumFractionDigits: 2,
   }).format(amountPerPerson);
 
@@ -54,7 +55,89 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
         <CalculationTitle selectedLanguage={selectedLanguage} />
         <CalculationClose onClose={handleClose} selectedLanguage={selectedLanguage} />
         <CalculationBG>
-          <LeftBlock />
+          <LeftBlock>
+            <div
+              style={{
+                width: "90%",
+                height: "90%",
+                overflowY: "auto",
+                padding: "20px",
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+                boxShadow: "inset 0 1px 4px rgba(0, 0, 0, 0.1)",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                style={{
+                  marginBottom: "20px",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid #eee",
+                }}
+              >
+                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  Order 20:00:53
+                </div>
+                <div style={{ margin: "4px 0", fontSize: "16px" }}>
+                  Ricotta Salad
+                </div>
+                <div style={{ color: "#666", fontSize: "14px" }}>
+                  ₱7,000 / 1 pc / Total ₱7,000
+                </div>
+              </div>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid #eee",
+                }}
+              >
+                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  Order 20:00:32
+                </div>
+                <div style={{ margin: "4px 0", fontSize: "16px" }}>
+                  Cajun Chicken Salad
+                </div>
+                <div style={{ color: "#666", fontSize: "14px" }}>
+                  ₱5,500 / 1 pc / Total ₱5,500
+                </div>
+              </div>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid #eee",
+                }}
+              >
+                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  Order 19:57:55
+                </div>
+                <div style={{ margin: "4px 0", fontSize: "16px" }}>
+                  Pepperoni Pizza
+                </div>
+                <div style={{ color: "#666", fontSize: "14px" }}>
+                  ₱14,000 / 1 pc / Total ₱14,000
+                </div>
+              </div>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  paddingBottom: "10px",
+                }}
+              >
+                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  Order 17:11:44
+                </div>
+                <div style={{ margin: "4px 0", fontSize: "16px" }}>
+                  Seasoned Chicken
+                </div>
+                <div style={{ color: "#666", fontSize: "14px" }}>
+                  ₱20,000 / 1 pc / Total ₱20,000
+                </div>
+              </div>
+            </div>
+          </LeftBlock>
           <RightBlock>
             <h3
               style={{
@@ -83,6 +166,7 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
                 </div>
               </div>
             </RightBlockLine>
+
             <p
               style={{
                 textAlign: "center",
@@ -92,7 +176,7 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
                 color: "gray",
               }}
             >
-              {splitCount === 1 ? `${calculationLocale.payAlone}` : `${calculationLocale.perPerson}`}
+              {splitCount === 1 ? calculationLocale.payAlone : calculationLocale.perPerson}
             </p>
             <p
               style={{

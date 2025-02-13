@@ -1,4 +1,4 @@
-import { CartOrderLocales, LanguageCode } from "db/constants";
+import { CalculationLocales, LanguageCode } from "db/constants";
 import {
   CalculationTitleOverlay,
   CalculationTitleWord,
@@ -9,10 +9,10 @@ interface CalculationTitleProps {
 };
 
 const CalculationTitle: React.FC<CalculationTitleProps> = ({selectedLanguage}) => {
-  const cartOrderLocale = CartOrderLocales[selectedLanguage];
+  const calculationLocale = CalculationLocales[selectedLanguage];
   return (
     <CalculationTitleOverlay>
-      <CalculationTitleWord>{cartOrderLocale.title}</CalculationTitleWord>
+      <CalculationTitleWord>{calculationLocale.title}</CalculationTitleWord>
     </CalculationTitleOverlay>
   );
 };

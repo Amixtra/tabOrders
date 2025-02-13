@@ -9,6 +9,7 @@ import { languages, FooterLocales, LanguageCode } from "db/constants";
 import Toast from "components/@share/Toast/Toast";
 import { useAppSelector } from "features/store/rootReducer";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const icon_cart = "/assets/icon/icon_cart.png";
 const icon_order_history = "/assets/icon/icon_receipt.png";
@@ -35,6 +36,8 @@ const Footer: React.FC<FooterProps> = ({
   const [isToastActive, setIsToastActive] = useState(false);
 
   const currentLocale = FooterLocales[selectedLanguage];
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("tableId");
 
   const selectedLanguageLabel =
     languages.find((lang) => lang.code === selectedLanguage)?.label || "English";
@@ -75,7 +78,10 @@ const Footer: React.FC<FooterProps> = ({
   const handleOrderHistoryOpen = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/order-history", {
-        params: { userID: '6a7d23fb7bca2806' },
+        params: { 
+          userID: '6a7d23fb7bca2806',
+          tableNumber: id,
+        },
       });
 
       const data = await response.data;

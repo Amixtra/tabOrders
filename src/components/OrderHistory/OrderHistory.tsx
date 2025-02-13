@@ -14,6 +14,7 @@ import OrderHistoryClose from "./OrderHistoryClose/OrderHistoryClose";
 import OrderHistoryCounter from "./OrderHistoryCounter/OrderHistoryCounter";
 import { LanguageCode } from "db/constants";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 interface HistoryItem {
   _id: string;
@@ -38,11 +39,16 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
 }) => {
   const [resetTimer, setResetTimer] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("tableId");
 
   const fetchHistory = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/order-history", {
-        params: { userID: "6a7d23fb7bca2806" },
+        params: { 
+          userID: "6a7d23fb7bca2806",
+          tableNumber: id,
+        },
       });
       setHistory(response.data);
     } catch (error) {

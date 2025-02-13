@@ -11,15 +11,17 @@ import nodemailer from "nodemailer";
 import toggleRoutes from "./toggles/toggles.routes.js";
 import ordersRoutes from "./orders/orders.routes.js";
 import uploadRoutes from "./upload/upload.routes.js";
-import orderHistoryRoutes from "./orderHistory/orderHistory.routes.js"
+import orderHistoryRoutes from "./orderHistory/orderHistory.routes.js";
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Rate limiter for login
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: { error: "Too many login attempts. Please try again later." }
+  message: { error: "Too many login attempts. Please try again later." },
 });
 
 app.use(cors());
@@ -29,28 +31,39 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/order-history", orderHistoryRoutes);
 
+// Check MONGO_URI
 if (!process.env.MONGO_URI) {
-  console.log("NO ENV!!")
+  console.log("[ERROR]:: MONGO_URI environment variable is not set!");
   process.exit(1);
+} else {
+  console.log(
+    `[INFO]:: MONGO_URI found: ${process.env.MONGO_URI.substring(0, 30)}... (truncated for security)`
+  );
 }
 
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => {})
-  .catch(() => {
+  .then(() => {
+    console.log("[INFO]:: Successfully connected to MongoDB.");
+  })
+  .catch((error) => {
+    console.log("[ERROR]:: Failed to connect to MongoDB:", error);
     process.exit(1);
   });
 
+// Nodemailer transporter
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
   secure: true,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
+// Mongoose User Schema
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   userID: { type: String, required: true },
@@ -58,11 +71,12 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   company: { type: String, required: false },
   companyFull: { type: String, required: false },
-  companyID: { type: String, required: false }
+  companyID: { type: String, required: false },
 });
 
 const User = mongoose.model("User", userSchema);
 
+// Encryption functions
 function encryptTo16Chars(username, key) {
   const algorithm = "aes-256-ctr";
   const iv = crypto.randomBytes(16);
@@ -81,13 +95,19 @@ function encryptTo32Chars(username, key) {
   return result;
 }
 
+// Random 256-bit key
 const key = crypto.randomBytes(32);
 
+/**
+ * LOGIN
+ */
 app.post("/api/login", loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   try {
     if (!username || !password) {
-      return res.status(400).json({ error: "Username and password are required" });
+      return res
+        .status(400)
+        .json({ error: "Username and password are required" });
     }
     const user = await User.findOne({ username });
     if (!user) {
@@ -98,7 +118,12 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ error: "Invalid username or password" });
     }
     const token = jwt.sign(
-      { userId: user.userID, username: user.username, company: user.company, companyID: user.companyID },
+      {
+        userId: user.userID,
+        username: user.username,
+        company: user.company,
+        companyID: user.companyID,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
@@ -109,6 +134,9 @@ app.post("/api/login", loginLimiter, async (req, res) => {
   }
 });
 
+/**
+ * SIGNUP
+ */
 app.post("/api/signup", async (req, res) => {
   const { username, email, password, company, companyFull } = req.body;
   try {
@@ -116,7 +144,11 @@ app.post("/api/signup", async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
     const userID = encryptTo16Chars(username, key);
-    const conflict = await User.findOne({ userID: { $regex: `^${userID.slice(0, 6)}` } });
+
+    // Checking conflict with partial userID
+    const conflict = await User.findOne({
+      userID: { $regex: `^${userID.slice(0, 6)}` },
+    });
     if (conflict) {
       return res.status(400).json({ error: "Conflict with existing userID" });
     }
@@ -127,7 +159,7 @@ app.post("/api/signup", async (req, res) => {
       email,
       password: hashedPassword,
       company,
-      companyFull
+      companyFull,
     });
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
@@ -136,6 +168,9 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
+/**
+ * CHECK-USERID
+ */
 app.post("/api/check-userid", async (req, res) => {
   const { pin } = req.body;
   try {
@@ -153,6 +188,9 @@ app.post("/api/check-userid", async (req, res) => {
   }
 });
 
+/**
+ * GET-COMPANY
+ */
 app.post("/api/get-company", async (req, res) => {
   const { userID } = req.body;
   try {
@@ -169,6 +207,9 @@ app.post("/api/get-company", async (req, res) => {
   }
 });
 
+/**
+ * GET-USERID (by companyID)
+ */
 app.post("/api/get-userID", async (req, res) => {
   const { companyID } = req.body;
   try {
@@ -177,7 +218,9 @@ app.post("/api/get-userID", async (req, res) => {
     }
     const user = await User.findOne({ companyID });
     if (!user) {
-      return res.status(404).json({ error: "User not found for this companyID" });
+      return res
+        .status(404)
+        .json({ error: "User not found for this companyID" });
     }
     res.status(200).json({ userID: user.userID });
   } catch (error) {
@@ -185,14 +228,23 @@ app.post("/api/get-userID", async (req, res) => {
   }
 });
 
+/**
+ * COMPANY
+ */
 app.post("/api/company", async (req, res) => {
   const { username, company, companyFull } = req.body;
   try {
     if (!username || !company || !companyFull) {
-      return res.status(400).json({ error: "Username and company name are required" });
+      return res
+        .status(400)
+        .json({ error: "Username and company name are required" });
     }
     const companyID = encryptTo32Chars(company, key);
-    const conflict = await User.findOne({ companyID: { $regex: `^${companyID.slice(0, 32)}` } });
+
+    // Check conflict
+    const conflict = await User.findOne({
+      companyID: { $regex: `^${companyID.slice(0, 32)}` },
+    });
     if (conflict) {
       return res.status(400).json({ error: "Conflict with existing companyID" });
     }
@@ -204,12 +256,18 @@ app.post("/api/company", async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.status(201).json({ message: "Company registered successfully", user: updatedUser });
+    res.status(201).json({
+      message: "Company registered successfully",
+      user: updatedUser,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error registering company" });
   }
 });
 
+/**
+ * DECRYPT-COMPANY
+ */
 app.post("/api/decrypt-company", async (req, res) => {
   const { company } = req.body;
   try {
@@ -220,12 +278,18 @@ app.post("/api/decrypt-company", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "Company not found" });
     }
-    res.status(200).json({ company: user.company, companyFull: user.companyFull });
+    res.status(200).json({
+      company: user.company,
+      companyFull: user.companyFull,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+/**
+ * CHECK-USERNAME
+ */
 app.post("/api/check-username", async (req, res) => {
   const { username } = req.body;
   try {
@@ -243,11 +307,16 @@ app.post("/api/check-username", async (req, res) => {
   }
 });
 
+/**
+ * CHECK-COMPANY
+ */
 app.post("/api/check-company", async (req, res) => {
   const { company, companyFull } = req.body;
   try {
     if (!company || !companyFull) {
-      return res.status(400).json({ error: "Company name and full details are required" });
+      return res
+        .status(400)
+        .json({ error: "Company name and full details are required" });
     }
     const existingCompany = await User.findOne({ company, companyFull });
     if (existingCompany) {
@@ -260,6 +329,9 @@ app.post("/api/check-company", async (req, res) => {
   }
 });
 
+/**
+ * CHECK-EMAIL
+ */
 app.post("/api/check-email", async (req, res) => {
   const { email } = req.body;
   try {
@@ -277,6 +349,9 @@ app.post("/api/check-email", async (req, res) => {
   }
 });
 
+/**
+ * FORGOT-PASSWORD
+ */
 app.post("/api/forgot-password", async (req, res) => {
   const { username, email, company, companyFull } = req.body;
   try {
@@ -285,13 +360,15 @@ app.post("/api/forgot-password", async (req, res) => {
     }
     const user = await User.findOne({ username, email, company, companyFull });
     if (!user) {
-      return res.status(404).json({ error: "User not found with these details" });
+      return res
+        .status(404)
+        .json({ error: "User not found with these details" });
     }
     const mailOptions = {
       from: `"Amixtra Support" <info.support@amixtra.com>`,
       to: email,
       subject: "Forgot Password Request",
-      text: `Hello!`
+      text: "Hello!",
     };
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "Email sent successfully" });
@@ -300,11 +377,16 @@ app.post("/api/forgot-password", async (req, res) => {
   }
 });
 
+/**
+ * GET CATEGORIES
+ */
 app.get("/api/categories", async (req, res) => {
   const { company, language = "en" } = req.query;
   try {
     if (!company) {
-      return res.status(400).json({ error: "Missing required query parameter: company" });
+      return res
+        .status(400)
+        .json({ error: "Missing required query parameter: company" });
     }
     const user = await User.findOne({ companyID: company });
     if (!user) {
@@ -314,9 +396,13 @@ app.get("/api/categories", async (req, res) => {
       .collection("items")
       .find({ userID: user.userID })
       .toArray();
+
     if (!userItems || userItems.length === 0) {
-      return res.status(404).json({ error: "No categories found for this user" });
+      return res
+        .status(404)
+        .json({ error: "No categories found for this user" });
     }
+
     const categories = userItems
       .flatMap((item) => item.categories)
       .map((category) => ({
@@ -333,14 +419,18 @@ app.get("/api/categories", async (req, res) => {
           itemImageUrl: item.itemImageUrl,
           itemDescription: item.itemDescription,
           allergies: item.allergies,
-        }))
+        })),
       }));
+
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+/**
+ * DELETE CATEGORIES
+ */
 app.delete("/api/categories", async (req, res) => {
   const { userID, categoryId } = req.body;
   try {
@@ -348,12 +438,14 @@ app.delete("/api/categories", async (req, res) => {
       { userID },
       {
         $pull: {
-          categories: { categoryId: parseInt(categoryId, 10) }
-        }
+          categories: { categoryId: parseInt(categoryId, 10) },
+        },
       }
     );
     if (result.modifiedCount === 0) {
-      return res.status(404).json({ error: "Category not found or already deleted" });
+      return res
+        .status(404)
+        .json({ error: "Category not found or already deleted" });
     }
     return res.status(200).json({ message: "Category deleted successfully" });
   } catch (error) {
@@ -361,8 +453,12 @@ app.delete("/api/categories", async (req, res) => {
   }
 });
 
+/**
+ * ADD CATEGORY
+ */
 app.post("/api/categories", async (req, res) => {
-  const { userID, categoryNameEN, categoryNameJP, categoryNameKR, categoryNameZH } = req.body;
+  const { userID, categoryNameEN, categoryNameJP, categoryNameKR, categoryNameZH } =
+    req.body;
   if (!userID || !categoryNameEN) {
     return res.status(400).json({ error: "Missing userID or categoryName" });
   }
@@ -371,34 +467,41 @@ app.post("/api/categories", async (req, res) => {
     if (!doc) {
       return res.status(404).json({ error: "No items doc found for this user" });
     }
+
     const existingCategoryIds = doc.categories.map((cat) => cat.categoryId);
     const maxId = existingCategoryIds.length > 0 ? Math.max(...existingCategoryIds) : 0;
     const newId = maxId + 1;
+
     const newCategory = {
       categoryId: newId,
       categoryName: {
         en: categoryNameEN,
         ko: categoryNameKR || categoryNameEN,
         ja: categoryNameJP || categoryNameEN,
-        zh: categoryNameZH || categoryNameEN
+        zh: categoryNameZH || categoryNameEN,
       },
-      categoryItems: []
+      categoryItems: [],
     };
+
     await mongoose.connection.collection("items").updateOne(
       { userID },
       { $push: { categories: newCategory } }
     );
+
     res.status(201).json({
       message: "Category created successfully",
       categoryId: newId,
       categoryName: categoryNameEN,
-      categoryItems: []
+      categoryItems: [],
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+/**
+ * PATCH ITEM FLAGS
+ */
 app.patch("/api/items/flags", async (req, res) => {
   const { userID, categoryId, itemId, flagName, newValue } = req.body;
   try {
@@ -406,26 +509,35 @@ app.patch("/api/items/flags", async (req, res) => {
     if (!doc) {
       return res.status(404).json({ error: "No items doc found for this user" });
     }
+
     await mongoose.connection.collection("items").updateOne(
-      { userID, "categories.categoryId": categoryId, "categories.categoryItems.itemId": itemId },
+      {
+        userID,
+        "categories.categoryId": categoryId,
+        "categories.categoryItems.itemId": itemId,
+      },
       {
         $set: {
-          [`categories.$[cat].categoryItems.$[itm].${flagName}`]: newValue
-        }
+          [`categories.$[cat].categoryItems.$[itm].${flagName}`]: newValue,
+        },
       },
       {
         arrayFilters: [
           { "cat.categoryId": categoryId },
-          { "itm.itemId": itemId }
-        ]
+          { "itm.itemId": itemId },
+        ],
       }
     );
+
     return res.status(200).json({ message: "Flag updated successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+/**
+ * ADD ITEM
+ */
 app.post("/api/items", async (req, res) => {
   const {
     userID,
@@ -438,7 +550,7 @@ app.post("/api/items", async (req, res) => {
     itemPrice,
     itemDescription,
     itemImageUrl,
-    allergies
+    allergies,
   } = req.body;
   if (!userID || !categoryId || !itemNameEN) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -460,7 +572,7 @@ app.post("/api/items", async (req, res) => {
         en: itemNameEN,
         ko: itemNameKR || itemNameEN,
         ja: itemNameJP || itemNameEN,
-        zh: itemNameZH || itemNameEN
+        zh: itemNameZH || itemNameEN,
       },
       itemPrice: itemPrice || 0,
       itemDescription: itemDescription || "",
@@ -471,27 +583,29 @@ app.post("/api/items", async (req, res) => {
       itemPauseFlag: false,
       allergies: allergies,
     };
+
     await mongoose.connection.collection("items").updateOne(
       { userID, "categories.categoryId": parseInt(categoryId, 10) },
       {
         $push: {
-          "categories.$.categoryItems": newItem
-        }
+          "categories.$.categoryItems": newItem,
+        },
       }
     );
+
     return res.status(201).json({
       message: "Item added successfully",
       itemId: itemId,
       itemName: itemNameEN,
       itemPrice: itemPrice,
       itemDescription: itemDescription,
-      itemImageUrl: itemImageUrl
+      itemImageUrl: itemImageUrl,
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });

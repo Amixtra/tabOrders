@@ -7,8 +7,8 @@ import Cart from "components/Cart/Cart";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 import RestaurantIndicator from "components/@share/Layout/indicator/RestaurantIndicator";
 import Nav from "components/Nav/Nav";
-// import AdPage from "components/@share/Layout/ad/Ad";
-// import StartPage from "components/@share/Layout/start/Start";
+import AdPage from "components/@share/Layout/ad/Ad";
+import StartPage from "components/@share/Layout/start/Start";
 import { useLocation } from "react-router";
 import ErrorPage from "components/Error/ErrorPage";
 import { LanguageCode } from "db/constants";
@@ -19,7 +19,7 @@ const INACTIVITY_TIMEOUT = 90000;
 const TablePage = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [showAd, setShowAd] = useState(false);
-  // const [showStartPage, setShowStartPage] = useState(true);
+  const [showStartPage, setShowStartPage] = useState(true);
   const [isOverlayActive, setIsOverlayActive] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>("en");
   const [isUnLockFromTabletOn, setIsUnLockFromTabletOn] = useState(true);
@@ -82,14 +82,14 @@ const TablePage = () => {
     return <ErrorPage />;
   }
 
-  // const handleCloseAd = () => {
-  //   setShowAd(false);
-  //   resetInactivityTimer();
-  // };
+  const handleCloseAd = () => {
+    setShowAd(false);
+    resetInactivityTimer();
+  };
 
-  // const handleCloseStartPage = () => {
-  //   setShowStartPage(false);
-  // };
+  const handleCloseStartPage = () => {
+    setShowStartPage(false);
+  };
 
   return (
     <>
@@ -114,11 +114,11 @@ const TablePage = () => {
           Screen Locked
         </div>
       )}
-      {/* {showStartPage ? (
+      {showStartPage ? (
         <div onClick={handleCloseStartPage}>
           <StartPage />
         </div>
-      ) : ( */}
+      ) : (
         <>
           <Header>
             <TableIndicator 
@@ -126,12 +126,12 @@ const TablePage = () => {
             />
             <RestaurantIndicator />
           </Header>
-          {/* {showAd && 
+          {showAd && 
             <AdPage 
               onClose={handleCloseAd} 
               selectedLanguage={selectedLanguage}
             />
-          } */}
+          }
           <GridContainer>
             <Nav
               onCategorySelect={setSelectedCategory}
@@ -150,7 +150,7 @@ const TablePage = () => {
             setSelectedLanguage={setSelectedLanguage}
           />
         </>
-      {/* )} */}
+      )}
     </>
   );
 };
