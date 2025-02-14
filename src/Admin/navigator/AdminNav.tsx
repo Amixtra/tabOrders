@@ -20,6 +20,7 @@ interface ToggleUpdateFields {
   isToggleOrderOn?: boolean;
   isToggleLockOn?: boolean;
   isToggleMuteOn?: boolean;
+  isToggleCounterOn?: boolean;
 }
 
 interface NavProps {
@@ -31,6 +32,7 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
   const [isToggleOrderOn, setIsToggleOrderOn] = useState(true);
   const [isToggleLockOn, setIsToggleLockOn] = useState(true);
   const [isToggleMuteOn, setIsToggleMuteOn] = useState(true);
+  const [isToggleCounterOn, setIsToggleCounterOn] = useState(true);
   const [userID, setUserID] = useState<string | null>(null);
   const [company, setCompany] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -106,6 +108,7 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
           setIsToggleOrderOn(data.isToggleOrderOn);
           setIsToggleLockOn(data.isToggleLockOn);
           setIsToggleMuteOn(data.isToggleMuteOn);
+          setIsToggleCounterOn(data.isToggleCounterOn);
         } catch (error) {
           console.error("Error fetching toggles:", error);
         }
@@ -127,6 +130,11 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
   const handleToggleVolume = (newValue: boolean) => {
     setIsToggleMuteOn(newValue);
     updateTogglesInDB({ isToggleMuteOn: newValue });
+  };
+
+  const handleToggleCounter = (newValue: boolean) => {
+    setIsToggleCounterOn(newValue);
+    updateTogglesInDB({ isToggleCounterOn: newValue });
   };
 
   const updateTogglesInDB = async (updateFields: ToggleUpdateFields) => {
@@ -231,6 +239,24 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
               onClick={() => handleToggleVolume(true)}
             >
               Unmute
+            </StyledToggleButton>
+          </div>
+        </StyledToggleSection>
+        
+        <StyledToggleSection>
+          <h4>Payment Option</h4>
+          <div className="on-off-container">
+            <StyledToggleButton
+              active={!isToggleCounterOn}
+              onClick={() => handleToggleCounter(false)}
+            >
+              Table
+            </StyledToggleButton>
+            <StyledToggleButton
+              active={isToggleCounterOn}
+              onClick={() => handleToggleCounter(true)}
+            >
+              Counter
             </StyledToggleButton>
           </div>
         </StyledToggleSection>

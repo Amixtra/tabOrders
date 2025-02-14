@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { company, isToggleOrderOn, isToggleLockOn, isToggleMuteOn } = req.body;
+    const { company, isToggleOrderOn, isToggleLockOn, isToggleMuteOn, isToggleCounterOn } = req.body;
     if (!company) {
       return res.status(400).json({ error: "company is required in request body" });
     }
@@ -37,6 +37,7 @@ router.post("/", async (req, res) => {
     if (typeof isToggleOrderOn === "boolean") toggles.isToggleOrderOn = isToggleOrderOn;
     if (typeof isToggleLockOn === "boolean")  toggles.isToggleLockOn  = isToggleLockOn;
     if (typeof isToggleMuteOn === "boolean")  toggles.isToggleMuteOn  = isToggleMuteOn;
+    if (typeof isToggleCounterOn === "boolean")  toggles.isToggleCounterOn  = isToggleCounterOn;
 
     await toggles.save();
     return res.status(200).json({ message: "Toggles updated", toggles });

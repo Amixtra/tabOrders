@@ -12,7 +12,6 @@ const StyledNav = styled.aside`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100vh;
 `;
 
@@ -80,7 +79,7 @@ export const StyledNavBillOutButton = styled.button`
   text-transform: uppercase;
 
   @media (max-width: 1080px) {
-    padding: 12px 28px;
+    padding: 10px 30px;
     font-size: 16px;
   }
 `;

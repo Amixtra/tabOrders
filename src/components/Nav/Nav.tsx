@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import useFetch from "hooks/useFeth";
 import StyledNav, {
   StyledNavBillOutButton,
@@ -30,21 +30,35 @@ const Nav: React.FC<NavProps> = ({
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const company = queryParams.get("company");
+
   const [data] = useFetch(
     `http://localhost:8080/api/categories?company=${company}&language=${selectedLanguage}`
   );
+
+  // 1) State to handle Waiter
   const [showWaiter, setShowWaiter] = useState(false);
+  // 2) State to handle BillOut
   const [showBill, setShowBill] = useState(false);
 
   const navLocale = NavLocales[selectedLanguage];
 
+  // Waiter open/close
   const handleWaiterOpen = () => {
     setShowWaiter(true);
     setIsOverlayActive(true);
   };
-
   const handleWaiterClose = () => {
     setShowWaiter(false);
+    setIsOverlayActive(false);
+  };
+
+  // BillOut open/close
+  const handleBillOpen = () => {
+    setShowBill(true);
+    setIsOverlayActive(true);
+  };
+  const handleBillClose = () => {
+    setShowBill(false);
     setIsOverlayActive(false);
   };
 
@@ -58,6 +72,8 @@ const Nav: React.FC<NavProps> = ({
             style={{ width: "100%", borderRadius: "10px" }}
           />
         </StyledNavLogo>
+
+        {/* "All Menu" button */}
         <StyledNavSectionButton
           onClick={() => onCategorySelect(null)}
           style={{
@@ -67,28 +83,41 @@ const Nav: React.FC<NavProps> = ({
         >
           {navLocale.allMenu}
         </StyledNavSectionButton>
+
+        {/* Category buttons */}
         {data &&
           data.map((item: CategoryProps) => (
             <StyledNavSectionButton
               key={item.categoryId}
               onClick={() => onCategorySelect(item.categoryId)}
               style={{
-                backgroundColor: selectedCategory === item.categoryId ? "#ff0000" : "#dfdfdf",
-                color: selectedCategory === item.categoryId ? "#ffffff" : "#000",
+                backgroundColor:
+                  selectedCategory === item.categoryId ? "#ff0000" : "#dfdfdf",
+                color: selectedCategory === item.categoryId
+                  ? "#ffffff"
+                  : "#000",
               }}
             >
               {item.categoryName}
             </StyledNavSectionButton>
           ))}
       </StyledNavContent>
-      <StyledNavBillOutButton onClick={() => setShowBill(true)}>
-        Bill Out
-      </StyledNavBillOutButton>
-      <StyledNavWaiterButton onClick={handleWaiterOpen}>
-        {navLocale.callWaiter}
-      </StyledNavWaiterButton>
-      {showWaiter && <Waiter setShowWaiter={handleWaiterClose} />}
-      {showBill && <BillOut />}
+
+      <div style={{ marginTop: "auto" }}>
+        {/* Waiter button */}
+        <StyledNavWaiterButton onClick={handleWaiterOpen}>
+          {navLocale.callWaiter}
+        </StyledNavWaiterButton>
+        {showWaiter && <Waiter setShowWaiter={handleWaiterClose} />}
+
+        {/* BillOut button */}
+        <StyledNavBillOutButton onClick={handleBillOpen}>
+          {navLocale.billOut}
+        </StyledNavBillOutButton>
+
+        {/* BillOut Modal */}
+        <BillOut isOpen={showBill} onClose={handleBillClose} />
+      </div>
     </StyledNav>
   );
 };

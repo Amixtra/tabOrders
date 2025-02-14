@@ -12,6 +12,7 @@ export interface FooterStrings {
 export interface NavStrings {
     allMenu: string;
     callWaiter: string;
+    billOut: string;
 };
 
 export interface TableIndicatorStrings {
@@ -99,18 +100,22 @@ export const NavLocales: Record<LanguageCode, NavStrings> = {
   en: {
     allMenu: "All Menu",
     callWaiter: "Call Waiter",
+    billOut: "Bill Out",
   },
   ko: {
     allMenu: "전체 메뉴",
     callWaiter: "직원 호출",
+    billOut: "결제 요청",
   },
   ja: {
     allMenu: "すべてのメニュー",
     callWaiter: "スタッフを呼ぶ",
+    billOut: "請求する",
   },
   zh: {
     allMenu: "所有菜单",
     callWaiter: "呼叫服务员",
+    billOut: "开账单",
   },
 };
 

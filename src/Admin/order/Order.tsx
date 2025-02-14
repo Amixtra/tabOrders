@@ -63,22 +63,8 @@ const Order = () => {
       });
 
       const newOrders = response.data;
-      const prevUnconfirmedOrders = ordersRef.current.filter((o: Order) => o.confirmStatus !== "Confirmed").length;
-      const newUnconfirmedOrders = newOrders.filter((o: Order) => o.confirmStatus !== "Confirmed").length;
-
       setOrders(newOrders);
       ordersRef.current = newOrders;
-
-      if (newUnconfirmedOrders > prevUnconfirmedOrders) {
-        const playNotificationSound = () => {
-          const audio = new Audio("/assets/sound/bell.mp3");
-          audio.play().catch(error => {
-            console.warn("Audio playback was blocked. User interaction required:", error);
-          });
-        };
-        playNotificationSound();
-        startLoggingInterval();
-      }
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -93,27 +79,6 @@ const Order = () => {
   useEffect(() => {
     ordersRef.current = orders;
   }, [orders]);
-
-  const startLoggingInterval = () => {
-    if (intervalRef.current) return;
-
-    intervalRef.current = setInterval(() => {
-      const unconfirmedOrders = ordersRef.current.filter(o => o.confirmStatus !== "Confirmed");
-
-      if (unconfirmedOrders.length > 0) {
-        const playNotificationSound = () => {
-          const audio = new Audio("/assets/sound/bell.mp3");
-          audio.play().catch(error => {
-            console.warn("Audio playback was blocked. User interaction required:", error);
-          });
-        };
-        playNotificationSound();
-      } else {
-        clearInterval(intervalRef.current!);
-        intervalRef.current = null;
-      }
-    }, 5000);
-  };
 
   const formatOrderTime = (isoString: string) => {
     if (!isoString) return "N/A";
