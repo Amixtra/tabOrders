@@ -29,7 +29,7 @@ const TableSetting = () => {
     if (userID) {
       const fetchCompany = async () => {
         try { 
-          const response = await fetch("http://localhost:8080/api/get-company", {
+          const response = await fetch("http://43.200.251.48:8080/api/get-company", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userID }),

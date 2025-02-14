@@ -44,7 +44,7 @@ const TablePage = () => {
     const fetchToggles = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/toggles?company=${company}`
+          `http://43.200.251.48:8080/api/toggles?company=${company}`
         );
         const data = response.data;
         setIsUnLockFromTabletOn(data.isToggleLockOn);

@@ -57,7 +57,7 @@ const InputPin = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/check-userid", {
+      const response = await fetch("http://43.200.251.48:8080/api/check-userid", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: pinDigits }),

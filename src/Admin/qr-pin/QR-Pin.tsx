@@ -32,7 +32,7 @@ const getTokenData = () => {
 const generateNewQRValue = () => {
     const tokenData = getTokenData();
     return tokenData 
-      ? `http://localhost:3000/tableSetting?userID=${tokenData.userId}&token=${Math.random().toString(36).substr(2, 10)}`
+      ? `http://43.200.251.48:3000/tableSetting?userID=${tokenData.userId}&token=${Math.random().toString(36).substr(2, 10)}`
       : "";
 };
 

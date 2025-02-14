@@ -58,7 +58,7 @@ const Order = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/orders", {
+      const response = await axios.get("http://43.200.251.48:8080/api/orders", {
         params: { userID: userData?.userId },
       });
 
@@ -97,7 +97,7 @@ const Order = () => {
   const handleConfirm = async () => {
     setIsPopupOpen(false);
     try {
-      await axios.patch("http://localhost:8080/api/orders/confirm", {
+      await axios.patch("http://43.200.251.48:8080/api/orders/confirm", {
         orderNumber: selectedOrder?.orderNumber,
         userID: userData?.userId,
       });

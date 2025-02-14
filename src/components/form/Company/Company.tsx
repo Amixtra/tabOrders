@@ -44,7 +44,7 @@ const Company = () => {
     }
   
     try {
-      await axios.post("http://localhost:8080/api/company", { username, company, companyFull });
+      await axios.post("http://43.200.251.48:8080/api/company", { username, company, companyFull });
       alert("User setup Complete!");
       navigate("/");
     } catch (error) {
@@ -60,7 +60,7 @@ const Company = () => {
     }
   
     try {
-      const response = await axios.post("http://localhost:8080/api/check-company", {
+      const response = await axios.post("http://43.200.251.48:8080/api/check-company", {
         company,
         companyFull,
       });

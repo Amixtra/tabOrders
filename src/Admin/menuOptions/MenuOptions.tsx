@@ -73,7 +73,7 @@ const MenuOptions: React.FC = () => {
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/categories?company=6afc7dfc534894d02ec6aed2f3aa2cf2&language=en')
+    fetch('http://43.200.251.48:8080/api/categories?company=6afc7dfc534894d02ec6aed2f3aa2cf2&language=en')
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -112,7 +112,7 @@ const MenuOptions: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const response = await fetch('http://localhost:8080/api/categories', {
+      const response = await fetch('http://43.200.251.48:8080/api/categories', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -150,7 +150,7 @@ const MenuOptions: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:8080/api/categories', {
+      const response = await fetch('http://43.200.251.48:8080/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -201,7 +201,7 @@ const MenuOptions: React.FC = () => {
     updated[categoryIndex].categoryItems[itemIndex][flagName] = !oldVal;
     setCategories(updated);
 
-    fetch('http://localhost:8080/api/items/flags', {
+    fetch('http://43.200.251.48:8080/api/items/flags', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -247,7 +247,7 @@ const MenuOptions: React.FC = () => {
       formData.append('category', category)
       formData.append('company', token.companyID)
 
-      const res = await fetch('http://localhost:8080/api/upload', {
+      const res = await fetch('http://43.200.251.48:8080/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -289,7 +289,7 @@ const MenuOptions: React.FC = () => {
         }
       }
   
-      const response = await fetch('http://localhost:8080/api/items', {
+      const response = await fetch('http://43.200.251.48:8080/api/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

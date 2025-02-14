@@ -42,7 +42,7 @@ const ProductListPage: React.FC<ProductListPageProps> = ({
     const fetchToggles = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/toggles?company=${company}`
+          `http://43.200.251.48:8080/api/toggles?company=${company}`
         );
         const data = response.data;
         setIsOrderFromTabletAllowed(data.isToggleOrderOn);
@@ -63,7 +63,7 @@ const ProductListPage: React.FC<ProductListPageProps> = ({
     const fetchCategories = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/categories?company=${company}&language=${selectedLanguage}`
+          `http://43.200.251.48:8080/api/categories?company=${company}&language=${selectedLanguage}`
         );
         if (isMounted) setCategories(res.data);
       } catch (error) {

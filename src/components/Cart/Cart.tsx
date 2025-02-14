@@ -158,7 +158,7 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
 
   const handleConfirmOrder = async () => {
     try {
-      const userIdResponse = await axios.post("http://localhost:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
         companyID: company,
       });
 
@@ -169,7 +169,7 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
         cartItemQuantity: item.cartItemQuantity,
       }));
 
-      await axios.post("http://localhost:8080/api/orders", {
+      await axios.post("http://43.200.251.48:8080/api/orders", {
         userID,
         items,
         totalPrice: cart.cartTotalAmount,

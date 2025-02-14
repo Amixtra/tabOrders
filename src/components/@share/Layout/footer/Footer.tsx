@@ -77,7 +77,7 @@ const Footer: React.FC<FooterProps> = ({
 
   const handleOrderHistoryOpen = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/order-history", {
+      const response = await axios.get("http://43.200.251.48:8080/api/order-history", {
         params: { 
           userID: '6a7d23fb7bca2806',
           tableNumber: id,

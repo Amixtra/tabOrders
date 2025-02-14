@@ -32,7 +32,7 @@ const Nav: React.FC<NavProps> = ({
   const company = queryParams.get("company");
 
   const [data] = useFetch(
-    `http://localhost:8080/api/categories?company=${company}&language=${selectedLanguage}`
+    `http://43.200.251.48:8080/api/categories?company=${company}&language=${selectedLanguage}`
   );
 
   // 1) State to handle Waiter
