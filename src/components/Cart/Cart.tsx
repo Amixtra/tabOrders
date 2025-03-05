@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import StyledCart from "./Cart.styles";
 import CartListItem from "./CartListItem/CartListItem";
 import Button from "components/@share/Button/Button";
@@ -7,53 +6,123 @@ import { useAppDispatch, useAppSelector } from "features/store/rootReducer";
 import { clearCart, getTotal, toggleCartOpen } from "features/cart/cartReducer";
 import Toast from "components/@share/Toast/Toast";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
-import { 
-  CartOrderLocales, 
-  CartOrderPopupLocales, 
-  LanguageCode 
+import {
+  CartOrderLocales,
+  CartOrderPopupLocales,
+  LanguageCode,
 } from "db/constants";
-import { 
-  BackgroundOverlay, 
-  OrderPopupDiv, 
-  PopupButtons, 
-  PopupContent, 
-  TotalPrice 
+import {
+  BackgroundOverlay,
+  OrderPopupDiv,
+  PopupButtons,
+  PopupContent,
+  TotalPrice,
 } from "./CartPop.styles";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { customAlphabet } from 'nanoid';
+import { customAlphabet } from "nanoid";
+
+// Helper: Aggregates duplicates by itemName.
+function aggregateCartItems(
+  items: {
+    itemName?: string;
+    cartItemQuantity?: number;
+    itemPrice?: number;
+  }[]
+) {
+  const map: Record<
+    string,
+    { itemName: string; cartItemQuantity: number; itemPrice: number }
+  > = {};
+
+  for (const item of items) {
+    const name = item.itemName || "No name";
+    if (!map[name]) {
+      map[name] = {
+        itemName: name,
+        itemPrice: item.itemPrice || 0,
+        cartItemQuantity: item.cartItemQuantity || 0,
+      };
+    } else {
+      map[name].cartItemQuantity += item.cartItemQuantity || 0;
+    }
+  }
+  return Object.values(map);
+}
+
+// New Helper: Groups items by assignedUser and then aggregates by itemName.
+function aggregateCartItemsByUser(
+  items: {
+    itemName?: string;
+    cartItemQuantity?: number;
+    itemPrice?: number;
+    assignedUser?: string;
+  }[]
+) {
+  // Group items by user (or "Unassigned" if no assignedUser)
+  const breakdown: Record<
+    string,
+    Record<
+      string,
+      { itemName: string; cartItemQuantity: number; itemPrice: number }
+    >
+  > = {};
+
+  items.forEach((item) => {
+    const userKey = item.assignedUser || "Unassigned";
+    if (!breakdown[userKey]) {
+      breakdown[userKey] = {};
+    }
+    const name = item.itemName || "No name";
+    if (!breakdown[userKey][name]) {
+      breakdown[userKey][name] = {
+        itemName: name,
+        itemPrice: item.itemPrice || 0,
+        cartItemQuantity: item.cartItemQuantity || 0,
+      };
+    } else {
+      breakdown[userKey][name].cartItemQuantity += item.cartItemQuantity || 0;
+    }
+  });
+
+  // Build the final result with an array of items and a total per user.
+  const result: Record<string, { items: any[]; total: number }> = {};
+  for (const user in breakdown) {
+    const itemsArr = Object.values(breakdown[user]);
+    const total = itemsArr.reduce(
+      (sum, item) => sum + item.itemPrice * item.cartItemQuantity,
+      0
+    );
+    result[user] = { items: itemsArr, total };
+  }
+  return result;
+}
 
 export const OrderPopup: React.FC<{
-  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number; }[];
+  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number }[];
   totalPrice: string;
   onConfirm: () => void;
   onCancel: () => void;
   selectedLanguage: LanguageCode;
 }> = ({ cartItems, totalPrice, onConfirm, onCancel, selectedLanguage }) => {
   const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
+  const aggregated = aggregateCartItems(cartItems);
 
   return (
     <OrderPopupDiv>
       <PopupContent>
-        <h3
-          dangerouslySetInnerHTML={{ __html: cartOrderPopupLocale.title }}
-        />
-        
-        {cartItems.map((item, idx) => (
+        <h3 dangerouslySetInnerHTML={{ __html: cartOrderPopupLocale.title }} />
+        {aggregated.map((item, idx) => (
           <p key={idx}>
-            <span>{item.itemName ?? "No name"}</span>
+            <span>{item.itemName}</span>
             <span>
-              {item.cartItemQuantity ?? 0} {item.cartItemQuantity === 1 ? cartOrderPopupLocale.order : cartOrderPopupLocale.orders }
+              {item.cartItemQuantity}{" "}
+              {item.cartItemQuantity === 1
+                ? cartOrderPopupLocale.order
+                : cartOrderPopupLocale.orders}
             </span>
-            <span>₱{item.itemPrice ?? 1}.00</span>
-            <span>
-              ₱{
-                (
-                  (item.itemPrice ?? 0) *
-                  (item.cartItemQuantity ?? 1)
-                ).toFixed(2)
-              }
-            </span>
+            <span>₱{item.itemPrice}.00</span>
+            <span>₱{(item.itemPrice * item.cartItemQuantity).toFixed(2)}</span>
           </p>
         ))}
       </PopupContent>
@@ -74,7 +143,7 @@ export const OrderPopup: React.FC<{
 };
 
 export const AdminOrderPopup: React.FC<{
-  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number; }[];
+  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number }[];
   totalPrice: string;
   onConfirm: () => void;
   onCancel: () => void;
@@ -82,29 +151,27 @@ export const AdminOrderPopup: React.FC<{
   orderNumber: string;
 }> = ({ cartItems, totalPrice, onConfirm, onCancel, selectedLanguage, orderNumber }) => {
   const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
+  const aggregated = aggregateCartItems(cartItems);
 
   return (
     <OrderPopupDiv>
       <PopupContent>
         <h3
-          dangerouslySetInnerHTML={{ __html: `${cartOrderPopupLocale.admin} ${orderNumber}` }}
+          dangerouslySetInnerHTML={{
+            __html: `${cartOrderPopupLocale.admin} ${orderNumber}`,
+          }}
         />
-        
-        {cartItems.map((item, idx) => (
+        {aggregated.map((item, idx) => (
           <p key={idx}>
-            <span>{item.itemName ?? "No name"}</span>
+            <span>{item.itemName}</span>
             <span>
-              {item.cartItemQuantity ?? 0} {item.cartItemQuantity === 1 ? cartOrderPopupLocale.order : cartOrderPopupLocale.orders }
+              {item.cartItemQuantity}{" "}
+              {item.cartItemQuantity === 1
+                ? cartOrderPopupLocale.order
+                : cartOrderPopupLocale.orders}
             </span>
-            <span>₱{item.itemPrice ?? 1}.00</span>
-            <span>
-              ₱{
-                (
-                  (item.itemPrice ?? 0) *
-                  (item.cartItemQuantity ?? 1)
-                ).toFixed(2)
-              }
-            </span>
+            <span>₱{item.itemPrice}.00</span>
+            <span>₱{(item.itemPrice * item.cartItemQuantity).toFixed(2)}</span>
           </p>
         ))}
       </PopupContent>
@@ -124,6 +191,200 @@ export const AdminOrderPopup: React.FC<{
   );
 };
 
+export const BillOutOrderPopup: React.FC<{
+  cartItems: {
+    itemName?: string;
+    cartItemQuantity?: number;
+    itemPrice?: number;
+    assignedUser?: string;
+  }[];
+  totalPrice: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  selectedLanguage: LanguageCode;
+  orderNumber: string;
+}> = ({ cartItems, totalPrice, onConfirm, onCancel, selectedLanguage, orderNumber }) => {
+  const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
+  // Check if any item has an assignedUser property.
+  const hasUserAssignment = cartItems.some((item) => item.assignedUser);
+
+  let content;
+  if (hasUserAssignment) {
+    // Group by assigned user if available.
+    const breakdownByUser = aggregateCartItemsByUser(cartItems);
+    content = (
+      <>
+        {Object.keys(breakdownByUser).map((user, idx) => (
+          <div
+            key={idx}
+            style={{
+              marginBottom: "10px",
+              border: "1px solid #ccc",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <h4
+              style={{
+                marginBottom: "10px",
+                fontSize: "36px"
+              }}
+            >{user} - Orders</h4>
+            {breakdownByUser[user].items.map((item, i) => (
+              <p key={i}
+                style={{
+                  marginBottom: "30px",
+                }}
+              >
+                <span>{item.itemName}</span>
+                <span>
+                  {item.cartItemQuantity}{" "}
+                  {item.cartItemQuantity === 1
+                    ? cartOrderPopupLocale.order
+                    : cartOrderPopupLocale.orders}
+                </span>
+                <span>₱{item.itemPrice}.00</span>
+                <span>₱{(item.itemPrice * item.cartItemQuantity).toFixed(2)}</span>
+              </p>
+            ))}
+            <strong
+              style={{
+                fontSize: "36px"
+              }}
+            >Total: ₱{breakdownByUser[user].total.toFixed(2)}</strong>
+          </div>
+        ))}
+      </>
+    );
+  } else {
+    // Fallback to simple aggregation.
+    const aggregated = aggregateCartItems(cartItems);
+    content = aggregated.map((item, idx) => (
+      <p key={idx}>
+        <span>{item.itemName}</span>
+        <span>
+          {item.cartItemQuantity}{" "}
+          {item.cartItemQuantity === 1
+            ? cartOrderPopupLocale.order
+            : cartOrderPopupLocale.orders}
+        </span>
+        <span>₱{item.itemPrice}.00</span>
+        <span>₱{(item.itemPrice * item.cartItemQuantity).toFixed(2)}</span>
+      </p>
+    ));
+  }
+
+  return (
+    <OrderPopupDiv>
+      <PopupContent>
+        <h3 dangerouslySetInnerHTML={{ __html: `${orderNumber}` }} />
+        {content}
+      </PopupContent>
+      <TotalPrice>
+        <p>{cartOrderPopupLocale.total}:</p>
+        <p>₱{totalPrice}</p>
+      </TotalPrice>
+      <PopupButtons>
+        <Button color="WHITE" bgColor="GREY600" onClick={onCancel}>
+          {cartOrderPopupLocale.cancel}
+        </Button>
+        <Button color="WHITE" bgColor="MAIN" onClick={onConfirm}>
+          Bill Out
+        </Button>
+      </PopupButtons>
+    </OrderPopupDiv>
+  );
+};
+
+export const BillOutCustomerPopup: React.FC<{
+  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number }[];
+  totalPrice: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  selectedLanguage: LanguageCode;
+  orderNumber: string;
+}> = ({ cartItems, totalPrice, onConfirm, onCancel, selectedLanguage, orderNumber }) => {
+  const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
+  const aggregated = aggregateCartItems(cartItems);
+
+  return (
+    <BackgroundOverlay>
+      <OrderPopupDiv>
+        <PopupContent>
+          <h3 dangerouslySetInnerHTML={{ __html: `${orderNumber}` }} />
+          {aggregated.map((item, idx) => (
+            <p key={idx}>
+              <span>{item.itemName}</span>
+              <span>
+                {item.cartItemQuantity}{" "}
+                {item.cartItemQuantity === 1
+                  ? cartOrderPopupLocale.order
+                  : cartOrderPopupLocale.orders}
+              </span>
+              <span>₱{item.itemPrice}.00</span>
+              <span>₱{(item.itemPrice * item.cartItemQuantity).toFixed(2)}</span>
+            </p>
+          ))}
+        </PopupContent>
+        <TotalPrice>
+          <p>{cartOrderPopupLocale.total}:</p>
+          <p>₱{totalPrice}</p>
+        </TotalPrice>
+        <PopupButtons>
+          <Button color="WHITE" bgColor="GREY600" onClick={onCancel}>
+            Close
+          </Button>
+          <Button color="WHITE" bgColor="MAIN" onClick={onConfirm}>
+            Go to Bill Out Page
+          </Button>
+        </PopupButtons>
+      </OrderPopupDiv>
+    </BackgroundOverlay>
+  );
+};
+
+export const BillOutPaidPopup: React.FC<{
+  cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number }[];
+  totalPrice: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  selectedLanguage: LanguageCode;
+  orderNumber: string;
+}> = ({ cartItems, totalPrice, onConfirm, onCancel, selectedLanguage, orderNumber }) => {
+  const cartOrderPopupLocale = CartOrderPopupLocales[selectedLanguage];
+  const aggregated = aggregateCartItems(cartItems);
+
+  return (
+    <OrderPopupDiv>
+      <PopupContent>
+        <h3 dangerouslySetInnerHTML={{ __html: `${orderNumber}` }} />
+        {aggregated.map((item, idx) => (
+          <p key={idx}>
+            <span>{item.itemName}</span>
+            <span>
+              {item.cartItemQuantity}{" "}
+              {item.cartItemQuantity === 1
+                ? cartOrderPopupLocale.order
+                : cartOrderPopupLocale.orders}
+            </span>
+            <span>₱{item.itemPrice}.00</span>
+            <span>₱{(item.itemPrice * item.cartItemQuantity).toFixed(2)}</span>
+          </p>
+        ))}
+      </PopupContent>
+      <TotalPrice>
+        <p>{cartOrderPopupLocale.total}:</p>
+        <p>₱{totalPrice}</p>
+      </TotalPrice>
+      <PopupButtons>
+        <Button color="WHITE" bgColor="GREY600" onClick={onCancel}>
+          {cartOrderPopupLocale.cancel}
+        </Button>
+      </PopupButtons>
+    </OrderPopupDiv>
+  );
+};
+
 interface CartProps {
   selectedLanguage: LanguageCode;
 }
@@ -134,10 +395,10 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
   const cart = useAppSelector((state) => state.cart);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const company = queryParams.get("company")
-  const table = queryParams.get("tableId")
-  const order = "Order"
-  const unconfirmed = "Unconfirmed"
+  const company = queryParams.get("company");
+  const table = queryParams.get("tableId");
+  const order = "Order";
+  const unconfirmed = "Unconfirmed";
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -151,7 +412,7 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
     setIsPopupOpen(true);
   };
 
-  const numericNanoid = customAlphabet('0123456789', 16);
+  const numericNanoid = customAlphabet("0123456789", 16);
   function generateNumericID() {
     return numericNanoid();
   }
@@ -176,7 +437,7 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
         tableNumber: table,
         orderNumber: generateNumericID(),
         orderType: order,
-        confirmStatus: unconfirmed
+        confirmStatus: unconfirmed,
       });
 
       handleClearCart();
@@ -225,7 +486,7 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
       {isPopupOpen && (
         <OrderPopup
           selectedLanguage={selectedLanguage}
-          cartItems={cart.cartItems.map(item => ({
+          cartItems={cart.cartItems.map((item) => ({
             itemName: item.itemName ?? "Untitled item",
             itemPrice: item.itemPrice ?? 0,
             cartItemQuantity: item.cartItemQuantity ?? 1,
@@ -246,13 +507,13 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
           <TableIndicator selectedLanguage={selectedLanguage} />
           <h3 className="cart-title">{cartOrderLocale.title}</h3>
         </div>
-
         <div className="cart-body">
           {cart.cartItems.length === 0 ? (
             <p className="empty-sign">{cartOrderLocale.empty}</p>
           ) : (
             cart.cartItems.map((cartItem) => (
               <CartListItem
+                key={cartItem.itemName}
                 selectedLanguage={selectedLanguage}
                 cartItem={cartItem}
                 handleFreeServiceToast={handleFreeServiceToast}
@@ -260,7 +521,6 @@ const Cart: React.FC<CartProps> = ({ selectedLanguage }) => {
             ))
           )}
         </div>
-
         <div className="cart-footer">
           <div className="cart-item-info">
             <span className="cart-item-total-price">

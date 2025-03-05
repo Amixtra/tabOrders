@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { startSources } from "db/constants";
+import { startSources, logoSources } from "db/constants";
 import {
   StartOverlay,
   StartWrapper,
@@ -8,7 +8,6 @@ import {
   StartDescription,
   StartLogo,
 } from "./Start.style";
-import { logoSources } from "db/constants";
 
 const StartPage = () => {
   const messages = [
@@ -22,17 +21,19 @@ const StartPage = () => {
   const [fadeClass, setFadeClass] = useState("fade-in");
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const intervalId = setInterval(() => {
       setFadeClass("fade-out");
-
-      setTimeout(() => {
-        setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+      timeoutId = setTimeout(() => {
+        setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
         setFadeClass("fade-in");
       }, 1000);
     }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, [messages]);
 
   return (
     <StartOverlay>

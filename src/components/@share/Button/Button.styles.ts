@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css, CSSProperties } from "styled-components";
 
 export interface ButtonProps {
   children?: React.ReactNode;
@@ -14,7 +14,10 @@ export interface ButtonProps {
   iconBtn?: boolean;
   iconBtnCart?: boolean;
   iconBtnCalculation?: boolean;
+  iconBtnKKB?: boolean;
+  KKBBtnUser?: boolean;
   textBtn?: boolean;
+  style?: CSSProperties;
 }
 
 const buttonTypes = css<ButtonProps>`
@@ -86,6 +89,42 @@ const buttonTypes = css<ButtonProps>`
       width: 6.125vw;
       height: 4.2vw;
       background: url("${props.iconUrl}") no-repeat 0 center/cover; ;
+    `}
+
+   /* iconBtnKKB */
+  ${(props) => 
+    props.iconBtnKKB &&
+    css`
+      display: block;
+      width: 20vw;
+      margin-top: 4vw;
+      height: 6vw;
+      border-radius: 20px;
+      background: red;
+      color: white;
+      font-size: 3vw;
+
+      @media (max-height: 600px) {
+        margin-top: 2vw;
+      };
+    `}
+
+  ${(props) => 
+    props.KKBBtnUser &&
+    css`
+      display: block;
+      width: 15vw;
+      height: 5vw;
+      border-radius: 20px;
+      background: red;
+      color: white;
+      font-size: 1.6vw;
+      margin-left: 10px;
+      margin-right: 10px;
+
+      @media (max-height: 600px) {
+        margin-top: 2vw;
+      };
     `}
 
     /* textBtn */

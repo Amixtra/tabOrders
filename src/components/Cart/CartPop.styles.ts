@@ -58,6 +58,7 @@ export const TotalPrice = styled.div`
   display: flex;
   justify-content: space-between; 
   gap: 10px;
+  margin-top: 20px;
   margin-bottom: 20px;
 
   p {

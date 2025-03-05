@@ -12,6 +12,8 @@ import toggleRoutes from "./toggles/toggles.routes.js";
 import ordersRoutes from "./orders/orders.routes.js";
 import uploadRoutes from "./upload/upload.routes.js";
 import orderHistoryRoutes from "./orderHistory/orderHistory.routes.js";
+import http from "http";
+import { Server } from "socket.io";
 
 dotenv.config();
 const app = express();
@@ -51,6 +53,11 @@ mongoose
     console.log("[ERROR]:: Failed to connect to MongoDB:", error);
     process.exit(1);
   });
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "*" },
+});
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -606,6 +613,25 @@ app.post("/api/items", async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
+
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+
+  socket.on("paymentSuccess", (data) => {
+    console.log("Payment success event received:", data);
+    io.emit("paymentSuccess", data);
+  });
+
+  socket.on("customerBillOut", (data) => {
+    console.log("Customer has billed out:", data);
+    io.emit("customerBillOut", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

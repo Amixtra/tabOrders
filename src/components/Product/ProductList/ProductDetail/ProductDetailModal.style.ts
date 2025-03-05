@@ -18,6 +18,10 @@ export const ModalContent = styled.div`
   height: 600px;
   border-radius: 8px;
   overflow: hidden;
+
+  @media (max-height: 600px) {
+    height: 500px;
+  };
 `;
 
 export const LeftSection = styled.div`

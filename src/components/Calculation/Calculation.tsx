@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import TableIndicator from "components/@share/Layout/indicator/TableIndicator";
 import {
   CalculationOverlay,
@@ -12,10 +13,24 @@ import CalculationClose from "./CalculationClose/CalculationClose";
 import CalculationTitle from "./CalculationTitle/CalculationTitle";
 import Button from "components/@share/Button/Button";
 import { CalculationLocales, LanguageCode } from "db/constants";
+import axios from "axios";
+import KKB from "./KKB/KKB";
 
 const icon_increase = "/assets/icon/icon_increase.png";
 const icon_decrease = "/assets/icon/icon_decrease.png";
 const icon_decrease_light = "/assets/icon/icon_decrease_light.png";
+
+interface HistoryItem {
+  _id: string;
+  userID: string;
+  createdAt: string;
+  totalPrice: number;
+  items: {
+    itemName: string;
+    itemPrice: number;
+    cartItemQuantity: number;
+  }[];
+}
 
 interface CalculationProps {
   setShowCalculation: (value: boolean) => void;
@@ -24,10 +39,12 @@ interface CalculationProps {
 
 const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedLanguage }) => {
   const [splitCount, setSplitCount] = useState(1);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [showKKB, setShowKKB] = useState(false);
   const calculationLocale = CalculationLocales[selectedLanguage];
-
-  // Example total bill in PHP
-  const totalBill = 90;
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("tableId");
+  const company = searchParams.get("company");
 
   const handleClose = () => {
     setShowCalculation(false);
@@ -41,12 +58,50 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
     if (splitCount > 1) setSplitCount((prev) => prev - 1);
   };
 
-  const amountPerPerson = Math.floor(totalBill / splitCount);
+  const fetchHistory = async () => {
+    try {
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+      const userid = userIdResponse.data.userID;
+      const response = await axios.get("http://43.200.251.48:8080/api/orders", {
+        params: { userID: userid },
+      });
+      const tableNumber = parseInt(id || "0", 10);
+      // Filter and sort orders so that the latest comes first
+      const filteredHistory = response.data
+        .filter((order: any) => order.tableNumber === tableNumber)
+        .sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      setHistory(filteredHistory);
+    } catch (error) {
+      console.error("Error fetching order history:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const totalAll = history.reduce((sum, order) => sum + order.totalPrice, 0);
+
+  const amountPerPerson = totalAll > 0 ? Math.floor(totalAll / splitCount) : 0;
+
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "PHP",
     minimumFractionDigits: 2,
   }).format(amountPerPerson);
+
+  const handleKKBClick = () => {
+    setShowKKB(true);
+  };
+
+  const handleCloseOverlay = () => {
+    setShowKKB(false);
+  };
 
   return (
     <CalculationOverlay>
@@ -69,81 +124,47 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
                 flexDirection: "column",
               }}
             >
-              <div
-                style={{
-                  marginBottom: "20px",
-                  paddingBottom: "10px",
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-                  Order 20:00:53
-                </div>
-                <div style={{ margin: "4px 0", fontSize: "16px" }}>
-                  Ricotta Salad
-                </div>
-                <div style={{ color: "#666", fontSize: "14px" }}>
-                  ₱7,000 / 1 pc / Total ₱7,000
-                </div>
-              </div>
-              <div
-                style={{
-                  marginBottom: "20px",
-                  paddingBottom: "10px",
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-                  Order 20:00:32
-                </div>
-                <div style={{ margin: "4px 0", fontSize: "16px" }}>
-                  Cajun Chicken Salad
-                </div>
-                <div style={{ color: "#666", fontSize: "14px" }}>
-                  ₱5,500 / 1 pc / Total ₱5,500
-                </div>
-              </div>
-              <div
-                style={{
-                  marginBottom: "20px",
-                  paddingBottom: "10px",
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-                  Order 19:57:55
-                </div>
-                <div style={{ margin: "4px 0", fontSize: "16px" }}>
-                  Pepperoni Pizza
-                </div>
-                <div style={{ color: "#666", fontSize: "14px" }}>
-                  ₱14,000 / 1 pc / Total ₱14,000
-                </div>
-              </div>
-              <div
-                style={{
-                  marginBottom: "20px",
-                  paddingBottom: "10px",
-                }}
-              >
-                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-                  Order 17:11:44
-                </div>
-                <div style={{ margin: "4px 0", fontSize: "16px" }}>
-                  Seasoned Chicken
-                </div>
-                <div style={{ color: "#666", fontSize: "14px" }}>
-                  ₱20,000 / 1 pc / Total ₱20,000
-                </div>
-              </div>
+              {history.length > 0 ? (
+                history.map((order) => (
+                  <div
+                    key={order._id}
+                    style={{
+                      marginBottom: "20px",
+                      paddingBottom: "10px",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                      Orders {new Date(order.createdAt).toLocaleTimeString()}
+                    </div>
+                    <div style={{ margin: "4px 0", fontSize: "16px" }}>
+                      {order.items.map((item, itemIndex) => (
+                        <div key={itemIndex} style={{ marginTop: "5px" }}>
+                          {item.itemName} (x{item.cartItemQuantity})
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ color: "#666", fontSize: "15px", marginTop: "5px" }}>
+                      Total{" "}
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "PHP",
+                        minimumFractionDigits: 2,
+                      }).format(order.totalPrice)}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div>No orders found</div>
+              )}
             </div>
           </LeftBlock>
           <RightBlock>
             <h3
               style={{
                 textAlign: "center",
-                marginBottom: "40px",
-                fontSize: "40px",
+                marginBottom: "10px",
+                fontSize: "30px",
                 fontWeight: "bold",
               }}
             >
@@ -158,15 +179,10 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
                     onClick={handleDecrease}
                   />
                   <span className="split-pay-number">{splitCount}</span>
-                  <Button
-                    iconBtnCalculation
-                    iconUrl={icon_increase}
-                    onClick={handleIncrease}
-                  />
+                  <Button iconBtnCalculation iconUrl={icon_increase} onClick={handleIncrease} />
                 </div>
               </div>
             </RightBlockLine>
-
             <p
               style={{
                 textAlign: "center",
@@ -181,17 +197,26 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
             <p
               style={{
                 textAlign: "center",
-                marginTop: "30px",
-                fontSize: "50px",
+                marginTop: "20px",
+                fontSize: "35px",
                 fontWeight: "bold",
                 color: "red",
               }}
             >
               {formattedAmount}
             </p>
+            <Button iconBtnKKB iconUrl={icon_increase} onClick={handleKKBClick}>
+              KKB
+            </Button>
           </RightBlock>
         </CalculationBG>
       </CalculationWrapper>
+      {showKKB && (
+        <KKB
+          onClose={handleCloseOverlay}
+          selectedLanguage={selectedLanguage}
+        />
+      )}
     </CalculationOverlay>
   );
 };

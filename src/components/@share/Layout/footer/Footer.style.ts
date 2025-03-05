@@ -23,6 +23,7 @@ const StyledFooter = styled.footer`
     flex-direction: row;
     gap: 16px;
   }
+
 `;
 
 export const Language = styled.div`

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Header from "components/@share/Layout/header/Header";
 import GridContainer from "components/@share/Layout/gridContainer/GridContainer";
 import Footer from "components/@share/Layout/footer/Footer";
@@ -13,8 +13,23 @@ import { useLocation } from "react-router";
 import ErrorPage from "components/Error/ErrorPage";
 import { LanguageCode } from "db/constants";
 import axios from "axios";
+import Toast from "components/@share/Toast/Toast";
+import { io } from "socket.io-client";
 
-const INACTIVITY_TIMEOUT = 90000;
+type OrderType = {
+  orderNumber: string;
+  userID: string;
+  orderType: string;
+  tableNumber: number;
+  createdAt: string;
+  confirmStatus: string;
+  totalPrice: number;
+  items: any[];
+};
+
+const INACTIVITY_TIMEOUT = 300000;
+
+const socket = io("http://43.200.251.48:8080");
 
 const TablePage = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -23,14 +38,20 @@ const TablePage = () => {
   const [isOverlayActive, setIsOverlayActive] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>("en");
   const [isUnLockFromTabletOn, setIsUnLockFromTabletOn] = useState(true);
+  const [orders, setOrders] = useState<OrderType[]>([]);
+  const [isToastActive, setIsToastActive] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [previousConfirmations, setPreviousConfirmations] = useState<string[]>([]);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const company = queryParams.get("company");
+  const tableId = queryParams.get("tableId");
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resetInactivityTimer = useCallback(() => {
-    if (!showAd && !isOverlayActive) {
+    if (!isOverlayActive) {
       if (inactivityTimer.current) {
         clearTimeout(inactivityTimer.current);
       }
@@ -38,37 +59,66 @@ const TablePage = () => {
         setShowAd(true);
       }, INACTIVITY_TIMEOUT);
     }
-  }, [showAd, isOverlayActive]);
+  }, [isOverlayActive]);
+
+  const fetchTableOrders = useCallback(async () => {
+    try {
+      if (!company || !tableId) return;
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+      const userid = userIdResponse.data.userID;
+      const response = await axios.get("http://43.200.251.48:8080/api/orders", {
+        params: { userID: userid },
+      });
+      const tableNumber = parseInt(tableId || "0", 10);
+      const filteredHistory = response.data.filter((order: OrderType) => order.tableNumber === tableNumber);
+      setOrders((prev) => {
+        const updated = filteredHistory as OrderType[];
+        if (initialLoad) {
+          const alreadyConfirmed = updated.filter((o) => o.confirmStatus === "Confirmed").map((o) => o.orderNumber);
+          setPreviousConfirmations(alreadyConfirmed);
+          setInitialLoad(false);
+        } else {
+          const newlyConfirmed = updated.filter(
+            (ord) => ord.confirmStatus === "Confirmed" && !previousConfirmations.includes(ord.orderNumber)
+          );
+          if (newlyConfirmed.length > 0) {
+            setToastMessage("Order has been Confirmed!");
+            setIsToastActive(true);
+            setPreviousConfirmations((p) => [...p, ...newlyConfirmed.map((n) => n.orderNumber)]);
+          }
+        }
+        return updated;
+      });
+    } catch (error) {
+      console.error("Error fetching table orders:", error);
+    }
+  }, [company, tableId, previousConfirmations, initialLoad]);
 
   useEffect(() => {
     const fetchToggles = async () => {
       try {
-        const response = await axios.get(
-          `http://43.200.251.48:8080/api/toggles?company=${company}`
-        );
-        const data = response.data;
-        setIsUnLockFromTabletOn(data.isToggleLockOn);
+        if (!company) return;
+        const r = await axios.get(`http://43.200.251.48:8080/api/toggles?company=${company}`);
+        setIsUnLockFromTabletOn(r.data.isToggleLockOn);
       } catch (error) {
-        console.error("Error fetching toggles from DB:", error);
+        console.error("Error fetching toggles:", error);
       }
     };
-
     fetchToggles();
-
-    const interval = setInterval(fetchToggles, 10_000);
-    return () => clearInterval(interval);
+    const i = setInterval(fetchToggles, 10000);
+    return () => clearInterval(i);
   }, [company]);
 
   useEffect(() => {
+    if (showStartPage) return;
     const handleMouseActivity = () => resetInactivityTimer();
-
     window.addEventListener("mousemove", handleMouseActivity);
     window.addEventListener("mousedown", handleMouseActivity);
-
     inactivityTimer.current = setTimeout(() => {
       setShowAd(true);
     }, INACTIVITY_TIMEOUT);
-
     return () => {
       if (inactivityTimer.current) {
         clearTimeout(inactivityTimer.current);
@@ -76,19 +126,39 @@ const TablePage = () => {
       window.removeEventListener("mousemove", handleMouseActivity);
       window.removeEventListener("mousedown", handleMouseActivity);
     };
-  }, [resetInactivityTimer]);
+  }, [resetInactivityTimer, showStartPage]);
 
-  if (!company) {
-    return <ErrorPage />;
-  }
+  useEffect(() => {
+    if (showStartPage) return;
+    fetchTableOrders();
+    const intervalId = setInterval(fetchTableOrders, 5000);
+    return () => clearInterval(intervalId);
+  }, [showStartPage, fetchTableOrders]);
 
-  // const handleCloseAd = () => {
-  //   setShowAd(false);
-  //   resetInactivityTimer();
-  // };
+  useEffect(() => {
+    socket.on("paymentSuccess", (data: { tableNumber: number }) => {
+      const currentTableNumber = parseInt(tableId || "0", 10);
+      if (data.tableNumber === currentTableNumber) {
+        window.location.reload();
+      }
+    });
+
+    return () => {
+      socket.off("paymentSuccess");
+    };
+  }, [tableId]);
+
+  if (!company) return <ErrorPage />;
+
+  const handleCloseAd = () => {
+    setShowAd(false);
+    setTimeout(() => setShowAd(false), 0);
+    resetInactivityTimer();
+  };
 
   const handleCloseStartPage = () => {
     setShowStartPage(false);
+    resetInactivityTimer();
   };
 
   return (
@@ -121,17 +191,10 @@ const TablePage = () => {
       ) : (
         <>
           <Header>
-            <TableIndicator 
-              selectedLanguage={selectedLanguage}
-            />
+            <TableIndicator selectedLanguage={selectedLanguage} />
             <RestaurantIndicator />
           </Header>
-          {/* {showAd && 
-            <AdPage 
-              onClose={handleCloseAd} 
-              selectedLanguage={selectedLanguage}
-            />
-          } */}
+          {showAd && <AdPage onClose={handleCloseAd} selectedLanguage={selectedLanguage} />}
           <GridContainer>
             <Nav
               onCategorySelect={setSelectedCategory}
@@ -140,9 +203,7 @@ const TablePage = () => {
               selectedLanguage={selectedLanguage}
             />
             <ProductListPage selectedCategory={selectedCategory} selectedLanguage={selectedLanguage} />
-            <Cart 
-              selectedLanguage={selectedLanguage}
-            />
+            <Cart selectedLanguage={selectedLanguage} />
           </GridContainer>
           <Footer
             setIsOverlayActive={setIsOverlayActive}
@@ -151,6 +212,7 @@ const TablePage = () => {
           />
         </>
       )}
+      <Toast message={toastMessage} isActive={isToastActive} setIsActive={setIsToastActive} />
     </>
   );
 };

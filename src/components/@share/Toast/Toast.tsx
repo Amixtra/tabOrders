@@ -5,18 +5,23 @@ interface ToastProps {
   message?: string;
   isActive?: boolean;
   setIsActive: Dispatch<SetStateAction<boolean>>;
+  persistent?: boolean;
 }
 
-const Toast = ({ message, isActive, setIsActive }: ToastProps) => {
+const Toast = ({ message, isActive, setIsActive, persistent = false }: ToastProps) => {
   useEffect(() => {
-    if (isActive) {
-      setTimeout(() => {
+    if (isActive && !persistent) {
+      const timer = setTimeout(() => {
         setIsActive(false);
       }, 3000);
+      return () => clearTimeout(timer);
     }
-  });
+  }, [isActive, persistent, setIsActive]);
+  
   return (
-    <StyledToast className={isActive ? "" : "hide"}>{message}</StyledToast>
+    <StyledToast className={isActive ? "" : "hide"}>
+      {message}
+    </StyledToast>
   );
 };
 

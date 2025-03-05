@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StyledFooter, { Language, StyledModal } from "./Footer.style";
 import Button from "components/@share/Button/Button";
 import { useAppDispatch } from "features/store/rootReducer";
@@ -37,6 +37,7 @@ const Footer: React.FC<FooterProps> = ({
 
   const currentLocale = FooterLocales[selectedLanguage];
   const [searchParams] = useSearchParams();
+  const company = searchParams.get("company");
   const id = searchParams.get("tableId");
 
   const selectedLanguageLabel =
@@ -77,9 +78,14 @@ const Footer: React.FC<FooterProps> = ({
 
   const handleOrderHistoryOpen = async () => {
     try {
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+      const userid = userIdResponse.data.userID;
+
       const response = await axios.get("http://43.200.251.48:8080/api/order-history", {
         params: { 
-          userID: '6a7d23fb7bca2806',
+          userID: userid,
           tableNumber: id,
         },
       });
@@ -102,7 +108,7 @@ const Footer: React.FC<FooterProps> = ({
     setShowCalculation(true);
     setIsOverlayActive(true);
   };
-
+  
   return (
     <>
       <Toast 
@@ -117,7 +123,10 @@ const Footer: React.FC<FooterProps> = ({
             <span className="text">{selectedLanguageLabel}</span>
           </Language>
         </div>
-        <div className="button-group">
+        <div
+          className="button-group"
+          style={{ marginRight: cart.cartItems.length > 0 ? "230px" : "0px" }}
+        >
           <Button
             color="WHITE"
             withIcon

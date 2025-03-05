@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import * as S from './MenuOptions.style';
 import { NumericFormat } from 'react-number-format';
+import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 const milkImg = '/assets/icon/icon_milk.png';
 const eggsImg = '/assets/icon/icon_eggs.png';
@@ -71,6 +73,8 @@ const MenuOptions: React.FC = () => {
 
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
+  const [searchParams] = useSearchParams();
+  const company = searchParams.get("company");
 
   useEffect(() => {
     fetch('http://43.200.251.48:8080/api/categories?company=6afc7dfc534894d02ec6aed2f3aa2cf2&language=en')
@@ -112,11 +116,16 @@ const MenuOptions: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     try {
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+
+      const userid = userIdResponse.data.userID;
       const response = await fetch('http://43.200.251.48:8080/api/categories', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userID: '6a7d23fb7bca2806',
+          userID: userid,
           categoryId: deleteTarget.categoryId
         })
       });
@@ -150,11 +159,15 @@ const MenuOptions: React.FC = () => {
       return;
     }
     try {
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+      const userid = userIdResponse.data.userID;
       const response = await fetch('http://43.200.251.48:8080/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userID: '6a7d23fb7bca2806',
+          userID: userid,
           categoryNameEN: newCategoryName,
           categoryNameKR: newCategoryNameKR,
           categoryNameJP: newCategoryNameJP,
@@ -288,12 +301,18 @@ const MenuOptions: React.FC = () => {
           finalImageUrl = uploadedUrl;
         }
       }
+
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+
+      const userid = userIdResponse.data.userID;
   
       const response = await fetch('http://43.200.251.48:8080/api/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userID: '6a7d23fb7bca2806',
+          userID: userid,
           categoryId: currentCategory.categoryId,
           itemId: newItemId,
           itemNameEN: newItemName,

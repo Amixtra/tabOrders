@@ -4,6 +4,7 @@ import { FaCircleXmark } from "react-icons/fa6";
 import {
   AdCloseButton,
   AdCloseWord,
+  AdDescription,
   AdLogo,
   AdOverlay,
   AdVideo,
@@ -21,19 +22,14 @@ interface AdPageProps {
 
 const AdPage: React.FC<AdPageProps> = ({ onClose, selectedLanguage }) => {
   return (
-    <AdOverlay>
+    <AdOverlay onClick={onClose}>
       <AdWrapper>
         <Logo>
           <AdLogo src={logoSources["defaultDark"]} />
         </Logo>
-        <AdCloseButton onClick={onClose}>
-          <AdCloseWord>
-            <IconWrapper>
-              <FaCircleXmark />
-            </IconWrapper>
-            Close
-          </AdCloseWord>
-        </AdCloseButton>
+        <AdDescription>
+          Tap anywhere on the screen to continue.
+        </AdDescription>
         <TableIndicator selectedLanguage={selectedLanguage} />
         <AdVideo src={videoSources[1]} autoPlay muted loop playsInline />
       </AdWrapper>

@@ -71,3 +71,18 @@ export const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export const AdDescription = styled.div`
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+`;

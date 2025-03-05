@@ -175,6 +175,12 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
             >
             Orders
           </StyledNavSectionButton>
+          <StyledNavSectionButton 
+            onClick={() => setSelectedSection("bill-out")}
+            style={{ backgroundColor: selectedSection === "bill-out" ? "red": "#111"}}  
+            >
+            Bill Out
+          </StyledNavSectionButton>
           <StyledNavSectionButton
             onClick={() => setSelectedSection("menu-options")}
             style={{ backgroundColor: selectedSection === "menu-options" ? "red": "#111"}}  

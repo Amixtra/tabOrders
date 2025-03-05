@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema({
       itemName: { type: String, required: true },
       itemPrice: { type: Number, required: true },
       cartItemQuantity: { type: Number, required: true },
+      assignedUser: { type: String, default: null },
     },
   ],
   totalPrice: { type: Number, required: true },

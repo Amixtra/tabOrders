@@ -77,16 +77,9 @@ export const RightBlockLine = styled.div`
       gap: 8px;
 
       .split-pay-number {
-        font-size: 45px;
+        font-size: 64px;
         padding: 0 20px;
       }
     }
   }
-`;
-
-export const RightBlockLines = styled.div`
-  width: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
