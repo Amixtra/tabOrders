@@ -44,6 +44,7 @@ const BillOutPopUp: React.FC<BillOutProps> = ({ isOpen, onClose, userID, tableNu
 
   const handleOpenCashModal = () => {
     setIsCashModalOpen(true);
+    handlePayment("Cash");
   };
 
   const handleCloseCashModal = () => {

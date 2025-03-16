@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FaTimes } from "react-icons/fa";
-import { NumericFormat } from 'react-number-format';
+import { NumericFormat } from "react-number-format";
 
 interface CashModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmitCash: (cashValue: number) => void;
 }
 
-const CashModal: React.FC<CashModalProps> = ({ isOpen, onClose }) => {
+const CashModal: React.FC<CashModalProps> = ({ isOpen, onClose, onSubmitCash }) => {
   const [cashValue, setCashValue] = useState<number>(0);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    alert(`Cash payment: ₱${cashValue.toFixed(2)}`);
+    onSubmitCash(cashValue);
     onClose();
   };
 
@@ -25,7 +26,6 @@ const CashModal: React.FC<CashModalProps> = ({ isOpen, onClose }) => {
           <FaTimes />
         </button>
         <h2>Enter Cash Amount</h2>
-
         <NumericFormat
           value={cashValue === 0 ? "" : cashValue}
           onValueChange={(values) => {
@@ -41,7 +41,6 @@ const CashModal: React.FC<CashModalProps> = ({ isOpen, onClose }) => {
           placeholder="₱ 0.00"
           className="cash-input"
         />
-
         <button className="submit-button" onClick={handleSubmit}>
           Submit
         </button>

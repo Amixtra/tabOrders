@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as S from './MenuOptions.style';
 import { NumericFormat } from 'react-number-format';
 import axios from 'axios';
-import { useSearchParams } from 'react-router-dom';
+// Removed: import { useSearchParams } from 'react-router-dom';
 
 const milkImg = '/assets/icon/icon_milk.png';
 const eggsImg = '/assets/icon/icon_eggs.png';
@@ -48,6 +48,22 @@ const ALLERGIES: Allergy[] = [
   { name: 'Cereals Containing Gluten', image: glutenImg },
 ];
 
+// Helper function to decode the JWT token from localStorage
+const getTokenData = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  } else {
+    console.warn("No token found in localStorage.");
+    return null;
+  }
+};
+
 const MenuOptions: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -73,11 +89,14 @@ const MenuOptions: React.FC = () => {
 
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
-  const [searchParams] = useSearchParams();
-  const company = searchParams.get("company");
+
+  // Get companyID from the JWT token
+  const tokenData = getTokenData();
+  const company = tokenData ? tokenData.companyID : '';
 
   useEffect(() => {
-    fetch('http://43.200.251.48:8080/api/categories?company=6afc7dfc534894d02ec6aed2f3aa2cf2&language=en')
+    if (!company) return;
+    fetch(`http://43.200.251.48:8080/api/categories?company=${company}&language=en`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -85,7 +104,7 @@ const MenuOptions: React.FC = () => {
         }
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [company]);
 
   const currentCategory = categories[activeTab] || null;
 
@@ -106,7 +125,6 @@ const MenuOptions: React.FC = () => {
         : [...prev, allergyName]
     );
   };
-
 
   const handleDeleteCategoryClick = (category: Category) => {
     setDeleteTarget(category);
@@ -218,7 +236,7 @@ const MenuOptions: React.FC = () => {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userID: '6a7d23fb7bca2806',
+        userID: '6a7d23fb7bca2806', // This may also be replaced with company-specific userID if needed
         categoryId: updated[categoryIndex].categoryId,
         itemId: updated[categoryIndex].categoryItems[itemIndex].itemId,
         flagName: flagName,
@@ -231,15 +249,10 @@ const MenuOptions: React.FC = () => {
       .catch((e) => console.error(e));
   };
 
-  const onMenuOption = () => {
-    alert('Menu Option button clicked!');
-  };
-
   const uploadImageToS3 = async (file: File, category: string): Promise<string | null> => {
     try {
       const getTokenData = () => {
         const token = localStorage.getItem("token");
-      
         if (token) {
           try {
             return JSON.parse(atob(token.split('.')[1]));
@@ -326,10 +339,7 @@ const MenuOptions: React.FC = () => {
         }),
       });
 
-      console.log(response)
-  
       if (!response.ok) {
-        // Handle error if needed
         return;
       }
   
@@ -353,19 +363,9 @@ const MenuOptions: React.FC = () => {
   
       setCategories(updatedCategories);
   
-      // Debug: see if the new item is actually there
-      console.log("Updated categories with new item:", updatedCategories);
-  
-      // DO NOT change the category tab index to categories.length (that’s for adding categories!)
-      // setActiveTab(categories.length);  // <--- Remove this.
-  
-      // If you’d like to remain on "Menu Options" in your parent router:
-      localStorage.setItem("selectedSection", "menu-options");
-  
     } catch (err) {
       console.error(err);
     } finally {
-      // Reset form fields and close the modal
       setNewItemName('');
       setNewItemNameKR('');
       setNewItemNameJP('');
@@ -410,6 +410,41 @@ const MenuOptions: React.FC = () => {
     }
   };
 
+  const handleDeleteMenu = async (item: CategoryItem, category: Category) => {
+    try {
+      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+        companyID: company,
+      });
+      const userid = userIdResponse.data.userID;
+  
+      const response = await fetch('http://43.200.251.48:8080/api/items', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userID: userid,
+          categoryId: category.categoryId,
+          itemId: item.itemId
+        }),
+      });
+  
+      if (!response.ok) {
+        alert("Failed to delete the item from the database.");
+        return;
+      }
+
+      setCategories((prevCategories) =>
+        prevCategories.map((cat) => {
+          if (cat.categoryId === category.categoryId) {
+            return { ...cat, categoryItems: cat.categoryItems.filter(menuItem => menuItem.itemId !== item.itemId) };
+          }
+          return cat;
+        })
+      );
+    } catch (error) {
+      console.error("Error deleting menu item", error);
+    }
+  };
+  
   return (
     <S.PageWrapper>
       <S.Header>
@@ -445,7 +480,7 @@ const MenuOptions: React.FC = () => {
               {currentCategory.categoryItems.map((item, i) => (
                 <S.MenuItem key={item.itemId}>
                   <S.LeftSection>
-                    <S.OptionBtn onClick={onMenuOption}>Menu Option</S.OptionBtn>
+                    <S.OptionBtn onClick={() => handleDeleteMenu(item, currentCategory)}>Delete Menu</S.OptionBtn>
                     <S.ItemName>{item.itemName}</S.ItemName>
                   </S.LeftSection>
                   <S.RightSection>
@@ -619,7 +654,7 @@ const MenuOptions: React.FC = () => {
         </S.ModalOverlay>
       )}
 
-{showAddMenuModal && (
+      {showAddMenuModal && (
         <S.ModalOverlay>
           <S.ModalBox>
             <h2 style={{ fontSize: '24px', fontWeight: '900' }}>Add New Menu</h2>

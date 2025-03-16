@@ -7,7 +7,6 @@ import CashModal from "./CashModal/CashModal";
 import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-// Create a socket connection to your server.
 const socket = io("http://43.200.251.48:8080");
 
 interface BillOutProps {
@@ -47,7 +46,7 @@ const BillOut: React.FC<BillOutProps> = ({
     onClose();
   };
 
-  const handleNonCashPayment = async () => {
+  const handleNonCashPayment = async (paymentType: string, cashAmount?: number) => {
     try {
       const userIdResponse = await axios.post(
         "http://43.200.251.48:8080/api/get-userID",
@@ -70,7 +69,6 @@ const BillOut: React.FC<BillOutProps> = ({
         } else {
           showToast("Please Wait for the Waiter for Payment.");
         }
-        // Lock the screen since one of the above toast messages is shown.
         setIsScreenLocked(true);
       }
     } catch (error) {
@@ -79,8 +77,15 @@ const BillOut: React.FC<BillOutProps> = ({
       }
     }
     onClose();
-    // Emit a socket event so the admin page knows the customer has billed out.
-    socket.emit("customerBillOut", { tableId: id, company });
+    socket.emit("customerBillOut", { tableId: id, company, paymentType, cashAmount });
+  };
+
+  const handleNonCashClick = (type: string) => {
+    handleNonCashPayment(type);
+  };
+
+  const handleCashPayment = (cashAmount: number) => {
+    handleNonCashPayment("Cash", cashAmount);
   };
 
   return (
@@ -92,11 +97,11 @@ const BillOut: React.FC<BillOutProps> = ({
           </button>
           <h2>Select Payment Method</h2>
           <div className="button-group">
-            <button className="payment-button" onClick={handleNonCashPayment}>
+            <button className="payment-button" onClick={() => handleNonCashClick("Debit Card")}>
               <FaCreditCard className="icon" />
               Debit Card
             </button>
-            <button className="payment-button" onClick={handleNonCashPayment}>
+            <button className="payment-button" onClick={() => handleNonCashClick("Credit Card")}>
               <FaCreditCard className="icon" />
               Credit Card
             </button>
@@ -104,7 +109,7 @@ const BillOut: React.FC<BillOutProps> = ({
               <TbCurrencyPeso className="icon-peso" />
               Cash
             </button>
-            <button className="payment-button" onClick={handleNonCashPayment}>
+            <button className="payment-button" onClick={() => handleNonCashClick("GCash")}>
               <svg
                 width="40px"
                 height="40px"
@@ -136,7 +141,11 @@ const BillOut: React.FC<BillOutProps> = ({
           </div>
         </div>
       </StyledModal>
-      <CashModal isOpen={isCashModalOpen} onClose={handleCloseCashModal} />
+      <CashModal
+        isOpen={isCashModalOpen}
+        onClose={handleCloseCashModal}
+        onSubmitCash={handleCashPayment}
+      />
       {isScreenLocked && (
         <div
           style={{

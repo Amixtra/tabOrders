@@ -298,7 +298,7 @@ export const BillOutOrderPopup: React.FC<{
 
 export const BillOutCustomerPopup: React.FC<{
   cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number }[];
-  totalPrice: string;
+  totalPrice: number;
   onConfirm: () => void;
   onCancel: () => void;
   selectedLanguage: LanguageCode;

@@ -542,6 +542,30 @@ app.patch("/api/items/flags", async (req, res) => {
   }
 });
 
+app.delete("/api/items", async (req, res) => {
+  const { userID, categoryId, itemId } = req.body;
+  if (!userID || !categoryId || !itemId) {
+    return res.status(400).json({ error: "Missing userID, categoryId or itemId" });
+  }
+  try {
+    const result = await mongoose.connection.collection("items").updateOne(
+      { userID, "categories.categoryId": parseInt(categoryId, 10) },
+      {
+        $pull: {
+          "categories.$.categoryItems": { itemId: parseInt(itemId, 10) }
+        }
+      }
+    );
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: "Item not found or already deleted" });
+    }
+    return res.status(200).json({ message: "Item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 /**
  * ADD ITEM
  */
