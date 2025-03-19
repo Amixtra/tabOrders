@@ -298,7 +298,7 @@ export const BillOutOrderPopup: React.FC<{
 
 export const BillOutCustomerPopup: React.FC<{
   cartItems: { itemName?: string; cartItemQuantity?: number; itemPrice?: number }[];
-  totalPrice: number;
+  totalPrice: string;
   onConfirm: () => void;
   onCancel: () => void;
   selectedLanguage: LanguageCode;
@@ -336,6 +336,53 @@ export const BillOutCustomerPopup: React.FC<{
           </Button>
           <Button color="WHITE" bgColor="MAIN" onClick={onConfirm}>
             Go to Bill Out Page
+          </Button>
+        </PopupButtons>
+      </OrderPopupDiv>
+    </BackgroundOverlay>
+  );
+};
+
+interface WaiterCallPopupProps {
+  isOpen: boolean;
+  tableId: string;
+  orders?: { name: string; quantity: number }[]; 
+  onAcknowledge: () => void;
+  onDismiss: () => void;
+}
+
+export const WaiterCallPopup: React.FC<WaiterCallPopupProps> = ({
+  isOpen,
+  tableId,
+  orders,
+  onAcknowledge,
+  onDismiss,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <BackgroundOverlay>
+      <OrderPopupDiv>
+        <PopupContent>
+          <h3>Table {tableId} has requested a waiter.</h3>
+          {orders?.map((order, index) => (
+            <p key={index}>
+              <span>{order.name}</span>
+              <span>
+                {order.quantity}{" "}
+                {order.quantity === 1
+                  ? "Order"
+                  : "Orders"}
+              </span>
+            </p>
+          ))}
+        </PopupContent>
+        <PopupButtons>
+          <Button color="WHITE" bgColor="GREY600" onClick={onDismiss}>
+            Dismiss
+          </Button>
+          <Button color="WHITE" bgColor="MAIN" onClick={onAcknowledge}>
+            Confirm
           </Button>
         </PopupButtons>
       </OrderPopupDiv>

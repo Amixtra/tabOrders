@@ -6,19 +6,59 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const { userID, tableNumber } = req.query;
-    
-    if (!userID) {
-      return res.status(400).json({ error: "userID is required" });
-    }
-
-    if (!tableNumber) {
-      return res.status(400).json({ error: "tableNumber is required" });
-    }
-
-    const historyDocs = await OrderHistory.find({ userID, tableNumber });
-
-    res.status(200).json(historyDocs);
+    const docs = await OrderHistory.find({ userID, tableNumber });
+    res.json(docs);
   } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.patch("/:historyId/confirm", async (req, res) => {
+  try {
+    const { historyId } = req.params;
+    const { items } = req.body;
+
+    const doc = await OrderHistory.findById(historyId);
+    if (!doc) {
+      return res.status(404).json({ error: "Document not found" });
+    }
+
+    items.forEach((i) => {
+      const x = doc.items.find((n) => n.itemName === i.itemName);
+      if (x) {
+        x.confirmation = i.confirmation;
+        x.menuStatus = i.confirmation ? "served" : "onProgress";
+      }
+    });
+
+    await doc.save();
+    res.json(doc);
+  } catch (error) {
+    console.error("Error in confirm route:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.patch("/:historyId/cancel", async (req, res) => {
+  try {
+    const { historyId } = req.params;
+    const { items } = req.body;
+
+    const doc = await OrderHistory.findById(historyId);
+    if (!doc) {
+      return res.status(404).json({ error: "Document not found" });
+    }
+    items.forEach((i) => {
+      const x = doc.items.find((n) => n.itemName === i.itemName);
+      if (x && i.confirmation) {
+        x.menuStatus = "cancelled";
+      }
+    });
+
+    await doc.save();
+    res.json(doc);
+  } catch (error) {
+    console.error("Error in cancel route:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

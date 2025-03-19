@@ -1,4 +1,6 @@
+// Waiter.tsx
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client"; // import socket.io-client
 import {
   WaiterOverlay,
   WaiterWrapper,
@@ -19,12 +21,8 @@ import Button from "components/@share/Button/Button";
 import WaiterToast from "./WaiterToast/WaiterToast";
 import { useSearchParams } from "react-router-dom";
 
-const icon_increase = "/assets/icon/icon_increase.png";
-const icon_decrease = "/assets/icon/icon_decrease.png";
-
-interface WaiterProps {
-  setShowWaiter: (value: boolean) => void;
-}
+// Create a socket connection. (For production, consider reusing a shared socket instance.)
+const socket = io("http://43.200.251.48:8080");
 
 interface SelectedItem {
   name: string;
@@ -33,11 +31,11 @@ interface SelectedItem {
 
 const MIN_BUTTONS = 13;
 
-const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
+const Waiter: React.FC<{ setShowWaiter: (value: boolean) => void }> = ({ setShowWaiter }) => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state) => state.cart);
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("tableId");
+  const tableId = searchParams.get("tableId") || "Unknown";
   const [isActive, setIsActive] = useState(false);
   const [items] = useState<string[]>(DEFAULT_ITEMS);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -56,13 +54,12 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
   const handleItemClick = (item: string) => {
     const existingItem = selectedItems.find((i) => i.name === item);
     if (existingItem) {
-      setSelectedItems((prev) =>
-        prev.map((i) =>
-          i.name === item ? { ...i, quantity: i.quantity + 1 } : i
-        )
-      );
+      setSelectedItems((prev) => {
+        const filtered = prev.filter((i) => i.name !== item);
+        return [{ name: item, quantity: existingItem.quantity + 1 }, ...filtered];
+      });
     } else {
-      setSelectedItems((prev) => [...prev, { name: item, quantity: 1 }]);
+      setSelectedItems((prev) => [{ name: item, quantity: 1 }, ...prev]);
     }
   };
 
@@ -83,7 +80,6 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
           if (i.quantity > 1) {
             acc.push({ ...i, quantity: i.quantity - 1 });
           }
-          // If quantity is 1 remove the yeah~
         } else {
           acc.push(i);
         }
@@ -107,19 +103,19 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
     setToastMessage(message);
 
     if (selectedItems.length > 0) {
-      const totalQuantity = selectedItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-      );
-
-      console.log(
-        `Order Details:\n"Time Ordered": ${new Date().toLocaleString()},\n"Table": ${id},\n"Orders": [${selectedItems.map((item) => `${item.name} (Quantity: ${item.quantity})`).join(", ")}],\n"Total Quantity": ${totalQuantity}"
-        `
-      );
+      socket.emit("customerCallWaiter", {
+        tableId,
+        orders: selectedItems,
+        time: new Date().toISOString(),
+      });
     } else {
-      console.log(`Order Details:\n"Time Ordered": ${new Date().toLocaleString()},\n"Table": ${id},\n"Order": Call Waiter`);
+      socket.emit("customerCallWaiter", {
+        tableId,
+        order: "Call Waiter",
+        time: new Date().toISOString(),
+      });
     }
-  
+
     setIsActive(true);
     setSelectedItems([]);
     setTimeout(() => {
@@ -175,7 +171,7 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
                         <div className="cart-item-counter">
                           <Button
                             iconBtnCart
-                            iconUrl={icon_decrease}
+                            iconUrl="/assets/icon/icon_decrease.png"
                             onClick={() => handleDecreaseQuantity(item.name)}
                           />
                           <span className="cart-order-number">
@@ -183,7 +179,7 @@ const Waiter: React.FC<WaiterProps> = ({ setShowWaiter }) => {
                           </span>
                           <Button
                             iconBtnCart
-                            iconUrl={icon_increase}
+                            iconUrl="/assets/icon/icon_increase.png"
                             onClick={() => handleIncreaseQuantity(item.name)}
                           />
                         </div>

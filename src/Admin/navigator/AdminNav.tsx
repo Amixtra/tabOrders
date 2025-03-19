@@ -188,10 +188,10 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
             Menu Options
           </StyledNavSectionButton>
           <StyledNavSectionButton
-            onClick={() => setSelectedSection("waiter-options")}
-            style={{ backgroundColor: selectedSection === "waiter-options" ? "red": "#111"}}  
+            onClick={() => setSelectedSection("staff-page")}
+            style={{ backgroundColor: selectedSection === "staff-page" ? "red": "#111"}}  
           >
-            Waiter Options
+            Staff Page
           </StyledNavSectionButton>
         </StyledNavSectionContainer>
 

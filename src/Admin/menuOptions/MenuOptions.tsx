@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import * as S from './MenuOptions.style';
 import { NumericFormat } from 'react-number-format';
 import axios from 'axios';
-// Removed: import { useSearchParams } from 'react-router-dom';
 
 const milkImg = '/assets/icon/icon_milk.png';
 const eggsImg = '/assets/icon/icon_eggs.png';
@@ -23,7 +22,7 @@ interface CategoryItem {
   itemPauseFlag?: boolean;
   itemImageUrl?: string;
   itemDescription?: string;
-  allergies?: string;
+  allergies?: string[];
 }
 
 interface Category {
@@ -48,7 +47,6 @@ const ALLERGIES: Allergy[] = [
   { name: 'Cereals Containing Gluten', image: glutenImg },
 ];
 
-// Helper function to decode the JWT token from localStorage
 const getTokenData = () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -68,15 +66,18 @@ const MenuOptions: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeTab, setActiveTab] = useState<number>(0);
 
+  // Category deletion modal states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
 
+  // Category addition modal states
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState<string>('');
   const [newCategoryNameKR, setNewCategoryNameKR] = useState<string>('');
   const [newCategoryNameJP, setNewCategoryNameJP] = useState<string>('');
   const [newCategoryNameZH, setNewCategoryNameZH] = useState<string>('');
 
+  // Menu item addition modal states
   const [showAddMenuModal, setShowAddMenuModal] = useState(false);
   const [newItemName, setNewItemName] = useState<string>('');
   const [newItemNameKR, setNewItemNameKR] = useState<string>('');
@@ -86,9 +87,12 @@ const MenuOptions: React.FC = () => {
   const [newItemDescription, setNewItemDescription] = useState<string>('');
 
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
+
+  // Menu item deletion modal states
+  const [showDeleteMenuModal, setShowDeleteMenuModal] = useState(false);
+  const [deleteMenuTarget, setDeleteMenuTarget] = useState<{item: CategoryItem, category: Category} | null>(null);
 
   // Get companyID from the JWT token
   const tokenData = getTokenData();
@@ -137,7 +141,6 @@ const MenuOptions: React.FC = () => {
       const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
         companyID: company,
       });
-
       const userid = userIdResponse.data.userID;
       const response = await fetch('http://43.200.251.48:8080/api/categories', {
         method: 'DELETE',
@@ -236,7 +239,7 @@ const MenuOptions: React.FC = () => {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userID: '6a7d23fb7bca2806', // This may also be replaced with company-specific userID if needed
+        userID: '6a7d23fb7bca2806', // Replace with company-specific userID if needed
         categoryId: updated[categoryIndex].categoryId,
         itemId: updated[categoryIndex].categoryItems[itemIndex].itemId,
         flagName: flagName,
@@ -245,6 +248,7 @@ const MenuOptions: React.FC = () => {
     })
       .then((res) => res.json())
       .then((response) => {
+        // Handle response if needed
       })
       .catch((e) => console.error(e));
   };
@@ -270,8 +274,8 @@ const MenuOptions: React.FC = () => {
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('category', category)
-      formData.append('company', token.companyID)
+      formData.append('category', category);
+      formData.append('company', token.companyID);
 
       const res = await fetch('http://43.200.251.48:8080/api/upload', {
         method: 'POST',
@@ -318,7 +322,6 @@ const MenuOptions: React.FC = () => {
       const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
         companyID: company,
       });
-
       const userid = userIdResponse.data.userID;
   
       const response = await fetch('http://43.200.251.48:8080/api/items', {
@@ -345,7 +348,7 @@ const MenuOptions: React.FC = () => {
   
       const data = await response.json();
   
-      // Update local state
+      // Update local state with the new menu item
       const updatedCategories = [...categories];
       const idx = updatedCategories.findIndex(
         (cat) => cat.categoryId === currentCategory.categoryId
@@ -410,7 +413,9 @@ const MenuOptions: React.FC = () => {
     }
   };
 
-  const handleDeleteMenu = async (item: CategoryItem, category: Category) => {
+  // Handler for confirming menu item deletion from the modal
+  const handleConfirmDeleteMenu = async () => {
+    if (!deleteMenuTarget) return;
     try {
       const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
         companyID: company,
@@ -422,8 +427,8 @@ const MenuOptions: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userID: userid,
-          categoryId: category.categoryId,
-          itemId: item.itemId
+          categoryId: deleteMenuTarget.category.categoryId,
+          itemId: deleteMenuTarget.item.itemId
         }),
       });
   
@@ -431,20 +436,29 @@ const MenuOptions: React.FC = () => {
         alert("Failed to delete the item from the database.");
         return;
       }
-
+  
       setCategories((prevCategories) =>
         prevCategories.map((cat) => {
-          if (cat.categoryId === category.categoryId) {
-            return { ...cat, categoryItems: cat.categoryItems.filter(menuItem => menuItem.itemId !== item.itemId) };
+          if (cat.categoryId === deleteMenuTarget.category.categoryId) {
+            return { ...cat, categoryItems: cat.categoryItems.filter(menuItem => menuItem.itemId !== deleteMenuTarget.item.itemId) };
           }
           return cat;
         })
       );
     } catch (error) {
       console.error("Error deleting menu item", error);
+    } finally {
+      setShowDeleteMenuModal(false);
+      setDeleteMenuTarget(null);
     }
   };
-  
+
+  // Instead of directly calling the delete function, open the menu deletion modal.
+  const handleDeleteMenu = (item: CategoryItem, category: Category) => {
+    setDeleteMenuTarget({ item, category });
+    setShowDeleteMenuModal(true);
+  };
+
   return (
     <S.PageWrapper>
       <S.Header>
@@ -480,7 +494,9 @@ const MenuOptions: React.FC = () => {
               {currentCategory.categoryItems.map((item, i) => (
                 <S.MenuItem key={item.itemId}>
                   <S.LeftSection>
-                    <S.OptionBtn onClick={() => handleDeleteMenu(item, currentCategory)}>Delete Menu</S.OptionBtn>
+                    <S.OptionBtn onClick={() => handleDeleteMenu(item, currentCategory)}>
+                      Delete Menu
+                    </S.OptionBtn>
                     <S.ItemName>{item.itemName}</S.ItemName>
                   </S.LeftSection>
                   <S.RightSection>
@@ -658,7 +674,6 @@ const MenuOptions: React.FC = () => {
         <S.ModalOverlay>
           <S.ModalBox>
             <h2 style={{ fontSize: '24px', fontWeight: '900' }}>Add New Menu</h2>
-
             <S.StyledForm>
               <S.FormRow>
                 <S.FormLabel>Menu Item Name</S.FormLabel>
@@ -684,7 +699,6 @@ const MenuOptions: React.FC = () => {
                   Auto
                 </S.AutoButton>
               </S.FormRow>
-
               <S.FormRow>
                 <S.FormLabel>Item Name (Japanese)</S.FormLabel>
                 <S.FormInput
@@ -701,7 +715,6 @@ const MenuOptions: React.FC = () => {
                   Auto
                 </S.AutoButton>
               </S.FormRow>
-
               <S.FormRow>
                 <S.FormLabel>Item Name (Chinese)</S.FormLabel>
                 <S.FormInput
@@ -747,18 +760,14 @@ const MenuOptions: React.FC = () => {
                     }
                   }}
                 />
-                {selectedImageFile && (
-                  <>
-                    {previewUrl && (
-                      <div style={{ marginTop: '5px' }}>
-                        <img
-                          src={previewUrl}
-                          alt="Preview"
-                          style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '16px' }}
-                        />
-                      </div>
-                    )}
-                  </>
+                {selectedImageFile && previewUrl && (
+                  <div style={{ marginTop: '5px' }}>
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '16px' }}
+                    />
+                  </div>
                 )}
               </S.FormRow>
               <S.FormRow>
@@ -790,7 +799,6 @@ const MenuOptions: React.FC = () => {
                 />
               </S.FormRow>
             </S.StyledForm>
-
             <S.ButtonRow>
               <S.ModalButtonCancel onClick={handleCancelAddMenu}>
                 Cancel
@@ -799,6 +807,30 @@ const MenuOptions: React.FC = () => {
                 Add
               </S.ModalButtonConfirm>
             </S.ButtonRow>
+          </S.ModalBox>
+        </S.ModalOverlay>
+      )}
+
+      {showDeleteMenuModal && (
+        <S.ModalOverlay>
+          <S.ModalBox>
+            <h2>Confirm Deletion</h2>
+            <p>
+              {deleteMenuTarget
+                ? `Are you sure you want to delete "${deleteMenuTarget.item.itemName}"?`
+                : 'Are you sure you want to delete this menu item?'}
+            </p>
+            <div style={{ marginTop: '2rem' }}>
+              <S.ModalButtonCancel onClick={() => {
+                setShowDeleteMenuModal(false);
+                setDeleteMenuTarget(null);
+              }}>
+                No
+              </S.ModalButtonCancel>
+              <S.ModalButtonConfirm onClick={handleConfirmDeleteMenu}>
+                Yes, Delete
+              </S.ModalButtonConfirm>
+            </div>
           </S.ModalBox>
         </S.ModalOverlay>
       )}

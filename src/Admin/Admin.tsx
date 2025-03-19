@@ -3,7 +3,6 @@ import AdminGridContainer from "./gridContainer/AdminGridContainer";
 import Nav from "./navigator/AdminNav";
 import QRPin from "./qr-pin/QR-Pin";
 import Order from "./order/Order";
-import WaiterOptions from "./waiterOptions/WaiterOptions";
 import MenuOptions from "./menuOptions/MenuOptions";
 import useOrderNotifications from "../hooks/userNotification";
 import BillOut from "./BillOut/BillOut";
@@ -11,8 +10,9 @@ import { io } from "socket.io-client";
 import { BillOutCustomerPopup } from "components/Cart/Cart";
 import { LanguageCode } from "db/constants";
 import axios from "axios";
+import { WaiterCallPopup } from "components/Cart/Cart";
+import StaffPage from "./staffPage/StaffPage";
 
-// Create a socket connection to your server.
 const socket = io("http://43.200.251.48:8080");
 
 // --- Type Definitions ---
@@ -92,6 +92,10 @@ const AdminPage = () => {
     orderNumber: string;
   } | null>(null);
 
+  // New states for WaiterCallPopup.
+  const [showWaiterCallPopup, setShowWaiterCallPopup] = useState(false);
+  const [waiterCallData, setWaiterCallData] = useState<{ tableId: string; orders?: any } | null>(null);
+
   const handleSectionChange = (section: string) => {
     setSelectedSection(section);
     localStorage.setItem("selectedSection", section);
@@ -142,6 +146,17 @@ const AdminPage = () => {
     };
   }, [tokenData]);
 
+  useEffect(() => {
+    socket.on("customerCallWaiter", (data: { tableId: string; orders?: { name: string; quantity: number }[]; time?: string }) => {
+      console.log("Received waiter call:", data);
+      setWaiterCallData(data);
+      setShowWaiterCallPopup(true);
+    });
+    return () => {
+      socket.off("customerCallWaiter");
+    };
+  }, []);
+
   const handlePopupConfirm = () => {
     setShowCustomerBillPopup(false);
     setCustomerBillData(null);
@@ -151,6 +166,16 @@ const AdminPage = () => {
   const handlePopupCancel = () => {
     setShowCustomerBillPopup(false);
     setCustomerBillData(null);
+  };
+
+  const handleWaiterCallAcknowledge = () => {
+    setShowWaiterCallPopup(false);
+    setWaiterCallData(null);
+  };
+
+  const handleWaiterCallDismiss = () => {
+    setShowWaiterCallPopup(false);
+    setWaiterCallData(null);
   };
 
   if (userName) {
@@ -163,7 +188,7 @@ const AdminPage = () => {
       <Nav setSelectedSection={handleSectionChange} selectedSection={selectedSection} />
       {selectedSection === "order" && <Order />}
       {selectedSection === "qr-pin" && <QRPin />}
-      {selectedSection === "waiter-options" && <WaiterOptions />}
+      {selectedSection === "staff-page" && <StaffPage />}
       {selectedSection === "bill-out" && <BillOut />}
       {selectedSection === "menu-options" && <MenuOptions />}
 
@@ -175,6 +200,16 @@ const AdminPage = () => {
           selectedLanguage={"en" as LanguageCode}
           onConfirm={handlePopupConfirm}
           onCancel={handlePopupCancel}
+        />
+      )}
+
+      {showWaiterCallPopup && waiterCallData && (
+        <WaiterCallPopup
+          isOpen={true}
+          tableId={waiterCallData.tableId}
+          orders={waiterCallData.orders}
+          onAcknowledge={handleWaiterCallAcknowledge}
+          onDismiss={handleWaiterCallDismiss}
         />
       )}
     </AdminGridContainer>

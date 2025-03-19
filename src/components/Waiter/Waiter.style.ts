@@ -138,7 +138,10 @@ export const WaiterListItem = styled.li`
 `;
 
 export const WaiterBottomButton = styled.button`
+  flex-shrink: 0;
+  min-width: 150px;
   height: 60px;
+  width: calc(100% - 40px);
   text-align: center;
   margin-bottom: 20px;
   border: none;

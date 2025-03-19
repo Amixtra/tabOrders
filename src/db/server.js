@@ -12,6 +12,7 @@ import toggleRoutes from "./toggles/toggles.routes.js";
 import ordersRoutes from "./orders/orders.routes.js";
 import uploadRoutes from "./upload/upload.routes.js";
 import orderHistoryRoutes from "./orderHistory/orderHistory.routes.js";
+import Staff from "./staff/staff.model.js";
 import http from "http";
 import { Server } from "socket.io";
 
@@ -25,6 +26,10 @@ const loginLimiter = rateLimit({
   max: 100,
   message: { error: "Too many login attempts. Please try again later." },
 });
+
+function generateRandomPin() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -542,6 +547,10 @@ app.patch("/api/items/flags", async (req, res) => {
   }
 });
 
+/**
+ * DELETE ITEM
+ */
+
 app.delete("/api/items", async (req, res) => {
   const { userID, categoryId, itemId } = req.body;
   if (!userID || !categoryId || !itemId) {
@@ -637,6 +646,177 @@ app.post("/api/items", async (req, res) => {
   }
 });
 
+app.get("/api/staffCategories", async (req, res) => {
+  const { company, language = "en" } = req.query;
+  try {
+    if (!company) {
+      return res.status(400).json({ error: "Missing required query parameter: company" });
+    }
+    // Use aggregation to join staff categories with staffs that match on categoryId and userID.
+    const categoriesWithStaff = await mongoose.connection
+      .collection("staffCategories")
+      .aggregate([
+        { $match: { companyID: company } },
+        {
+          $lookup: {
+            from: "staffs",
+            let: { category_id: "$categoryId", user_id: "$userID" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$categoryId", "$$category_id"] },
+                      { $eq: ["$userID", "$$user_id"] }
+                    ]
+                  }
+                }
+              }
+            ],
+            as: "staffMembers"
+          }
+        }
+      ])
+      .toArray();
+
+    res.status(200).json(categoriesWithStaff);
+  } catch (error) {
+    console.error("Error getting staff categories:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/staffCategories", async (req, res) => {
+  const { userID, categoryName, companyID } = req.body;
+  if (!userID || !categoryName) {
+    return res.status(400).json({ error: "Missing userID or categoryName" });
+  }
+  try {
+    const docs = await mongoose.connection
+      .collection("staffCategories")
+      .find({ userID })
+      .toArray();
+    let maxId = 0;
+    if (docs && docs.length > 0) {
+      maxId = Math.max(...docs.map((cat) => cat.categoryId));
+    }
+    const newCategoryId = maxId + 1;
+    const newCategory = {
+      userID,
+      companyID: companyID || "",
+      categoryId: newCategoryId,
+      categoryName,
+      staffMembers: [],
+    };
+    await mongoose.connection.collection("staffCategories").insertOne(newCategory);
+    res.status(201).json(newCategory);
+  } catch (error) {
+    console.error("Error adding staff category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.delete("/api/staffCategories", async (req, res) => {
+  const { userID, categoryId } = req.body;
+  try {
+    const result = await mongoose.connection.collection("staffCategories").deleteOne({
+      userID,
+      categoryId: parseInt(categoryId, 10),
+    });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Category not found or already deleted" });
+    }
+    res.status(200).json({ message: "Category deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting staff category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/staff", async (req, res) => {
+  const { userID, language = "en" } = req.query;
+  try {
+    if (!userID) {
+      return res.status(400).json({ error: "Missing required query parameter: userID" });
+    }
+    const staffs = await mongoose.connection
+      .collection("staffs")
+      .find({ userID: userID })
+      .toArray();
+    res.status(200).json(staffs);
+  } catch (error) {
+    console.error("Error getting staffs:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/staff", async (req, res) => {
+  const { userID, categoryId, firstName, lastName, middleName, suffix, homeAddress, phoneNumber } = req.body;
+  if (!userID || !categoryId || !firstName || !lastName || !homeAddress) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  try {
+    const lastStaff = await Staff.findOne({}).sort({ staffId: -1 });
+    const newStaffId = lastStaff ? lastStaff.staffId + 1 : 1;
+    const pinCode = generateRandomPin();
+    const newStaff = await Staff.create({
+      staffId: newStaffId,
+      userID,
+      categoryId,
+      firstName,
+      lastName,
+      middleName,
+      suffix,
+      homeAddress,
+      phoneNumber,
+      pinCode,
+    });
+    res.status(201).json(newStaff);
+  } catch (error) {
+    console.error("Error adding staff member:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.delete("/api/staff", async (req, res) => {
+  const { userID, categoryId, staffId } = req.body;
+  if (!userID || !categoryId || !staffId) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  try {
+    const result = await Staff.deleteOne({ userID, categoryId, staffId });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Staff member not found" });
+    }
+    res.status(200).json({ message: "Staff member deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting staff member:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/staff/check-staff-pin", async (req, res) => {
+  const { pin } = req.body;
+  if (!pin) {
+    return res.status(400).json({ error: "pin is required" });
+  }
+  try {
+    const staff = await Staff.findOne({ pinCode: pin });
+    if (!staff) {
+      return res.status(401).json({ error: "Invalid staff pin" });
+    }
+    return res.status(200).json({
+      success: true,
+      staffId: staff.staffId,
+      userID: staff.userID,
+      categoryId: staff.categoryId,
+    });
+  } catch (error) {
+    console.error("Error checking staff pin:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
@@ -649,6 +829,11 @@ io.on("connection", (socket) => {
   socket.on("customerBillOut", (data) => {
     console.log("Customer has billed out:", data);
     io.emit("customerBillOut", data);
+  });
+
+  socket.on("customerCallWaiter", (data) => {
+    console.log("Customer called waiter:", data);
+    io.emit("customerCallWaiter", data);
   });
 
   socket.on("disconnect", () => {

@@ -25,6 +25,8 @@ interface HistoryItem {
     itemName: string;
     itemPrice: number;
     cartItemQuantity: number;
+    confirmation?: boolean;
+    menuStatus?: string;
   }[];
 }
 
@@ -49,7 +51,6 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-
       const response = await axios.get("http://43.200.251.48:8080/api/order-history", {
         params: { userID: userid, tableNumber: id },
       });
@@ -85,11 +86,16 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
     <OrderHistoryOverlay>
       {history.map((doc) => {
         const groupedItems = doc.items.reduce((acc, item) => {
-          const found = acc.find((i) => i.itemName === item.itemName);
+          const currentItem = {
+            ...item,
+            confirmation: item.confirmation ?? false,
+            menuStatus: item.menuStatus ?? "onProgress",
+          };
+          const found = acc.find((i) => i.itemName === currentItem.itemName);
           if (found) {
-            found.cartItemQuantity += item.cartItemQuantity;
+            found.cartItemQuantity += currentItem.cartItemQuantity;
           } else {
-            acc.push({ ...item });
+            acc.push(currentItem);
           }
           return acc;
         }, [] as HistoryItem["items"]);
@@ -120,7 +126,10 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
             <OrderHistoryContainer>
               <OrderList>
                 {groupedItems.map((item, idx) => (
-                  <OrderItem key={idx}>
+                  <OrderItem 
+                    key={idx}
+                    style={{ color: item.confirmation ? "green" : "red" }}
+                  >
                     <span className="item-name">{item.itemName}</span>
                     <span className="item-qty">x {item.cartItemQuantity}</span>
                   </OrderItem>

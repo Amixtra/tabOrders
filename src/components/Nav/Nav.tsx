@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 import useFetch from "hooks/useFeth";
 import StyledNav, {
   StyledNavBillOutButton,
@@ -13,8 +14,8 @@ import { CategoryProps } from "types";
 import Waiter from "components/Waiter/Waiter";
 import BillOut from "components/BillOut/BillOut";
 import { LanguageCode, NavLocales } from "db/constants";
-import { useLocation } from "react-router-dom";
 import Toast from "components/@share/Toast/Toast";
+import WaiterPagePin from "Admin/Waiter/WaiterPagePin";
 
 interface NavProps {
   onCategorySelect: (categoryId: number | null) => void;
@@ -37,6 +38,7 @@ const Nav: React.FC<NavProps> = ({
     `http://43.200.251.48:8080/api/categories?company=${company}&language=${selectedLanguage}`
   );
   const [showWaiter, setShowWaiter] = useState(false);
+  const [showWaiterPage, setShowWaiterPage] = useState(false);
   const [showBill, setShowBill] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isToastActive, setIsToastActive] = useState(false);
@@ -55,6 +57,16 @@ const Nav: React.FC<NavProps> = ({
         });
     }
   }, [company]);
+
+  if (showWaiterPage) {
+    return <WaiterPagePin onClose={() => {
+      setShowWaiterPage(false);
+      setIsOverlayActive(false);
+    }}
+    selectedLanguage={selectedLanguage}
+    />;
+  }
+  
 
   const navLocale = NavLocales[selectedLanguage];
   const showToast = (message: string, persistent: boolean = true) => {
@@ -83,15 +95,24 @@ const Nav: React.FC<NavProps> = ({
     setIsOverlayActive(false);
   };
 
+  const handleLogoClick = () => {
+    setShowWaiterPage(true);
+    setIsOverlayActive(true);
+  };
+
   return (
     <>
       <StyledNav>
         <StyledNavContent>
-          <StyledNavLogo>
+          <StyledNavLogo onClick={handleLogoClick}>
             <img
               src={logoSources.defaultLight}
               alt="TabOrders Logo"
-              style={{ width: "100%", borderRadius: "10px" }}
+              style={{
+                width: "100%",
+                borderRadius: "10px",
+                cursor: "pointer",
+              }}
             />
           </StyledNavLogo>
           <StyledNavSectionButton
