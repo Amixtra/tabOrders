@@ -550,7 +550,6 @@ app.patch("/api/items/flags", async (req, res) => {
 /**
  * DELETE ITEM
  */
-
 app.delete("/api/items", async (req, res) => {
   const { userID, categoryId, itemId } = req.body;
   if (!userID || !categoryId || !itemId) {

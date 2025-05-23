@@ -110,12 +110,19 @@ const WaiterPagePin: React.FC<WaiterPageProps> = ({ onClose, selectedLanguage })
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handlePinChange = (value: string, index: number) => {
-    const newPin = [...pin];
-    newPin[index] = value.slice(-1);
-    setPin(newPin);
-
-    if (value && index < pin.length - 1) {
-      inputRefs.current[index + 1]?.focus();
+    const digitsOnly = value.replace(/\D/g, '');
+    if (digitsOnly) {
+      const newPin = [...pin];
+      newPin[index] = value.slice(-1);
+      setPin(newPin);
+      
+      if (digitsOnly && index < pin.length - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    } else {
+      const newPin = [...pin];
+      newPin[index] = '';
+      setPin(newPin);
     }
   };
 
