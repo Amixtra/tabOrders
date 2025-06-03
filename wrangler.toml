@@ -1,5 +1,0 @@
-name = "algebrain"
-compatibility_date = "2025-06-03"
-
-[site]
-bucket = "./dist"

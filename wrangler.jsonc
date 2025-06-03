@@ -1,0 +1,7 @@
+{
+    "name": "algebrain",
+    "compatibility_date": "2025-06-03",
+    "assets": {
+        "directory": "./build"
+    }
+}
