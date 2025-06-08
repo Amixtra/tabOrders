@@ -35,7 +35,7 @@ const Nav: React.FC<NavProps> = ({
   const company = queryParams.get("company");
 
   const [data] = useFetch(
-    `http://18.143.91.202:8080/api/categories?company=${company}&language=${selectedLanguage}`
+    `https://tab-order-server.vercel.app/api/categories?company=${company}&language=${selectedLanguage}`
   );
   const [showWaiter, setShowWaiter] = useState(false);
   const [showWaiterPage, setShowWaiterPage] = useState(false);
@@ -48,7 +48,7 @@ const Nav: React.FC<NavProps> = ({
   useEffect(() => {
     if (company) {
       axios
-        .get(`http://18.143.91.202:8080/api/toggles?company=${company}`)
+        .get(`https://tab-order-server.vercel.app/api/toggles?company=${company}`)
         .then((response) => {
           setIsToggleCounterOn(response.data.isToggleCounterOn);
         })

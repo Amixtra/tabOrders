@@ -49,7 +49,7 @@ const Order = () => {
   const fetchOrders = useCallback(async () => {
     try {
       if (!userData?.userId) return;
-      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
+      const response = await axios.get("https://tab-order-server.vercel.app/api/orders", {
         params: { userID: userData.userId },
       });
       setOrders(response.data);
@@ -77,7 +77,7 @@ const Order = () => {
     if (!selectedOrder) return;
     if (selectedOrder.confirmStatus === "Confirmed") return;
     try {
-      await axios.patch("http://18.143.91.202:8080/api/orders/confirm", {
+      await axios.patch("https://tab-order-server.vercel.app/api/orders/confirm", {
         orderNumber: selectedOrder.orderNumber,
         userID: userData?.userId,
       });

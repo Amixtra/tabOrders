@@ -60,11 +60,11 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
 
   const fetchHistory = async () => {
     try {
-      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
+      const userIdResponse = await axios.post("https://tab-order-server.vercel.app/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
+      const response = await axios.get("https://tab-order-server.vercel.app/api/orders", {
         params: { userID: userid },
       });
       const tableNumber = parseInt(id || "0", 10);

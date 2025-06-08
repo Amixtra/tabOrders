@@ -42,7 +42,7 @@ const ProductListPage: React.FC<ProductListPageProps> = ({
     const fetchToggles = async () => {
       try {
         const response = await axios.get(
-          `http://18.143.91.202:8080/api/toggles?company=${company}`
+          `https://tab-order-server.vercel.app/api/toggles?company=${company}`
         );
         const data = response.data;
         setIsOrderFromTabletAllowed(data.isToggleOrderOn);
@@ -63,7 +63,7 @@ const ProductListPage: React.FC<ProductListPageProps> = ({
     const fetchCategories = async () => {
       try {
         const res = await axios.get(
-          `http://18.143.91.202:8080/api/categories?company=${company}&language=${selectedLanguage}`
+          `https://tab-order-server.vercel.app/api/categories?company=${company}&language=${selectedLanguage}`
         );
         if (isMounted) setCategories(res.data);
       } catch (error) {

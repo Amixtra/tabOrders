@@ -13,7 +13,7 @@ import axios from "axios";
 import { WaiterCallPopup } from "components/Cart/Cart";
 import StaffPage from "./staffPage/StaffPage";
 
-const socket = io("http://18.143.91.202:8080");
+const socket = io("https://tab-order-server.vercel.app");
 
 // --- Type Definitions ---
 type OrderItem = {
@@ -117,7 +117,7 @@ const AdminPage = () => {
       if (tokenData?.userId) {
         try {
           // Fetch all bills for the current user
-          const response = await axios.get("http://18.143.91.202:8080/api/orders/bills-of-table", {
+          const response = await axios.get("https://tab-order-server.vercel.app/api/orders/bills-of-table", {
             params: { userID: tokenData.userId },
           });
           const orders: Order[] = response.data;

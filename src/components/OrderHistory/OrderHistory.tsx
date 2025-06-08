@@ -47,11 +47,11 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
 
   const fetchHistory = async () => {
     try {
-      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
+      const userIdResponse = await axios.post("https://tab-order-server.vercel.app/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await axios.get("http://18.143.91.202:8080/api/order-history", {
+      const response = await axios.get("https://tab-order-server.vercel.app/api/order-history", {
         params: { userID: userid, tableNumber: id },
       });
       setHistory(response.data);

@@ -57,11 +57,11 @@ const KKB: React.FC<KKBProps> = ({ onClose, selectedLanguage }) => {
   // Fetch order history from the server
   const fetchOrders = async () => {
     try {
-      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
+      const userIdResponse = await axios.post("https://tab-order-server.vercel.app/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
+      const response = await axios.get("https://tab-order-server.vercel.app/api/orders", {
         params: { userID: userid },
       });
       const tableNumber = parseInt(tableId || "0", 10);
@@ -157,7 +157,7 @@ const KKB: React.FC<KKBProps> = ({ onClose, selectedLanguage }) => {
     });
 
     try {
-      await axios.patch("http://18.143.91.202:8080/api/orders/assign-items", {
+      await axios.patch("https://tab-order-server.vercel.app/api/orders/assign-items", {
         assignments: newAssignments,
       });
       await fetchOrders();

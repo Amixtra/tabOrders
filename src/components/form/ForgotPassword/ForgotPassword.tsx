@@ -37,7 +37,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await fetch("http://18.143.91.202:8080/api/forgot-password", {
+      const response = await fetch("https://tab-order-server.vercel.app/api/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

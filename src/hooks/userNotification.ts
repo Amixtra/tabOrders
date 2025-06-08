@@ -15,7 +15,7 @@ const useOrderNotifications = (userId: string) => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
+      const response = await axios.get("https://tab-order-server.vercel.app/api/orders", {
         params: { userID: userId },
       });
       const newOrders = response.data;

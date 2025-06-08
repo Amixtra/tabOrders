@@ -89,12 +89,12 @@ const WaiterPage: React.FC<OrderHistoryProps> = ({
   const fetchHistory = async () => {
     try {
       const userIdResponse = await axios.post(
-        "http://18.143.91.202:8080/api/get-userID",
+        "https://tab-order-server.vercel.app/api/get-userID",
         { companyID: company }
       );
       const userid = userIdResponse.data.userID;
 
-      const response = await axios.get("http://18.143.91.202:8080/api/order-history", {
+      const response = await axios.get("https://tab-order-server.vercel.app/api/order-history", {
         params: { userID: userid, tableNumber: id },
       });
 
@@ -154,7 +154,7 @@ const WaiterPage: React.FC<OrderHistoryProps> = ({
     console.log("Items sent:", JSON.stringify(items, null, 2));
     try {
       await axios.patch(
-        `http://18.143.91.202:8080/api/order-history/${docId}/confirm`,
+        `https://tab-order-server.vercel.app/api/order-history/${docId}/confirm`,
         { items }
       );
       fetchHistory();
@@ -168,7 +168,7 @@ const WaiterPage: React.FC<OrderHistoryProps> = ({
     console.log("Items sent:", JSON.stringify(items, null, 2));
     try {
       await axios.patch(
-        `http://18.143.91.202:8080/api/order-history/${docId}/cancel`,
+        `https://tab-order-server.vercel.app/api/order-history/${docId}/cancel`,
         { items }
       );
       fetchHistory();

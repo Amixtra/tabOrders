@@ -13,7 +13,7 @@ interface BillOutProps {
   tableNumber: number;
 }
 
-const socket = io("http://18.143.91.202:8080");
+const socket = io("https://tab-order-server.vercel.app");
 
 const BillOutPopUp: React.FC<BillOutProps> = ({ isOpen, onClose, userID, tableNumber }) => {
   const [isCashModalOpen, setIsCashModalOpen] = useState(false);
@@ -29,7 +29,7 @@ const BillOutPopUp: React.FC<BillOutProps> = ({ isOpen, onClose, userID, tableNu
 
   const handlePayment = async (paymentMethod: string) => {
     try {
-      const response = await axios.post("http://18.143.91.202:8080/api/orders/pay", {
+      const response = await axios.post("https://tab-order-server.vercel.app/api/orders/pay", {
         userID,
         tableNumber,
         paymentType: paymentMethod,

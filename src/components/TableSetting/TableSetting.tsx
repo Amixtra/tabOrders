@@ -29,7 +29,7 @@ const TableSetting = () => {
     if (userID) {
       const fetchCompany = async () => {
         try { 
-          const response = await fetch("http://18.143.91.202:8080/api/get-company", {
+          const response = await fetch("https://tab-order-server.vercel.app/api/get-company", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userID }),

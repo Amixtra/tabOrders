@@ -129,7 +129,7 @@ const Login = () => {
     }
   
     try {
-      const emailCheckResponse = await axios.post("http://18.143.91.202:8080/api/check-email", { email });
+      const emailCheckResponse = await axios.post("https://tab-order-server.vercel.app/api/check-email", { email });
       const { exists: emailExists } = emailCheckResponse.data;
       setEmailAvailable(!emailExists);
   
@@ -148,7 +148,7 @@ const Login = () => {
     }
   
     try {
-      await axios.post("http://18.143.91.202:8080/api/signup", {
+      await axios.post("https://tab-order-server.vercel.app/api/signup", {
         username,
         email,
         password,
@@ -168,7 +168,7 @@ const Login = () => {
   
     setIsCheckingUsername(true);
     try {
-      const response = await axios.post("http://18.143.91.202:8080/api/check-username", { username });
+      const response = await axios.post("https://tab-order-server.vercel.app/api/check-username", { username });
       const { exists } = response.data;
       setUsernameAvailable(!exists);
     } catch (error) {
@@ -203,7 +203,7 @@ const Login = () => {
       return;
     }
     try {
-      const response = await axios.post("http://18.143.91.202:8080/api/login", { username, password });
+      const response = await axios.post("https://tab-order-server.vercel.app/api/login", { username, password });
       const { token } = response.data;
       localStorage.setItem("token", token);
       navigate("/");

@@ -7,7 +7,7 @@ import CashModal from "./CashModal/CashModal";
 import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io("http://18.143.91.202:8080");
+const socket = io("https://tab-order-server.vercel.app");
 
 interface BillOutProps {
   isOpen: boolean;
@@ -49,14 +49,14 @@ const BillOut: React.FC<BillOutProps> = ({
   const handleNonCashPayment = async (paymentType: string, cashAmount?: number) => {
     try {
       const userIdResponse = await axios.post(
-        "http://18.143.91.202:8080/api/get-userID",
+        "https://tab-order-server.vercel.app/api/get-userID",
         { companyID: company }
       );
       if (!isMounted.current) return;
       const userID = userIdResponse.data.userID;
       const tableNumber = id;
       const response = await axios.get(
-        "http://18.143.91.202:8080/api/order-history",
+        "https://tab-order-server.vercel.app/api/order-history",
         { params: { userID, tableNumber } }
       );
       if (!isMounted.current) return;

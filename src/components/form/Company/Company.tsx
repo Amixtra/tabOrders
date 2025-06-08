@@ -44,7 +44,7 @@ const Company = () => {
     }
   
     try {
-      await axios.post("http://18.143.91.202:8080/api/company", { username, company, companyFull });
+      await axios.post("https://tab-order-server.vercel.app/api/company", { username, company, companyFull });
       alert("User setup Complete!");
       navigate("/");
     } catch (error) {
@@ -60,7 +60,7 @@ const Company = () => {
     }
   
     try {
-      const response = await axios.post("http://18.143.91.202:8080/api/check-company", {
+      const response = await axios.post("https://tab-order-server.vercel.app/api/check-company", {
         company,
         companyFull,
       });
