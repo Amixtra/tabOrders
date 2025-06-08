@@ -35,7 +35,7 @@ const Nav: React.FC<NavProps> = ({
   const company = queryParams.get("company");
 
   const [data] = useFetch(
-    `http://43.200.251.48:8080/api/categories?company=${company}&language=${selectedLanguage}`
+    `http://18.143.91.202:8080/api/categories?company=${company}&language=${selectedLanguage}`
   );
   const [showWaiter, setShowWaiter] = useState(false);
   const [showWaiterPage, setShowWaiterPage] = useState(false);
@@ -48,7 +48,7 @@ const Nav: React.FC<NavProps> = ({
   useEffect(() => {
     if (company) {
       axios
-        .get(`http://43.200.251.48:8080/api/toggles?company=${company}`)
+        .get(`http://18.143.91.202:8080/api/toggles?company=${company}`)
         .then((response) => {
           setIsToggleCounterOn(response.data.isToggleCounterOn);
         })

@@ -63,7 +63,7 @@ const getTokenData = () => {
 const fetchAllTables = async (userID: string): Promise<Order[]> => {
   try {
     const response = await axios.get(
-      "http://43.200.251.48:8080/api/orders/bills-of-table",
+      "http://18.143.91.202:8080/api/orders/bills-of-table",
       { params: { userID } }
     );
     const confirmedOrders = response.data.filter(
@@ -78,7 +78,7 @@ const fetchAllTables = async (userID: string): Promise<Order[]> => {
 
 const fetchPaidData = async (userID: string): Promise<Order[]> => {
   try {
-    const response = await axios.get("http://43.200.251.48:8080/api/orders/pay", { params: { userID } });
+    const response = await axios.get("http://18.143.91.202:8080/api/orders/pay", { params: { userID } });
     return response.data.sort((a: Order, b: Order) => a.tableNumber - b.tableNumber);
   } catch (error) {
     console.error("Error fetching paid data:", error);

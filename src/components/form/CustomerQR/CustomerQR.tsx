@@ -41,7 +41,7 @@ const CustomerQR = () => {
     if (qrCodeData) {
       try {
         const url = new URL(qrCodeData);
-        if (url.hostname === "43.200.251.48" && url.port === "3000" && url.pathname === "/tableSetting") {
+        if (url.hostname === "18.143.91.202" && url.port === "3000" && url.pathname === "/tableSetting") {
           window.location.href = url.href;
         } else {
           setErrorMessage("tabOrders couldn't access external website.");

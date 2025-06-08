@@ -100,7 +100,7 @@ const MenuOptions: React.FC = () => {
 
   useEffect(() => {
     if (!company) return;
-    fetch(`http://43.200.251.48:8080/api/categories?company=${company}&language=en`)
+    fetch(`http://18.143.91.202:8080/api/categories?company=${company}&language=en`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -138,11 +138,11 @@ const MenuOptions: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await fetch('http://43.200.251.48:8080/api/categories', {
+      const response = await fetch('http://18.143.91.202:8080/api/categories', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -180,11 +180,11 @@ const MenuOptions: React.FC = () => {
       return;
     }
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await fetch('http://43.200.251.48:8080/api/categories', {
+      const response = await fetch('http://18.143.91.202:8080/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -235,7 +235,7 @@ const MenuOptions: React.FC = () => {
     updated[categoryIndex].categoryItems[itemIndex][flagName] = !oldVal;
     setCategories(updated);
 
-    fetch('http://43.200.251.48:8080/api/items/flags', {
+    fetch('http://18.143.91.202:8080/api/items/flags', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -277,7 +277,7 @@ const MenuOptions: React.FC = () => {
       formData.append('category', category);
       formData.append('company', token.companyID);
 
-      const res = await fetch('http://43.200.251.48:8080/api/upload', {
+      const res = await fetch('http://18.143.91.202:8080/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -319,12 +319,12 @@ const MenuOptions: React.FC = () => {
         }
       }
 
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
   
-      const response = await fetch('http://43.200.251.48:8080/api/items', {
+      const response = await fetch('http://18.143.91.202:8080/api/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -417,12 +417,12 @@ const MenuOptions: React.FC = () => {
   const handleConfirmDeleteMenu = async () => {
     if (!deleteMenuTarget) return;
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
   
-      const response = await fetch('http://43.200.251.48:8080/api/items', {
+      const response = await fetch('http://18.143.91.202:8080/api/items', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

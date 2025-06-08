@@ -29,7 +29,7 @@ type OrderType = {
 
 const INACTIVITY_TIMEOUT = 300000;
 
-const socket = io("http://43.200.251.48:8080");
+const socket = io("http://18.143.91.202:8080");
 
 const TablePage = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -64,11 +64,11 @@ const TablePage = () => {
   const fetchTableOrders = useCallback(async () => {
     try {
       if (!company || !tableId) return;
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await axios.get("http://43.200.251.48:8080/api/orders", {
+      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
         params: { userID: userid },
       });
       const tableNumber = parseInt(tableId || "0", 10);
@@ -100,7 +100,7 @@ const TablePage = () => {
     const fetchToggles = async () => {
       try {
         if (!company) return;
-        const r = await axios.get(`http://43.200.251.48:8080/api/toggles?company=${company}`);
+        const r = await axios.get(`http://18.143.91.202:8080/api/toggles?company=${company}`);
         setIsUnLockFromTabletOn(r.data.isToggleLockOn);
       } catch (error) {
         console.error("Error fetching toggles:", error);

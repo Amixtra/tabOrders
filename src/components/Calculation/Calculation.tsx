@@ -60,11 +60,11 @@ const Calculation: React.FC<CalculationProps> = ({ setShowCalculation, selectedL
 
   const fetchHistory = async () => {
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", {
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", {
         companyID: company,
       });
       const userid = userIdResponse.data.userID;
-      const response = await axios.get("http://43.200.251.48:8080/api/orders", {
+      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
         params: { userID: userid },
       });
       const tableNumber = parseInt(id || "0", 10);

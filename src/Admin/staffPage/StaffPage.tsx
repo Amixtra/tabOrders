@@ -66,7 +66,7 @@ const StaffPage: React.FC = () => {
   // These useEffects are now called unconditionally
   useEffect(() => {
     if (!pinVerified || !company) return;
-    fetch(`http://43.200.251.48:8080/api/staffCategories?company=${company}&language=en`)
+    fetch(`http://18.143.91.202:8080/api/staffCategories?company=${company}&language=en`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -79,7 +79,7 @@ const StaffPage: React.FC = () => {
   useEffect(() => {
     if (!pinVerified || !company) return;
     axios
-      .get(`http://43.200.251.48:8080/api/staff`, { params: { userID: userID } })
+      .get(`http://18.143.91.202:8080/api/staff`, { params: { userID: userID } })
       .then((res) => {
         console.log("Fetched staffs:", res.data);
       })
@@ -93,7 +93,7 @@ const StaffPage: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post("http://43.200.251.48:8080/api/check-userid", { pin });
+      const response = await axios.post("http://18.143.91.202:8080/api/check-userid", { pin });
       if (response.status === 200 && response.data.userID) {
         setPinVerified(true);
         setPinError("");
@@ -142,9 +142,9 @@ const StaffPage: React.FC = () => {
   const handleConfirmDeleteCategory = async () => {
     if (!deleteTarget) return;
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", { companyID: company });
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", { companyID: company });
       const userid = userIdResponse.data.userID;
-      const response = await fetch('http://43.200.251.48:8080/api/staffCategories', {
+      const response = await fetch('http://18.143.91.202:8080/api/staffCategories', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userID: userid, categoryId: deleteTarget.categoryId })
@@ -175,9 +175,9 @@ const StaffPage: React.FC = () => {
       return;
     }
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", { companyID: company });
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", { companyID: company });
       const userid = userIdResponse.data.userID;
-      const response = await fetch('http://43.200.251.48:8080/api/staffCategories', {
+      const response = await fetch('http://18.143.91.202:8080/api/staffCategories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userID: userid, categoryName: newCategoryName, companyID: company })
@@ -215,9 +215,9 @@ const StaffPage: React.FC = () => {
       return;
     }
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", { companyID: company });
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", { companyID: company });
       const userid = userIdResponse.data.userID;
-      const response = await fetch('http://43.200.251.48:8080/api/staff', {
+      const response = await fetch('http://18.143.91.202:8080/api/staff', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -285,9 +285,9 @@ const StaffPage: React.FC = () => {
   const handleConfirmDeleteStaff = async () => {
     if (!deleteStaffTarget) return;
     try {
-      const userIdResponse = await axios.post("http://43.200.251.48:8080/api/get-userID", { companyID: company });
+      const userIdResponse = await axios.post("http://18.143.91.202:8080/api/get-userID", { companyID: company });
       const userid = userIdResponse.data.userID;
-      const response = await fetch('http://43.200.251.48:8080/api/staff', {
+      const response = await fetch('http://18.143.91.202:8080/api/staff', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

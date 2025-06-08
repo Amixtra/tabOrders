@@ -7,7 +7,7 @@ import CashModal from "./CashModal/CashModal";
 import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io("http://43.200.251.48:8080");
+const socket = io("http://18.143.91.202:8080");
 
 interface BillOutProps {
   isOpen: boolean;
@@ -49,14 +49,14 @@ const BillOut: React.FC<BillOutProps> = ({
   const handleNonCashPayment = async (paymentType: string, cashAmount?: number) => {
     try {
       const userIdResponse = await axios.post(
-        "http://43.200.251.48:8080/api/get-userID",
+        "http://18.143.91.202:8080/api/get-userID",
         { companyID: company }
       );
       if (!isMounted.current) return;
       const userID = userIdResponse.data.userID;
       const tableNumber = id;
       const response = await axios.get(
-        "http://43.200.251.48:8080/api/order-history",
+        "http://18.143.91.202:8080/api/order-history",
         { params: { userID, tableNumber } }
       );
       if (!isMounted.current) return;

@@ -15,7 +15,7 @@ const useOrderNotifications = (userId: string) => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://43.200.251.48:8080/api/orders", {
+      const response = await axios.get("http://18.143.91.202:8080/api/orders", {
         params: { userID: userId },
       });
       const newOrders = response.data;

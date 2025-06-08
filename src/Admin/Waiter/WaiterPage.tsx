@@ -89,12 +89,12 @@ const WaiterPage: React.FC<OrderHistoryProps> = ({
   const fetchHistory = async () => {
     try {
       const userIdResponse = await axios.post(
-        "http://43.200.251.48:8080/api/get-userID",
+        "http://18.143.91.202:8080/api/get-userID",
         { companyID: company }
       );
       const userid = userIdResponse.data.userID;
 
-      const response = await axios.get("http://43.200.251.48:8080/api/order-history", {
+      const response = await axios.get("http://18.143.91.202:8080/api/order-history", {
         params: { userID: userid, tableNumber: id },
       });
 
@@ -154,7 +154,7 @@ const WaiterPage: React.FC<OrderHistoryProps> = ({
     console.log("Items sent:", JSON.stringify(items, null, 2));
     try {
       await axios.patch(
-        `http://43.200.251.48:8080/api/order-history/${docId}/confirm`,
+        `http://18.143.91.202:8080/api/order-history/${docId}/confirm`,
         { items }
       );
       fetchHistory();
@@ -168,7 +168,7 @@ const WaiterPage: React.FC<OrderHistoryProps> = ({
     console.log("Items sent:", JSON.stringify(items, null, 2));
     try {
       await axios.patch(
-        `http://43.200.251.48:8080/api/order-history/${docId}/cancel`,
+        `http://18.143.91.202:8080/api/order-history/${docId}/cancel`,
         { items }
       );
       fetchHistory();

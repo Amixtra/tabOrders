@@ -11,7 +11,7 @@ const RestaurantIndicator = () => {
     if (companyName) {
       const fetchCompany = async () => {
         try {
-          const response = await fetch ("http://43.200.251.48:8080/api/decrypt-company", {
+          const response = await fetch ("http://18.143.91.202:8080/api/decrypt-company", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ company: companyName }),

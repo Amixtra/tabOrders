@@ -78,7 +78,7 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
     if (userID) {
       const fetchCompany = async () => {
         try { 
-          const response = await fetch("http://43.200.251.48:8080/api/get-company", {
+          const response = await fetch("http://18.143.91.202:8080/api/get-company", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userID }),
@@ -102,7 +102,7 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
       const getToggles = async () => {
         try {
           const response = await axios.get(
-            `http://43.200.251.48:8080/api/toggles?company=${company}`
+            `http://18.143.91.202:8080/api/toggles?company=${company}`
           );
           const data = response.data;
           setIsToggleOrderOn(data.isToggleOrderOn);
@@ -139,7 +139,7 @@ const Nav: React.FC<NavProps> = ({ setSelectedSection, selectedSection }) => {
 
   const updateTogglesInDB = async (updateFields: ToggleUpdateFields) => {
     try {
-      await axios.post("http://43.200.251.48:8080/api/toggles", {
+      await axios.post("http://18.143.91.202:8080/api/toggles", {
         company,
         ...updateFields,
       });

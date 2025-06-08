@@ -22,7 +22,7 @@ import WaiterToast from "./WaiterToast/WaiterToast";
 import { useSearchParams } from "react-router-dom";
 
 // Create a socket connection. (For production, consider reusing a shared socket instance.)
-const socket = io("http://43.200.251.48:8080");
+const socket = io("http://18.143.91.202:8080");
 
 interface SelectedItem {
   name: string;

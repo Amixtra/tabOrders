@@ -130,7 +130,7 @@ const WaiterPagePin: React.FC<WaiterPageProps> = ({ onClose, selectedLanguage })
     const enteredPin = pin.join('');
     try {
       const response = await axios.post(
-        "http://43.200.251.48:8080/api/staff/check-staff-pin",
+        "http://18.143.91.202:8080/api/staff/check-staff-pin",
         { pin: enteredPin }
       );
   
